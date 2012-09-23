@@ -8,10 +8,11 @@ enum
 	GUI_ID_LOAD=202,
 	GUI_ID_SAVE=203,
 	GUI_ID_IMPORT=204,
-	GUI_ID_EXPORT=205,
-	GUI_ID_ADDNODE=206,
-	GUI_ID_SWITCH=207,
-	GUI_ID_BOX=208,
+	GUI_ID_EX_PROJ=205,
+	GUI_ID_EX_NODE=206,
+	GUI_ID_ADDNODE=207,
+	GUI_ID_SWITCH=208,
+	GUI_ID_BOX=209,
 };
 
 bool cEditor::run(IrrlichtDevice* irr_device){
@@ -21,17 +22,20 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
 
+	data=new ed_data();
+
 	loadUI();
 
 	coli=smgr->getSceneCollisionManager();
 	device->setWindowCaption(L"The NodeBox Generator");
 	device->setResizable(true);
-
+	
 	//Add Camera and Pivot
 	pivot=smgr->addEmptySceneNode(0,199);
 	pivot->setPosition(vector3df(0,0,0));
 	camera=smgr->addCameraSceneNode(pivot,vector3df(0,0,-2));
 	camera->setTarget(vector3df(0,0,0));
+	smgr->setActiveCamera(camera);
 
 	//Add Light
 	ILightSceneNode* light=smgr->addLightSceneNode(0,vector3df(25,50,0));
@@ -39,12 +43,14 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	light->setRadius(2000);
 
 	//Add Plane
-	IMeshSceneNode* plane = smgr->addCubeSceneNode(1,0,-1,vector3df(0,-5.5,0),vector3df(0,0,0),vector3df(10,10,10));
-	plane->setMaterialTexture(0, driver->getTexture("default_grass.png"));
+	IMeshSceneNode* plane = smgr->addCubeSceneNode(1,0,-1,vector3df(0.5,-5.5,0.5),vector3df(0,0,0),vector3df(10,10,10));
+	plane->setMaterialTexture(0, driver->getTexture("texture_terrain.png"));
     plane->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	plane->getMaterial(0).getTextureMatrix(0).setTextureScale(10,10);
 
-
+	//Setup Current Manager
+	nodes[0]=new cNode(device,data);
+	curId=0;
 
 	while (device->run()){
 		driver->beginScene(true, true, irr::video::SColor(255,100,101,140));
@@ -61,31 +67,41 @@ void cEditor::loadUI(){
 	guienv->clear();
 
 	// The Status Text
-	guienv->addStaticText(L"NodeBox: -",rect<s32>(5,20,100,35));
-	guienv->addStaticText(L"Position: - , - , -",rect<s32>(5,35,100,50));
-	guienv->addStaticText(L"Rotation: - , - , -",rect<s32>(5,50,100,65));
+	int tmp_b=420;
+	data->d_nb=guienv->addStaticText(L"NodeBox: -",rect<s32>(5,tmp_b,300,tmp_b+15));
+	data->d_pos=guienv->addStaticText(L"Position: - , - , -",rect<s32>(5,tmp_b+15,300,tmp_b+30));
+	data->d_rot=guienv->addStaticText(L"Rotation: - , - , -",rect<s32>(5,tmp_b+30,300,tmp_b+45));
+
+	data->d_nb->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	data->d_pos->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	data->d_rot->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 
 
 	// The Menu
 	IGUIContextMenu* menubar=guienv->addMenu();
+	menubar->addItem(L"Project",-1,true,true);
 	menubar->addItem(L"Node",-1,true,true);
-	menubar->addItem(L"Insert",-1,true,true);
 	menubar->addItem(L"Help",-1,true,true);
 
 	gui::IGUIContextMenu* submenu;
+
     submenu = menubar->getSubMenu(0);
 	submenu->addItem(L"New",GUI_ID_NEW);
 	submenu->addItem(L"Load",GUI_ID_LOAD);
 	submenu->addItem(L"Save",GUI_ID_SAVE);
 	submenu->addSeparator();
 	submenu->addItem(L"Import",GUI_ID_IMPORT);
-	submenu->addItem(L"Export",GUI_ID_EXPORT);
-	submenu->addSeparator();
-	submenu->addItem(L"Add a Node",GUI_ID_ADDNODE);
-	submenu->addItem(L"Switch Node",GUI_ID_SWITCH);
+	submenu->addItem(L"Export",GUI_ID_EX_PROJ);
+	
 
     submenu = menubar->getSubMenu(1);
-	submenu->addItem(L"Node Box",GUI_ID_BOX);
+	submenu->addItem(L"Add a Node",GUI_ID_ADDNODE);
+	submenu->addItem(L"Switch Node",GUI_ID_SWITCH);
+	submenu->addSeparator();
+	submenu->addItem(L"Add a Node Box",GUI_ID_BOX);
+	submenu->addSeparator();
+	submenu->addItem(L"Export",GUI_ID_EX_NODE);
+	
 
 	submenu = menubar->getSubMenu(2);
 	submenu->addItem(L"Help",GUI_ID_HELP);
@@ -103,7 +119,7 @@ bool cEditor::OnEvent(const SEvent& event)
 		if (hit==0){
 			std::cout << "No Nodes at that position" << std::endl;
 		}else{
-			nodes[curId];
+			nodes[curId]->switchFocus(hit);
 		}
 
 	}else if (event.EventType == EET_KEY_INPUT_EVENT){
@@ -116,6 +132,13 @@ bool cEditor::OnEvent(const SEvent& event)
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y+1,pivot->getRotation().Z));
 		}else if (event.KeyInput.Key== KEY_RIGHT){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y-1,pivot->getRotation().Z));
+
+		}else if (event.KeyInput.Key== KEY_KEY_A){
+			if (nodes[curId])
+				nodes[curId]->resize(0,0.5);
+		}else if (event.KeyInput.Key== KEY_KEY_Z){
+			if (nodes[curId])
+				nodes[curId]->resize(0,-0.5);
 		}
 		
 
@@ -159,7 +182,7 @@ bool cEditor::OnEvent(const SEvent& event)
 		break;
 	case GUI_ID_BOX:
 		std::cout << "--Node Box Added" << std::endl;
-		smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
+		nodes[curId]->addNodeBox();
 		break;
 	}
 }

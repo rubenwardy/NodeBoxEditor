@@ -1,6 +1,7 @@
 #ifndef _cEditor_h_included_
 #define _cEditor_h_included_
 
+#include "define.h"
 #include "cNodes.h"
 
 class cEditor : public IEventReceiver
@@ -10,6 +11,7 @@ public:
 	void loadUI();
 	virtual bool OnEvent(const SEvent& event);
 private:
+	ed_data* data;
 	cNode* nodes[5];
 	int curId;
 	void OnMenuItemSelected(IGUIContextMenu* menu);

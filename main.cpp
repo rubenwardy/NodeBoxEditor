@@ -21,10 +21,12 @@ bool main()
 {  
 	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(640, 480), 16,false, false, false, 0);
 	if (!device)
-		return 1;
+		return 0;
 	device->setWindowCaption(L"Loading Engine...");
 
 	cEditor* editor=new cEditor();
 	device->setEventReceiver(editor);
 	editor->run(device);
+
+	return 1;
 }

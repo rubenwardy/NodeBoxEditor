@@ -1,6 +1,12 @@
 #include "define.h"
 #include <iostream>
 
+using namespace irr;
+using namespace gui;
+using namespace scene;
+using namespace core;
+using namespace video;
+
 irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix){
 	std::cout << "calcVectors::Start" << std::endl;
 	char px[3];
@@ -43,4 +49,48 @@ char* convert(wchar_t* input){
 	char* tmp=new char();
 	wcstombs(tmp,input,0);
 	return tmp;
+}
+
+void resizeObject(irr::scene::ISceneNode* input,float px,float py,float pz){
+
+std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
+
+std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
+
+irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
+irr::core::vector3df extent = box.getExtent();
+ 
+float sx = (px+extent.X)/extent.X;
+float sy = (py+extent.Y)/extent.Y;
+float sz = (pz+extent.Z)/extent.Z;
+
+std::cout << std::endl << "Before: " << std::endl << extent.X << " - " << extent.Y << " - " << extent.Z << std::endl;
+
+std::cout << std::endl << "After: " << std::endl << (px+extent.X) << " - " << (py+extent.Y) << " - " << (pz+extent.Z) << std::endl;
+
+std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
+
+if (sx<=0 || sy<=0 || sz<=0){
+	std::cout << "--cancelled" << std::endl;
+	return;
+}
+
+if (extent.X>2){
+	std::cout << "--auto correct: x" << std::endl;
+	sx=2/extent.X;
+}
+
+if (extent.Y>2){
+	std::cout << "--auto correct: y" << std::endl;
+	sy=2/extent.Y;
+}
+
+if (extent.Z>2){
+	std::cout << "--auto correct: z" << std::endl;
+	sz=2/extent.Z;
+}
+
+core::vector3df scale(sx, sy, sz);
+input->setScale(scale);
+
 }
