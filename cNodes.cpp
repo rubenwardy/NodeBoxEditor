@@ -84,7 +84,7 @@ void cNode::updateTexts(){
 
 void cNode::resize(int side,double dir){
 	std::cout << "Resizing..." << std::endl;
-	if (boxes[id]){
+	if (boxes[id] && number > id){
 		switch (side)
 		{
 		case 0: //X
