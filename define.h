@@ -18,5 +18,7 @@ char* convert(wchar_t* input); //Convertor: wchar_t to char
 //Other useful funcs
 irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
 void resizeObject(irr::scene::ISceneNode* input,float px,float py,float pz);
+void setsizeObject(irr::scene::ISceneNode* input,float px,float py,float pz);
+void checkScaling(irr::scene::ISceneNode* input);
 
 #endif

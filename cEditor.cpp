@@ -52,11 +52,21 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	nodes[0]=new cNode(device,data);
 	curId=0;
 
+	unsigned int counter=0;
+
 	while (device->run()){
+		counter++;
 		driver->beginScene(true, true, irr::video::SColor(255,100,101,140));
 		smgr->drawAll();
 		guienv->drawAll();
 		driver->endScene();
+		
+		if (counter>1000){
+			counter=0;
+			std::cout << "Performing Checkup..." << std::endl;
+			if (nodes[curId])
+				nodes[curId]->updateTexts();
+		}
 	}
 
 	return true;
@@ -135,10 +145,10 @@ bool cEditor::OnEvent(const SEvent& event)
 
 		}else if (event.KeyInput.Key== KEY_KEY_A){
 			if (nodes[curId])
-				nodes[curId]->resize(0,0.5);
+				nodes[curId]->resize(0,0.1);
 		}else if (event.KeyInput.Key== KEY_KEY_Z){
 			if (nodes[curId])
-				nodes[curId]->resize(0,-0.5);
+				nodes[curId]->resize(0,-0.1);
 		}
 		
 

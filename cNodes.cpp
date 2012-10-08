@@ -1,6 +1,7 @@
 #include "cNodes.h"
 
 cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
+	id=0;
 	device = mdevice;
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -19,6 +20,8 @@ void cNode::addNodeBox(){
 	nb+=(number+1);
 	boxes[number]->setName(nb);
 	//boxes[number]->getMaterial(0).getTextureMatrix(0).setTextureScale(10,10);
+
+	setsizeObject(boxes[number],1,1,1);
 
 	std::cout << "--Inc" << std::endl;
 	changeID(number);
@@ -48,7 +51,7 @@ void cNode::changeID(int n_id){
 }
 
 void cNode::updateTexts(){
-	if (boxes[id]){
+	if (boxes[id] && number>id){
 		core::stringw nb=L"NodeBox: ";
 		nb+=boxes[id]->getName();
 		editor->d_nb->setText(nb.c_str());
