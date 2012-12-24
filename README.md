@@ -4,4 +4,10 @@ The NodeBox Generator
 Currently Indevelopment
 
 
-Copyright (c) 2012 to Andrew "rubenwardy" Ward
+
+License
+-------
+
+Andrew "rubenwardy" Ward
+
+http://creativecommons.org/licenses/by-sa/3.0/
