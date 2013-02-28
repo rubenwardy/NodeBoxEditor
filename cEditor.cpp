@@ -53,15 +53,22 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	curId=0;
 
 	unsigned int counter=0;
+	unsigned int counter2=0;
 
 	while (device->run()){
 		counter++;
+		counter2++;
 		driver->beginScene(true, true, irr::video::SColor(255,100,101,140));
 		smgr->drawAll();
 		guienv->drawAll();
 		driver->endScene();
-		
-		if (counter>1000){
+
+		if (counter2>500){	
+			counter2=0;
+			nodes[curId]->update();	
+		}
+
+		if (counter>1000){			
 			counter=0;
 			std::cout << "Performing Checkup..." << std::endl;
 			if (nodes[curId])

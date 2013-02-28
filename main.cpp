@@ -7,7 +7,6 @@
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
-//#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
 using namespace irr;
@@ -17,9 +16,9 @@ using namespace core;
 using namespace video;
 
 
-bool main()
+int main()
 {  
-	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(640, 480), 16,false, false, false, 0);
+	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(800, 640), 16,false, false, false, 0);
 	if (!device)
 		return 0;
 	device->setWindowCaption(L"Loading Engine...");

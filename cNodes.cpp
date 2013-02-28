@@ -34,8 +34,7 @@ void cNode::addNodeBox(){
 }
 
 bool cNode::switchFocus(ISceneNode* hit){
-	int a;
-	for (a=0;a<number;a++){
+	for (int a=0;a<number;a++){
 		if (boxes[a] && boxes[a]->model)
 			if (boxes[a]->model==hit)
 				changeID(a);
@@ -49,6 +48,13 @@ void cNode::changeID(int n_id){
 	id=n_id;
 
 	updateTexts();	
+}
+
+void cNode::update(){
+	for (int a=0;a<number;a++){
+		if (boxes[a] && boxes[a]->model)
+			checkScaling(boxes[a]);
+	}	
 }
 
 void cNode::updateTexts(){

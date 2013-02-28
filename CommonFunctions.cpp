@@ -62,18 +62,37 @@ void checkScaling(sBox* input){
 
 	if (extent.X>1){
 		std::cout << "--auto correct: x" << std::endl;
-		setsizeObject(input,1,extent.Y,extent.Z);
+		input->size.X = 1;
+		tmp_change=true;
+	}else if(extent.X<0.1){
+		std::cout << "--auto correct: x" << std::endl;
+		input->size.X = 0.1;
+		tmp_change=true;
 	}
 
 	if (extent.Y>1){
 		std::cout << "--auto correct: y" << std::endl;
-		setsizeObject(input,extent.X,1,extent.Z);
+		input->size.Y = 1;
+		tmp_change=true;
+	}else if(extent.Y<0.1){
+		std::cout << "--auto correct: y" << std::endl;
+		input->size.Y = 0.1;
+		tmp_change=true;
 	}
 
 	if (extent.Z>1){
 		std::cout << "--auto correct: z" << std::endl;
-		setsizeObject(input,extent.X,extent.Y,1);
+		input->size.Z = 1;
+		tmp_change=true;
+	}else if(extent.Z<0.1){
+		std::cout << "--auto correct: z" << std::endl;
+		input->size.Z = 0.1;
+		tmp_change=true;
 	}
+
+	//if (tmp_change==true){
+		setsizeObject(input,input->size.X,input->size.Y,input->size.Z);
+	//}
 }
 
 void resizeObject(sBox* input,f32 px,f32 py,f32 pz){
@@ -110,19 +129,6 @@ void setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 	std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
 
-	if (sx<=0 || sy<=0 || sz<=0){
-		std::cout << "--cancelled, scale <= 0" << std::endl;
-		return;
-	}
-
-	if (px<=0 || py<=0 || pz<=0){
-		std::cout << "--cancelled, set <= 0" << std::endl;
-		return;
-	}
-
 	core::vector3df scale(sx, sy, sz);
 	input->model->setScale(scale);
-
-	checkScaling(input);
-
 }

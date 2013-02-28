@@ -22,6 +22,7 @@ public:
 	void updateTexts();
 	void changeID(int n_id);
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
+	void update();
 private:
 	ed_data* editor;
 	int id;
