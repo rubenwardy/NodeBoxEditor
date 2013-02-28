@@ -51,86 +51,78 @@ char* convert(wchar_t* input){
 	return tmp;
 }
 
-void checkScaling(irr::scene::ISceneNode* input){
-irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
-irr::core::vector3df extent = box.getExtent();
+void checkScaling(sBox* input){
+	//irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
+	irr::core::vector3df extent = input->size; //box.getExtent();
  
-float sx=extent.X;
-float sy=extent.Y;
-float sz=extent.Z;
-bool tmp_change=false;
+	f32 sx=extent.X;
+	f32 sy=extent.Y;
+	f32 sz=extent.Z;
+	bool tmp_change=false;
 
-if (extent.X>1){
-	std::cout << "--auto correct: x" << std::endl;
-	sx=1/extent.X;
-	tmp_change=true;
+	if (extent.X>1){
+		std::cout << "--auto correct: x" << std::endl;
+		setsizeObject(input,1,extent.Y,extent.Z);
+	}
+
+	if (extent.Y>1){
+		std::cout << "--auto correct: y" << std::endl;
+		setsizeObject(input,extent.X,1,extent.Z);
+	}
+
+	if (extent.Z>1){
+		std::cout << "--auto correct: z" << std::endl;
+		setsizeObject(input,extent.X,extent.Y,1);
+	}
 }
 
-if (extent.Y>1){
-	std::cout << "--auto correct: y" << std::endl;
-	sy=1/extent.Y;
-	tmp_change=true;
+void resizeObject(sBox* input,f32 px,f32 py,f32 pz){
+	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
+
+	std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
+
+	//irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
+	irr::core::vector3df extent = input->size; //box.getExtent();
+ 
+	f32 sx = px+extent.X;
+	f32 sy = py+extent.Y;
+	f32 sz = pz+extent.Z;
+
+	setsizeObject(input,sx,sy,sz);
 }
 
-if (extent.Z>1){
-	std::cout << "--auto correct: z" << std::endl;
-	sz=1/extent.Z;
-	tmp_change=true;
-}
+void setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
-if (tmp_change==true){
-	std::cout << "--changing" << std::endl;
+	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
+
+	//irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
+	irr::core::vector3df extent = input->size; //box.getExtent();
+
+	input->size=vector3df(px,py,pz);
+ 
+	float sx = px/extent.X;
+	float sy = py/extent.Y;
+	float sz = pz/extent.Z;
+
+	std::cout << std::endl << "Before: " << std::endl << extent.X << " - " << extent.Y << " - " << extent.Z << std::endl;
+
+	std::cout << std::endl << "After: " << std::endl << px << " - " << py << " - " << pz << std::endl;
+
+	std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
+
+	if (sx<=0 || sy<=0 || sz<=0){
+		std::cout << "--cancelled, scale <= 0" << std::endl;
+		return;
+	}
+
+	if (px<=0 || py<=0 || pz<=0){
+		std::cout << "--cancelled, set <= 0" << std::endl;
+		return;
+	}
+
 	core::vector3df scale(sx, sy, sz);
-	input->setScale(scale);
-}
-}
+	input->model->setScale(scale);
 
-void resizeObject(irr::scene::ISceneNode* input,float px,float py,float pz){
-
-std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
-
-std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
-
-irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
-irr::core::vector3df extent = box.getExtent();
- 
-float sx = px+extent.X;
-float sy = py+extent.Y;
-float sz = pz+extent.Z;
-
-setsizeObject(input,sx,sy,sz);
-}
-
-void setsizeObject(irr::scene::ISceneNode* input,float px,float py,float pz){
-
-std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
-
-irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
-irr::core::vector3df extent = box.getExtent();
- 
-float sx = px/extent.X;
-float sy = py/extent.Y;
-float sz = pz/extent.Z;
-
-std::cout << std::endl << "Before: " << std::endl << extent.X << " - " << extent.Y << " - " << extent.Z << std::endl;
-
-std::cout << std::endl << "After: " << std::endl << px << " - " << py << " - " << pz << std::endl;
-
-std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
-
-if (sx<=0 || sy<=0 || sz<=0){
-	std::cout << "--cancelled, scale <= 0" << std::endl;
-	return;
-}
-
-if (px<=0 || py<=0 || pz<=0){
-	std::cout << "--cancelled, set <= 0" << std::endl;
-	return;
-}
-
-core::vector3df scale(sx, sy, sz);
-input->setScale(scale);
-
-checkScaling(input);
+	checkScaling(input);
 
 }

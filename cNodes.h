@@ -21,12 +21,12 @@ public:
 	void addNodeBox();
 	void updateTexts();
 	void changeID(int n_id);
-	void resize(int side, double dir); //0:Up 1:Left 2:Right 3:Down
+	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
 private:
 	ed_data* editor;
 	int id;
 	int number;
-	IMeshSceneNode* boxes[50];
+	sBox* boxes[50];
 
 	IVideoDriver* driver;
 	IrrlichtDevice* device;

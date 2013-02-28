@@ -2,23 +2,31 @@
 
 #ifndef _define_included_
 #define _define_included_
-//Classes
-class ed_data
-{
-public:
-	irr::gui::IGUIStaticText* d_nb;
-	irr::gui::IGUIStaticText* d_pos;
-	irr::gui::IGUIStaticText* d_rot;
-};
 
-//Convertors
-const wchar_t* convert(const char* input); //Convertor: char to wchar_t
-char* convert(wchar_t* input); //Convertor: wchar_t to char
+	//Classes
+	class ed_data
+	{
+	public:
+		irr::gui::IGUIStaticText* d_nb;
+		irr::gui::IGUIStaticText* d_pos;
+		irr::gui::IGUIStaticText* d_rot;
+	};
 
-//Other useful funcs
-irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
-void resizeObject(irr::scene::ISceneNode* input,float px,float py,float pz);
-void setsizeObject(irr::scene::ISceneNode* input,float px,float py,float pz);
-void checkScaling(irr::scene::ISceneNode* input);
+	class sBox
+	{
+	public:
+		irr::core::vector3df size;
+		irr::scene::IMeshSceneNode* model;
+	};
+
+	//Convertors
+	const wchar_t* convert(const char* input); //Convertor: char to wchar_t
+	char* convert(wchar_t* input); //Convertor: wchar_t to char
+
+	//Other useful funcs
+	irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
+	void resizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
+	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
+	void checkScaling(sBox* input);
 
 #endif
