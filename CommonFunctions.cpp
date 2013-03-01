@@ -34,15 +34,13 @@ irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix)
 }
 
 const wchar_t* convert(const char* input){
-	char* orig=(char*)input;
-	size_t origsize = strlen(orig) + 1;
-    const size_t newsize = 100;
-    size_t convertedChars = 0;
-    wchar_t wcstring[newsize];
-    mbstowcs_s(&convertedChars, wcstring, origsize, orig, _TRUNCATE);
-    wcscat_s(wcstring, L"");
-	//outp=wcstring;
+    #define MAXSIZE 1024
+	size_t origsize = strlen(input) + 1;
+    static wchar_t wcstring[MAXSIZE];
+    mbstowcs(wcstring, input, origsize);
+    wcscat(wcstring, L"");
 	return wcstring;
+	#undef MAXSIZE
 }
 
 char* convert(wchar_t* input){
