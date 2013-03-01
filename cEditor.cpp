@@ -53,26 +53,18 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	curId=0;
 
 	unsigned int counter=0;
-	unsigned int counter2=0;
 
 	while (device->run()){
 		counter++;
-		counter2++;
 		driver->beginScene(true, true, irr::video::SColor(255,100,101,140));
 		smgr->drawAll();
 		guienv->drawAll();
 		driver->endScene();
 
-		if (counter2>500){	
-			counter2=0;
-			nodes[curId]->update();	
-		}
-
-		if (counter>1000){			
+		if (counter>500){	
 			counter=0;
-			std::cout << "Performing Checkup..." << std::endl;
 			if (nodes[curId])
-				nodes[curId]->updateTexts();
+				nodes[curId]->update();	
 		}
 	}
 
@@ -84,10 +76,10 @@ void cEditor::loadUI(){
 	guienv->clear();
 
 	// The Status Text
-	int tmp_b=420;
+	int tmp_b=driver->getScreenSize().Height-70;
 	data->d_nb=guienv->addStaticText(L"NodeBox: -",rect<s32>(5,tmp_b,300,tmp_b+15));
 	data->d_pos=guienv->addStaticText(L"Position: - , - , -",rect<s32>(5,tmp_b+15,300,tmp_b+30));
-	data->d_rot=guienv->addStaticText(L"Rotation: - , - , -",rect<s32>(5,tmp_b+30,300,tmp_b+45));
+	data->d_rot=guienv->addStaticText(L"Rotation: - , - , -",rect<s32>(5,tmp_b+30,300,tmp_b+60));
 
 	data->d_nb->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	data->d_pos->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);

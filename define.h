@@ -3,21 +3,21 @@
 #ifndef _define_included_
 #define _define_included_
 
-	//Classes
-	class ed_data
+	// Structures
+	struct ed_data
 	{
-	public:
 		irr::gui::IGUIStaticText* d_nb;
 		irr::gui::IGUIStaticText* d_pos;
 		irr::gui::IGUIStaticText* d_rot;
 	};
 
-	class sBox
+	struct sBox
 	{
-	public:
 		irr::core::vector3df size;
 		irr::scene::IMeshSceneNode* model;
 	};
+
+	// Functions
 
 	//Convertors
 	const wchar_t* convert(const char* input); //Convertor: char to wchar_t

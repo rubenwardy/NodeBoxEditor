@@ -62,17 +62,17 @@ void checkScaling(sBox* input){
 		std::cout << "--auto correct: x" << std::endl;
 		input->size.X = 1;
 		tmp_change=true;
-	}else if(extent.X<0.1){
+	}else if(extent.X < 0.1){
 		std::cout << "--auto correct: x" << std::endl;
 		input->size.X = 0.1;
 		tmp_change=true;
 	}
 
-	if (extent.Y>1){
+	if (extent.Y > 1){
 		std::cout << "--auto correct: y" << std::endl;
 		input->size.Y = 1;
 		tmp_change=true;
-	}else if(extent.Y<0.1){
+	}else if(extent.Y < 0.1){
 		std::cout << "--auto correct: y" << std::endl;
 		input->size.Y = 0.1;
 		tmp_change=true;
@@ -82,7 +82,7 @@ void checkScaling(sBox* input){
 		std::cout << "--auto correct: z" << std::endl;
 		input->size.Z = 1;
 		tmp_change=true;
-	}else if(extent.Z<0.1){
+	}else if(extent.Z < 0.1){
 		std::cout << "--auto correct: z" << std::endl;
 		input->size.Z = 0.1;
 		tmp_change=true;
@@ -98,8 +98,23 @@ void resizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 	std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
 
-	//irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
-	irr::core::vector3df extent = input->size; //box.getExtent();
+	irr::core::vector3df extent = input->size;
+
+	if ((px+extent.X)>1 || (px+extent.X) < 0.1){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
+	if ((px+extent.Y) > 1 || (px+extent.Y) < 0.1){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
+	if ((px+extent.Z)>1 || (px+extent.Z)< 0.1){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
  
 	f32 sx = px+extent.X;
 	f32 sy = py+extent.Y;
@@ -112,14 +127,20 @@ void setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
 
-	//irr::core::aabbox3d<f32> box = input->getTransformedBoundingBox();
-	irr::core::vector3df extent = input->size; //box.getExtent();
+	irr::core::aabbox3d<f32> box = input->model->getTransformedBoundingBox();
+	irr::core::vector3df extent = box.getExtent();	
 
-	input->size=vector3df(px,py,pz);
+	if (extent.X==0 || extent.Y==0 || extent.Z==0){
+		std::cout << std::endl << "Divide by zero error" << std::endl;
+		return;
+	}else if (input->size.X==0 || input->size.Y==0 || input->size.Z==0){
+		std::cout << std::endl << "Target can not be zero" << std::endl;
+		return;
+	}
  
-	float sx = px/extent.X;
-	float sy = py/extent.Y;
-	float sz = pz/extent.Z;
+	f32 sx = px/extent.X;
+	f32 sy = py/extent.Y;
+	f32 sz = pz/extent.Z;
 
 	std::cout << std::endl << "Before: " << std::endl << extent.X << " - " << extent.Y << " - " << extent.Z << std::endl;
 
@@ -127,6 +148,6 @@ void setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 	std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
 
-	core::vector3df scale(sx, sy, sz);
-	input->model->setScale(scale);
+	input->size=vector3df(px,py,pz);
+	input->model->setScale(core::vector3df(sx, sy, sz));
 }

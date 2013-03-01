@@ -54,7 +54,9 @@ void cNode::update(){
 	for (int a=0;a<number;a++){
 		if (boxes[a] && boxes[a]->model)
 			checkScaling(boxes[a]);
-	}	
+	}
+
+	updateTexts();
 }
 
 void cNode::updateTexts(){
@@ -80,6 +82,15 @@ void cNode::updateTexts(){
 		rt+=extent.Y;
 		rt+=" , ";
 		rt+=extent.Z;
+
+		irr::core::vector3df extent2 = boxes[id]->model->getTransformedBoundingBox().getExtent();
+		
+		rt+="\nSize: ";
+		rt+=extent2.X;
+		rt+=" , ";
+		rt+=extent2.Y;
+		rt+=" , ";
+		rt+=extent2.Z;
 
 		editor->d_rot->setText(rt.c_str());
 	}else{
