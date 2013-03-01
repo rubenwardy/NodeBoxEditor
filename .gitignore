@@ -2,6 +2,10 @@
 ## Eclipse
 #################
 
+# Build directories
+build
+Build
+
 *.pydevproject
 .project
 .metadata
