@@ -27,13 +27,12 @@ private:
 	ed_data* editor;
 	int id;
 	int number;
-	sBox* boxes[50];
+	sBox* boxes[NODEB_MAX];
 
 	IVideoDriver* driver;
 	IrrlichtDevice* device;
 	ISceneManager* smgr;
 
-	void resizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
 	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
 	void checkScaling(sBox* input);
 };

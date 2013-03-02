@@ -7,30 +7,35 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 	smgr = device->getSceneManager();
 	editor=n_ed;
 	number=0;
+
+	for (int i=0;i<NODEB_MAX;i++){
+		boxes[i]=NULL;
+	}
 }
 
 const sBox* cNode::addNodeBox(){
-	std::cout << "NodeBox Adder" << std::endl;
-
+	// Set up structure
 	boxes[number]=new sBox();
+
+	// Add node
 	boxes[number]->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	boxes[number]->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
     boxes[number]->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 
+	// Name it
 	core::stringw nb=L"NodeBox ";
 	nb+=(number+1);
 	boxes[number]->model->setName(nb);
-	irr::core::aabbox3d<f32> box = boxes[number]->model->getTransformedBoundingBox();
-	irr::core::vector3df extent = box.getExtent();
-	boxes[number]->size=extent;
+	boxes[number]->size=vector3df(1,1,1);
 
-	std::cout << "--Inc" << std::endl;
+	// Switch the selected nodebox
 	changeID(number);
+
+	// Increment and print message
 	number++;
+	printf("Nodebox added\n");
 
 	return boxes[number-1];
-
-	std::cout << "--Added" << std::endl;
 }
 
 bool cNode::switchFocus(ISceneNode* hit){
@@ -101,34 +106,31 @@ void cNode::updateTexts(){
 }
 
 void cNode::resize(int side,f32 dir){
-	std::cout << "Resizing..." << std::endl;
 	if (boxes[id] && number > id){
 		switch (side)
 		{
 		case 0: //X
-			resizeObject(boxes[id],dir,0,0);
+			setsizeObject(boxes[id], boxes[id]->size.X+dir, boxes[id]->size.Y, boxes[id]->size.Z);
 			break;
 		case 1: //Y
-			resizeObject(boxes[id],0,dir,0);
+			setsizeObject(boxes[id], boxes[id]->size.X, boxes[id]->size.Y+dir, boxes[id]->size.Z);
 			break;
 		case 2: //Z
-			resizeObject(boxes[id],0,0,dir);
+			setsizeObject(boxes[id], boxes[id]->size.X, boxes[id]->size.Y, boxes[id]->size.Z+dir);
 			break;
 		}
 	}else{
-		std::cout << "Nodebox is not selected" << std::endl;
+		printf("[ERROR] No nodebox selected!\n");
 	}
 	updateTexts();
 }
 
 void cNode::checkScaling(sBox* input){
+	// Load / Prerequistes
 	irr::core::vector3df extent = input->size;
- 
-	f32 sx=extent.X;
-	f32 sy=extent.Y;
-	f32 sz=extent.Z;
 	bool tmp_change=false;
 
+	// Check X Axis scale
 	if (extent.X>1){
 		std::cout << "--auto correct: x" << std::endl;
 		input->size.X = 1;
@@ -139,6 +141,7 @@ void cNode::checkScaling(sBox* input){
 		tmp_change=true;
 	}
 
+	// Check Y Axis scale
 	if (extent.Y > 1){
 		std::cout << "--auto correct: y" << std::endl;
 		input->size.Y = 1;
@@ -149,6 +152,7 @@ void cNode::checkScaling(sBox* input){
 		tmp_change=true;
 	}
 
+	// Check Z Axis scale
 	if (extent.Z>1){
 		std::cout << "--auto correct: z" << std::endl;
 		input->size.Z = 1;
@@ -159,63 +163,41 @@ void cNode::checkScaling(sBox* input){
 		tmp_change=true;
 	}
 
-	setsizeObject(input,input->size.X,input->size.Y,input->size.Z);
-}
-
-void cNode::resizeObject(sBox* input,f32 px,f32 py,f32 pz){
-	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
-
-	std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
-
-	irr::core::vector3df extent = input->size;
-
-	if ((px+extent.X)>1 || (px+extent.X) < NODE_THIN){
-		std::cout << "--error! target out of bounds" << std::endl;
-		return;
-	}
-
-	if ((py+extent.Y) > 1 || (py+extent.Y) <  NODE_THIN){
-		std::cout << "--error! target out of bounds" << std::endl;
-		return;
-	}
-
-	if ((pz+extent.Z)>1 || (pz+extent.Z)<  NODE_THIN){
-		std::cout << "--error! target out of bounds" << std::endl;
-		return;
-	}
-
- 
-	f32 sx = px+extent.X;
-	f32 sy = py+extent.Y;
-	f32 sz = pz+extent.Z;
-
-	setsizeObject(input,sx,sy,sz);
+	// Resize if required
+	if (tmp_change==true)
+		setsizeObject(input,input->size.X,input->size.Y,input->size.Z);
 }
 
 void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
+	// Check limits
+	if (px > 1 || px < NODE_THIN || py > 1 || py <  NODE_THIN || pz > 1 || pz <  NODE_THIN){
+		return;
+	}
 
-	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
-
+	// Hold the name temporary
 	core::stringw nb=input->model->getName();
 
+	// Remove the node
 	input->model->remove();
 	input->model=NULL;
 
+	// Readd the node
 	input->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	input->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
     input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
 	input->model->setName(nb);
  
+	// Get scale factor
 	f32 sx = px/1;
 	f32 sy = py/1;
 	f32 sz = pz/1;
 
-	std::cout << std::endl << "Before: " << std::endl << input->size.X << " - " << input->size.Y << " - " << input->size.Z << std::endl;
+	// Print stuff
+	printf("Resizing to (%f,",px);
+	printf(" %f,",py);
+	printf(" %f)\n",pz);
 
-	std::cout << std::endl << "After: " << std::endl << px << " - " << py << " - " << pz << std::endl;
-
-	std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
-
+	// Do resize
 	input->size=vector3df(px,py,pz);
 	input->model->setScale(core::vector3df(sx, sy, sz));
 }

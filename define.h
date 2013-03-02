@@ -26,6 +26,7 @@
 	//Other useful funcs
 	irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
 
-#define NODE_THIN 0.1
+#define NODE_THIN 0.01
+#define NODEB_MAX 50
 
 #endif

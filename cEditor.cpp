@@ -144,10 +144,10 @@ bool cEditor::OnEvent(const SEvent& event)
 
 		}else if (event.KeyInput.Key== KEY_KEY_A){
 			if (nodes[curId])
-				nodes[curId]->resize(0,0.1);
+				nodes[curId]->resize(0,0.05);
 		}else if (event.KeyInput.Key== KEY_KEY_Z){
 			if (nodes[curId])
-				nodes[curId]->resize(0,-0.1);
+				nodes[curId]->resize(0,-0.05);
 		}
 		
 
