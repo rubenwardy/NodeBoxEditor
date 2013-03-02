@@ -110,7 +110,7 @@ void resizeObject(sBox* input,f32 px,f32 py,f32 pz){
 		return;
 	}
 
-	if ((py+extent.Z)>1 || (py+extent.Z)<  NODE_THIN){
+	if ((pz+extent.Z)>1 || (pz+extent.Z)<  NODE_THIN){
 		std::cout << "--error! target out of bounds" << std::endl;
 		return;
 	}
