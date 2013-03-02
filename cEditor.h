@@ -37,6 +37,9 @@ private:
 	ISceneCollisionManager* coli;
 	IGUIEnvironment* guienv;
 
+	bool isSplitScreen;
+	int currentWindow;
+
 
 	// Hold Navigation
 	ISceneNode* pivot;

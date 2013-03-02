@@ -10,7 +10,7 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 
 	for (int i=0;i<NODEB_MAX;i++){
 		boxes[i]=NULL;
-	}
+	}	
 }
 
 const sBox* cNode::addNodeBox(){
@@ -20,7 +20,7 @@ const sBox* cNode::addNodeBox(){
 	// Add node
 	boxes[number]->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	boxes[number]->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
-    boxes[number]->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
+ boxes[number]->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 
 	// Name it
 	core::stringw nb=L"NodeBox ";
@@ -87,15 +87,6 @@ void cNode::updateTexts(){
 		rt+=extent.Y;
 		rt+=" , ";
 		rt+=extent.Z;
-
-		irr::core::vector3df extent2 = boxes[id]->model->getTransformedBoundingBox().getExtent();
-		
-		rt+="\nSize: ";
-		rt+=extent2.X;
-		rt+=" , ";
-		rt+=extent2.Y;
-		rt+=" , ";
-		rt+=extent2.Z;
 
 		editor->d_rot->setText(rt.c_str());
 	}else{
@@ -184,7 +175,7 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Readd the node
 	input->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	input->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
-    input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
+ input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
 	input->model->setName(nb);
  
 	// Get scale factor
