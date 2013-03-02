@@ -25,9 +25,6 @@
 
 	//Other useful funcs
 	irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
-	void resizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
-	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
-	void checkScaling(sBox* input);
 
 #define NODE_THIN 0.1
 

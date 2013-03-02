@@ -9,7 +9,7 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 	number=0;
 }
 
-void cNode::addNodeBox(){
+const sBox* cNode::addNodeBox(){
 	std::cout << "NodeBox Adder" << std::endl;
 
 	boxes[number]=new sBox();
@@ -28,7 +28,7 @@ void cNode::addNodeBox(){
 	changeID(number);
 	number++;
 
-	
+	return boxes[number-1];
 
 	std::cout << "--Added" << std::endl;
 }
@@ -119,4 +119,103 @@ void cNode::resize(int side,f32 dir){
 		std::cout << "Nodebox is not selected" << std::endl;
 	}
 	updateTexts();
+}
+
+void cNode::checkScaling(sBox* input){
+	irr::core::vector3df extent = input->size;
+ 
+	f32 sx=extent.X;
+	f32 sy=extent.Y;
+	f32 sz=extent.Z;
+	bool tmp_change=false;
+
+	if (extent.X>1){
+		std::cout << "--auto correct: x" << std::endl;
+		input->size.X = 1;
+		tmp_change=true;
+	}else if(extent.X < NODE_THIN){
+		std::cout << "--auto correct: x" << std::endl;
+		input->size.X = NODE_THIN;
+		tmp_change=true;
+	}
+
+	if (extent.Y > 1){
+		std::cout << "--auto correct: y" << std::endl;
+		input->size.Y = 1;
+		tmp_change=true;
+	}else if(extent.Y < NODE_THIN){
+		std::cout << "--auto correct: y" << std::endl;
+		input->size.Y = NODE_THIN;
+		tmp_change=true;
+	}
+
+	if (extent.Z>1){
+		std::cout << "--auto correct: z" << std::endl;
+		input->size.Z = 1;
+		tmp_change=true;
+	}else if(extent.Z < NODE_THIN){
+		std::cout << "--auto correct: z" << std::endl;
+		input->size.Z = NODE_THIN;
+		tmp_change=true;
+	}
+
+	setsizeObject(input,input->size.X,input->size.Y,input->size.Z);
+}
+
+void cNode::resizeObject(sBox* input,f32 px,f32 py,f32 pz){
+	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
+
+	std::cout << std::endl << "Increase by: " << std::endl << px << " - " << py << " - " << pz << std::endl << std::endl;
+
+	irr::core::vector3df extent = input->size;
+
+	if ((px+extent.X)>1 || (px+extent.X) < NODE_THIN){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
+	if ((py+extent.Y) > 1 || (py+extent.Y) <  NODE_THIN){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
+	if ((pz+extent.Z)>1 || (pz+extent.Z)<  NODE_THIN){
+		std::cout << "--error! target out of bounds" << std::endl;
+		return;
+	}
+
+ 
+	f32 sx = px+extent.X;
+	f32 sy = py+extent.Y;
+	f32 sz = pz+extent.Z;
+
+	setsizeObject(input,sx,sy,sz);
+}
+
+void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
+
+	std::cout << std::endl << "-----------------------" << std::endl << "Performing resize." << std::endl;
+
+	core::stringw nb=input->model->getName();
+
+	input->model->remove();
+	input->model=NULL;
+
+	input->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
+	input->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
+    input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
+	input->model->setName(nb);
+ 
+	f32 sx = px/1;
+	f32 sy = py/1;
+	f32 sz = pz/1;
+
+	std::cout << std::endl << "Before: " << std::endl << input->size.X << " - " << input->size.Y << " - " << input->size.Z << std::endl;
+
+	std::cout << std::endl << "After: " << std::endl << px << " - " << py << " - " << pz << std::endl;
+
+	std::cout << std::endl << "Scaled by: " << std::endl << sx << " - " << sy << " - " << sz << std::endl;
+
+	input->size=vector3df(px,py,pz);
+	input->model->setScale(core::vector3df(sx, sy, sz));
 }

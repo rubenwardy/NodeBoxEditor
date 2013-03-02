@@ -18,7 +18,7 @@ public:
 	bool load(wchar_t* input);
 	bool save(wchar_t* output);
 	bool switchFocus(ISceneNode* hit);
-	void addNodeBox();
+	const sBox* addNodeBox();
 	void updateTexts();
 	void changeID(int n_id);
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
@@ -32,6 +32,10 @@ private:
 	IVideoDriver* driver;
 	IrrlichtDevice* device;
 	ISceneManager* smgr;
+
+	void resizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
+	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
+	void checkScaling(sBox* input);
 };
 
 #endif
