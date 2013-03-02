@@ -7,22 +7,41 @@
 class cEditor : public IEventReceiver
 {
 public:
+	cEditor();
+
+	// Run the editor
 	bool run(IrrlichtDevice* irr_device);
+
+	// Load the GUI
 	void loadUI();
+
+	// OnEvent handler
 	virtual bool OnEvent(const SEvent& event);
 private:
-	ed_data* data;
-	cNode* nodes[5];
-	int curId;
+	// Handle MenuItem Selection
 	void OnMenuItemSelected(IGUIContextMenu* menu);
+
+	// Label data
+	ed_data* data;
+
+	// Nodes
+	cNode* nodes[5];
+
+	// Current Node Id
+	int curId;
+
+	// Hold Irrlicht Stuff
 	IrrlichtDevice* device;
 	IVideoDriver* driver;
 	ISceneManager* smgr;
 	ISceneCollisionManager* coli;
 	IGUIEnvironment* guienv;
 
+
+	// Hold Navigation
 	ISceneNode* pivot;
-	ICameraSceneNode* camera;
+	ICameraSceneNode* camera[4];
+	bool allow_input;
 };
 
 #endif
