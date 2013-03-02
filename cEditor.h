@@ -10,7 +10,7 @@ public:
 	cEditor();
 
 	// Run the editor
-	bool run(IrrlichtDevice* irr_device);
+	bool run(IrrlichtDevice* irr_device,const dimension2d<irr::u32> _resolution);
 
 	// Load the GUI
 	void loadUI();
@@ -36,6 +36,7 @@ private:
 	ISceneManager* smgr;
 	ISceneCollisionManager* coli;
 	IGUIEnvironment* guienv;
+	dimension2d<irr::u32> resolution;
 
 
 	// Hold Navigation

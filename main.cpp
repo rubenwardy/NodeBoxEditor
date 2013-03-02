@@ -18,14 +18,16 @@ using namespace video;
 
 int main()
 {  
-	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(800, 640), 16,false, false, false, 0);
+	dimension2d<u32> resolution = dimension2d<u32>(860, 640);
+	bool fullscreen = false;
+	IrrlichtDevice *device = createDevice( video::EDT_OPENGL,  resolution, 16, fullscreen, false, fullscreen, 0);
 	if (!device)
 		return 0;
 	device->setWindowCaption(L"Loading Engine...");
 
 	cEditor* editor=new cEditor();
 	device->setEventReceiver(editor);
-	editor->run(device);
+	editor->run(device, resolution);
 
 	return 1;
 }
