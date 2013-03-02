@@ -29,4 +29,6 @@
 	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
 	void checkScaling(sBox* input);
 
+#define NODE_THIN 0.1
+
 #endif

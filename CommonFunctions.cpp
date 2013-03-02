@@ -62,9 +62,9 @@ void checkScaling(sBox* input){
 		std::cout << "--auto correct: x" << std::endl;
 		input->size.X = 1;
 		tmp_change=true;
-	}else if(extent.X < 0.1){
+	}else if(extent.X < NODE_THIN){
 		std::cout << "--auto correct: x" << std::endl;
-		input->size.X = 0.1;
+		input->size.X = NODE_THIN;
 		tmp_change=true;
 	}
 
@@ -72,9 +72,9 @@ void checkScaling(sBox* input){
 		std::cout << "--auto correct: y" << std::endl;
 		input->size.Y = 1;
 		tmp_change=true;
-	}else if(extent.Y < 0.1){
+	}else if(extent.Y < NODE_THIN){
 		std::cout << "--auto correct: y" << std::endl;
-		input->size.Y = 0.1;
+		input->size.Y = NODE_THIN;
 		tmp_change=true;
 	}
 
@@ -82,9 +82,9 @@ void checkScaling(sBox* input){
 		std::cout << "--auto correct: z" << std::endl;
 		input->size.Z = 1;
 		tmp_change=true;
-	}else if(extent.Z < 0.1){
+	}else if(extent.Z < NODE_THIN){
 		std::cout << "--auto correct: z" << std::endl;
-		input->size.Z = 0.1;
+		input->size.Z = NODE_THIN;
 		tmp_change=true;
 	}
 
@@ -100,17 +100,17 @@ void resizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 	irr::core::vector3df extent = input->size;
 
-	if ((px+extent.X)>1 || (px+extent.X) < 0.1){
+	if ((px+extent.X)>1 || (px+extent.X) < NODE_THIN){
 		std::cout << "--error! target out of bounds" << std::endl;
 		return;
 	}
 
-	if ((px+extent.Y) > 1 || (px+extent.Y) < 0.1){
+	if ((py+extent.Y) > 1 || (py+extent.Y) <  NODE_THIN){
 		std::cout << "--error! target out of bounds" << std::endl;
 		return;
 	}
 
-	if ((px+extent.Z)>1 || (px+extent.Z)< 0.1){
+	if ((py+extent.Z)>1 || (py+extent.Z)<  NODE_THIN){
 		std::cout << "--error! target out of bounds" << std::endl;
 		return;
 	}
