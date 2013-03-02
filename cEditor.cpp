@@ -37,7 +37,9 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 
 	// Calculate Projection Matrix
 	matrix4 projMat;
-	projMat.buildProjectionMatrixOrthoLH((3*(driver->getScreenSize().Width/driver->getScreenSize().Height)),3,1,10);
+	irr::f32 orth_w = (float)driver->getScreenSize().Width / (float)driver->getScreenSize().Height;
+	orth_w = 3 * orth_w;
+	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,10);
 	
 	// Add rotational camera
 	pivot=smgr->addEmptySceneNode(0,199);
