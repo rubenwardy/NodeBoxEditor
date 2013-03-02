@@ -20,13 +20,12 @@ cEditor::cEditor(){
 	}
 }
 
-bool cEditor::run(IrrlichtDevice* irr_device,const dimension2d<irr::u32> _resolution){
+bool cEditor::run(IrrlichtDevice* irr_device){
 	// Get Pointers
 	device=irr_device;
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
-	resolution = _resolution;
 
 	data=new ed_data();
 
@@ -37,15 +36,8 @@ bool cEditor::run(IrrlichtDevice* irr_device,const dimension2d<irr::u32> _resolu
 	device->setResizable(true);
 
 	// Calculate Projection Matrix
-	printf("%f\n",resolution.Width);
-	printf("%f\n",resolution.Height);
-
 	matrix4 projMat;
-	irr::f32 orth_w = resolution.Width / resolution.Height;
-	printf("ratio: %f\n",orth_w);
-	orth_w = 3 * orth_w;
-	printf("orth_w: %f\n",orth_w);
-	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,10);
+	projMat.buildProjectionMatrixOrthoLH((3*(driver->getScreenSize().Width/driver->getScreenSize().Height)),3,1,10);
 	
 	// Add rotational camera
 	pivot=smgr->addEmptySceneNode(0,199);
@@ -87,8 +79,8 @@ bool cEditor::run(IrrlichtDevice* irr_device,const dimension2d<irr::u32> _resolu
 		counter++;
 		driver->beginScene(true, true, irr::video::SColor(255,100,101,140));
 	
-		int ResX = resolution.Width;
-		int ResY = resolution.Height;
+		int ResX = driver->getScreenSize().Width;
+		int ResY = driver->getScreenSize().Height;
 
 		{
 			// Draw Camera 0
@@ -139,7 +131,7 @@ void cEditor::loadUI(){
 	guienv->clear();
 
 	// The Status Text
-	int tmp_b=resolution.Height-70;
+	int tmp_b=driver->getScreenSize().Height-70;
 	data->d_nb=guienv->addStaticText(L"NodeBox: -",rect<s32>(5,tmp_b,300,tmp_b+15));
 	data->d_pos=guienv->addStaticText(L"Position: - , - , -",rect<s32>(5,tmp_b+15,300,tmp_b+30));
 	data->d_rot=guienv->addStaticText(L"Rotation: - , - , -",rect<s32>(5,tmp_b+30,300,tmp_b+60));
