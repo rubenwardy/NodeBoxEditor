@@ -20,13 +20,14 @@ const sBox* cNode::addNodeBox(){
 	// Add node
 	boxes[number]->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	boxes[number]->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
- boxes[number]->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
+	boxes[number]->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 
 	// Name it
 	core::stringw nb=L"NodeBox ";
 	nb+=(number+1);
 	boxes[number]->model->setName(nb);
 	boxes[number]->size=vector3df(1,1,1);
+	boxes[number]->position=vector3df(0,0,0);
 
 	// Switch the selected nodebox
 	changeID(number);
@@ -191,4 +192,8 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Do resize
 	input->size=vector3df(px,py,pz);
 	input->model->setScale(core::vector3df(sx, sy, sz));
+}
+
+const sBox* cNode::getCurrentNodeBox(){
+	return boxes[id];
 }

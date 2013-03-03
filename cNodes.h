@@ -14,15 +14,26 @@ using namespace video;
 class cNode
 {
 public:
+	// Construct
 	cNode(IrrlichtDevice* mdevice,ed_data* n_ed);
+
+	// File Operations
 	bool load(wchar_t* input);
 	bool save(wchar_t* output);
-	bool switchFocus(ISceneNode* hit);
+
+	// NodeBox operation functions
 	const sBox* addNodeBox();
-	void updateTexts();
-	void changeID(int n_id);
+	const sBox* getCurrentNodeBox();
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
-	void update();
+	void resizeNodeBoxFace(const sBox* nodebox,CDR_TYPE face, vector3df target);
+	
+	// Switch functions
+	bool switchFocus(ISceneNode* hit);
+	void changeID(int n_id);
+
+	// Update functions
+	void updateTexts();
+	void update();	
 private:
 	ed_data* editor;
 	int id;

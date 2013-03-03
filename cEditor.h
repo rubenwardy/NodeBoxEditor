@@ -4,6 +4,8 @@
 #include "define.h"
 #include "cNodes.h"
 
+
+
 class cEditor : public IEventReceiver
 {
 public:
@@ -49,9 +51,10 @@ private:
 	bool allow_input;
 
 	// Points and Scalers
-	IGUIImage* points[24];
+	CDR* points[12];
 	int point_on;
-	void updatePoint(int id, vector3df position);
+	void updatePoint(int start, int count);
+	void addPoint(int id, CDR_TYPE type);
 };
 
 #endif

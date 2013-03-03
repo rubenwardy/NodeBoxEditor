@@ -31,7 +31,7 @@ cEditor::cEditor(){
 		camera[i]=NULL;
 	}
 
-	for (int i=0;i<24;i++){
+	for (int i=0;i<12;i++){
 		points[i]=NULL;
 	}
 
@@ -61,9 +61,6 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	irr::f32 orth_w = (float)driver->getScreenSize().Width / (float)driver->getScreenSize().Height;
 	orth_w = 3 * orth_w;
 	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,10);
-
-	// CrossHairs
-	ITexture* txt_ch = driver->getTexture("gui_scale.png");
 	
 	// Add rotational camera
 	pivot=smgr->addEmptySceneNode(0,199);
@@ -73,18 +70,34 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	pivot->setRotation(vector3df(25,-45,0));
 
 	// Add Topdown camera
-	camera[1]=smgr->addCameraSceneNode(NULL,vector3df(0,2,0),vector3df(0,0,0));
+	camera[1]=smgr->addCameraSceneNode(NULL,vector3df(0,2,-0.01),vector3df(0,0,0));
 	camera[1]->setProjectionMatrix(projMat,true);
-	points[0] = guienv->addImage(rect<irr::s32>(0,0,10,10),NULL,300);
-	points[0] -> setImage(txt_ch);
 
+	// Add Topdown camera's CDRs
+	addPoint(0,CDR_Z_P);
+	addPoint(1,CDR_X_N);
+	addPoint(2,CDR_X_P);
+	addPoint(3,CDR_Z_N);
+	
 	// Add front camera
 	camera[2]=smgr->addCameraSceneNode(NULL,vector3df(0,0,-5),vector3df(0,0,0));
 	camera[2]->setProjectionMatrix(projMat,true);
 
+	// Add front camera's CDRs
+	addPoint(4,CDR_Y_P);
+	addPoint(5,CDR_X_N);
+	addPoint(6,CDR_X_P);
+	addPoint(7,CDR_Y_N);
+
 	// Add side camera
 	camera[3]=smgr->addCameraSceneNode(NULL,vector3df(-5,0,0),vector3df(0,0,0));
 	camera[3]->setProjectionMatrix(projMat,true);
+
+	// Add side camera's CDRs
+	addPoint(8,CDR_Y_P);
+	addPoint(9,CDR_Z_P);
+	addPoint(10,CDR_Z_N);
+	addPoint(11,CDR_Y_N);
 
 	// Add Light
 	ILightSceneNode* light=smgr->addLightSceneNode(0,vector3df(25,50,0));
@@ -125,7 +138,10 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[1]);
 				driver->setViewPort(rect<s32>(ResX/2,0,ResX,ResY/2));
 				smgr->drawAll();
-				updatePoint(0,vector3df(0,0,0));
+
+				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
+					updatePoint(0,4);
+				}
 			}
 
 			// Draw Camera 2
@@ -133,6 +149,9 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[2]);
 				driver->setViewPort(rect<s32>(0,ResY/2,ResX/2,ResY));
 				smgr->drawAll();
+				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
+					updatePoint(4,8);
+				}
 			}
 
 			// Draw Camera 3
@@ -140,6 +159,9 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[3]);
 				driver->setViewPort(rect<s32>(ResX/2,ResY/2,ResX,ResY));				
 				smgr->drawAll();
+				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
+					updatePoint(8,12);
+				}
 			}
 		}else if (camera[currentWindow]){
 			smgr->setActiveCamera(camera[currentWindow]);
@@ -280,12 +302,11 @@ bool cEditor::OnEvent(const SEvent& event)
 				break;
 			case EGET_ELEMENT_LEFT:
 				if (id > 299 && id < 324){
-					if (mouse_down == true){	
+					if (mouse_down == true && point_on == -1){	
 						printf("Selected scaler id %i\n",id);
 						point_on = id - 300;
 					}
 				}
-
 				break;
 			case irr::gui::EGET_BUTTON_CLICKED:
 					switch(id)
@@ -345,27 +366,64 @@ bool cEditor::OnEvent(const SEvent& event)
 	}
 }
 
-void cEditor::updatePoint(int id, vector3df position){
-	if (point_on == id){
-		position2di target = mouse_position;
-		target.X -= 5;
-		target.Y -= 5;
+void cEditor::updatePoint(int start, int count){
+	for (int id=start;id<count;id++){
+		if (!points[id])
+			return;
 
-		if (target.X < driver->getViewPort().UpperLeftCorner.X){
-			target.X = driver->getViewPort().UpperLeftCorner.X;
-		}else if (target.Y < driver->getViewPort().UpperLeftCorner.Y){
-			target.Y = driver->getViewPort().UpperLeftCorner.Y;
+		points[id] -> image -> setVisible (true);
+		if (point_on == id){
+			position2di target = mouse_position;
+			target.X -= 5;
+			target.Y -= 5;
+
+			if (target.X < driver->getViewPort().UpperLeftCorner.X){
+				target.X = driver->getViewPort().UpperLeftCorner.X-5;
+			}else if (target.X > driver->getViewPort().LowerRightCorner.X){
+				target.X = driver->getViewPort().LowerRightCorner.X-5;
+			}
+				
+			if (target.Y < driver->getViewPort().UpperLeftCorner.Y){
+				target.Y = driver->getViewPort().UpperLeftCorner.Y-5;	
+			}else if (target.Y > driver->getViewPort().LowerRightCorner.Y){
+				target.Y = driver->getViewPort().LowerRightCorner.Y-5;
+			}
+
+			points[id] -> image -> setRelativePosition(target);
+		}else{
+			vector3df position = vector3df(0,0,0);
+
+			switch (points[id]->type){
+			case CDR_X_P:
+				position.X = (nodes[curId]->getCurrentNodeBox()->size.X / 2) + nodes[curId]->getCurrentNodeBox()->position.X;
+				break;
+			case CDR_X_N:
+				position.X = -((nodes[curId]->getCurrentNodeBox()->size.X / 2) + nodes[curId]->getCurrentNodeBox()->position.X);
+				break;
+			case CDR_Y_P:
+				position.Y = (nodes[curId]->getCurrentNodeBox()->size.Y /2) + nodes[curId]->getCurrentNodeBox()->position.Y;
+				break;
+			case CDR_Y_N:
+				position.Y = -((nodes[curId]->getCurrentNodeBox()->size.Y / 2) + nodes[curId]->getCurrentNodeBox()->position.Y);
+				break;
+			case CDR_Z_P:
+				position.Z = (nodes[curId]->getCurrentNodeBox()->size.Z /2) + nodes[curId]->getCurrentNodeBox()->position.Z;
+				break;
+			case CDR_Z_N:
+				position.Z = -((nodes[curId]->getCurrentNodeBox()->size.Z / 2) + nodes[curId]->getCurrentNodeBox()->position.Z);
+				break;
+			}
+
+			vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera(),true);
+			points[id] -> image -> setRelativePosition(position2di(driver->getViewPort().UpperLeftCorner.X+cpos.X-5, driver->getViewPort().UpperLeftCorner.Y+cpos.Y-5));
 		}
-
-		if (target.X > driver->getViewPort().LowerRightCorner.X){
-			target.X = driver->getViewPort().LowerRightCorner.X;
-		}else if (target.Y > driver->getViewPort().LowerRightCorner.Y){
-			target.Y = driver->getViewPort().LowerRightCorner.Y;
-		}
-
-		points[id] -> setRelativePosition(target);
-	}else{
-		vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera(),true);
-		points[id] -> setRelativePosition(position2di(driver->getViewPort().UpperLeftCorner.X+cpos.X-5, driver->getViewPort().UpperLeftCorner.Y+cpos.Y-5));
 	}
+}
+
+void cEditor::addPoint(int id, CDR_TYPE type){
+	points[id] = new CDR();
+	points[id] -> type = type;
+	points[id] -> image = guienv->addImage(rect<irr::s32>(0,0,10,10),NULL,300+id);
+	points[id] -> image -> setImage(driver->getTexture("gui_scale.png"));
+	points[id] -> image -> setVisible (false);
 }
