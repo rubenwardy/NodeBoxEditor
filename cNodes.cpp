@@ -173,10 +173,10 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	input->model->remove();
 	input->model=NULL;
 
-	// Readd the node
+	// Read the node
 	input->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
 	input->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
- input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
+	input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
 	input->model->setName(nb);
  
 	// Get scale factor
@@ -196,4 +196,15 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 
 const sBox* cNode::getCurrentNodeBox(){
 	return boxes[id];
+}
+
+void cNode::resizeNodeBoxFace(const sBox* nodebox,CDR_TYPE face, vector3df target){
+	// stuff to do here
+
+	// Print stuff
+	printf("Resizing to (%f,",target.X);
+	printf(" %f,",target.Y);
+	printf(" %f)\n",target.Z);
+
+	return;
 }

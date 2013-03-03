@@ -109,6 +109,7 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	plane->setMaterialTexture(0, driver->getTexture("texture_terrain.png"));
 	plane->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	plane->getMaterial(0).getTextureMatrix(0).setTextureScale(10,10);
+	plane_tri=smgr->createOctreeTriangleSelector(plane->getMesh(),plane);
 
 	//Setup Current Manager
 	nodes[0]=new cNode(device,data);
@@ -373,10 +374,12 @@ void cEditor::updatePoint(int start, int count){
 
 		points[id] -> image -> setVisible (true);
 		if (point_on == id){
+			// get mouse position
 			position2di target = mouse_position;
 			target.X -= 5;
 			target.Y -= 5;
 
+			// correct out of bounds
 			if (target.X < driver->getViewPort().UpperLeftCorner.X){
 				target.X = driver->getViewPort().UpperLeftCorner.X-5;
 			}else if (target.X > driver->getViewPort().LowerRightCorner.X){
@@ -389,7 +392,26 @@ void cEditor::updatePoint(int start, int count){
 				target.Y = driver->getViewPort().LowerRightCorner.Y-5;
 			}
 
+			// set image location
 			points[id] -> image -> setRelativePosition(target);
+
+			position2di tar2 = target;
+			tar2.X -= driver->getViewPort().UpperLeftCorner.X;
+			tar2.Y -= driver->getViewPort().UpperLeftCorner.Y;
+
+			// get the ray
+			line3d<irr::f32> ray = coli -> getRayFromScreenCoordinates(tar2,smgr->getActiveCamera());
+			
+			// contains the output values
+			vector3df wpos = vector3df(0,0,0); // the collision position
+			ISceneNode* tmpNode; // not needed, but required for function
+			triangle3df tmpTri; // not needed, but required for function
+
+			// Execute function
+			coli->getCollisionPoint(ray,plane_tri,wpos,tmpTri,tmpNode);
+
+			// Resize node box face
+			nodes[curId]->resizeNodeBoxFace(nodes[curId]->getCurrentNodeBox(),points[id]->type,wpos);
 		}else{
 			vector3df position = vector3df(0,0,0);
 

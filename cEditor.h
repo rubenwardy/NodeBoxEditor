@@ -44,6 +44,7 @@ private:
 	int currentWindow;	
 	vector2di mouse_position;
 	bool mouse_down;
+	ITriangleSelector* plane_tri;
 
 	// Hold Navigation
 	ISceneNode* pivot;
