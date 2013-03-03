@@ -35,16 +35,23 @@ private:
 	IVideoDriver* driver;
 	ISceneManager* smgr;
 	ISceneCollisionManager* coli;
+
+	// GUI
 	IGUIEnvironment* guienv;
-
 	bool isSplitScreen;
-	int currentWindow;
-
+	int currentWindow;	
+	vector2di mouse_position;
+	bool mouse_down;
 
 	// Hold Navigation
 	ISceneNode* pivot;
 	ICameraSceneNode* camera[4];
 	bool allow_input;
+
+	// Points and Scalers
+	IGUIImage* points[24];
+	int point_on;
+	void updatePoint(int id, vector3df position);
 };
 
 #endif

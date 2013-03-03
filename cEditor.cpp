@@ -31,8 +31,14 @@ cEditor::cEditor(){
 		camera[i]=NULL;
 	}
 
+	for (int i=0;i<24;i++){
+		points[i]=NULL;
+	}
+
 	isSplitScreen=true;
 	currentWindow=0;
+	point_on=-1;
+	mouse_down=false;
 }
 
 bool cEditor::run(IrrlichtDevice* irr_device){
@@ -55,6 +61,9 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	irr::f32 orth_w = (float)driver->getScreenSize().Width / (float)driver->getScreenSize().Height;
 	orth_w = 3 * orth_w;
 	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,10);
+
+	// CrossHairs
+	ITexture* txt_ch = driver->getTexture("gui_scale.png");
 	
 	// Add rotational camera
 	pivot=smgr->addEmptySceneNode(0,199);
@@ -66,6 +75,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	// Add Topdown camera
 	camera[1]=smgr->addCameraSceneNode(NULL,vector3df(0,2,0),vector3df(0,0,0));
 	camera[1]->setProjectionMatrix(projMat,true);
+	points[0] = guienv->addImage(rect<irr::s32>(0,0,10,10),NULL,300);
+	points[0] -> setImage(txt_ch);
 
 	// Add front camera
 	camera[2]=smgr->addCameraSceneNode(NULL,vector3df(0,0,-5),vector3df(0,0,0));
@@ -114,6 +125,7 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[1]);
 				driver->setViewPort(rect<s32>(ResX/2,0,ResX,ResY/2));
 				smgr->drawAll();
+				updatePoint(0,vector3df(0,0,0));
 			}
 
 			// Draw Camera 2
@@ -144,6 +156,7 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 			if (nodes[curId])
 				nodes[curId]->update();	
 		}
+
 	}
 
 	return true;
@@ -172,11 +185,10 @@ void cEditor::loadUI(){
 	menubar->addItem(L"Project",-1,true,true);
 	menubar->addItem(L"Node",-1,true,true);
 	menubar->addItem(L"Help",-1,true,true);
-
 	gui::IGUIContextMenu* submenu;
 
 	// File
- submenu = menubar->getSubMenu(0);
+	submenu = menubar->getSubMenu(0);
 	submenu->addItem(L"New",GUI_ID_NEW);
 	submenu->addItem(L"Load",GUI_ID_LOAD);
 	submenu->addItem(L"Save",GUI_ID_SAVE);
@@ -214,17 +226,28 @@ void cEditor::loadUI(){
 
 bool cEditor::OnEvent(const SEvent& event)
 {
+	/*ISceneNode* hit=coli->getSceneNodeFromScreenCoordinatesBB(core::vector2d<s32>(event.MouseInput.X,event.MouseInput.Y));
+
+	if (hit==0){
+			std::cout << "No Nodes at that position" << std::endl;
+	}else{
+			nodes[curId]->switchFocus(hit);
+	}*/
+
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 		event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP ){
-		
-		ISceneNode* hit=coli->getSceneNodeFromScreenCoordinatesBB(core::vector2d<s32>(event.MouseInput.X,event.MouseInput.Y));
+		mouse_down=false;
 
-		if (hit==0){
-			std::cout << "No Nodes at that position" << std::endl;
-		}else{
-			nodes[curId]->switchFocus(hit);
-		}
-
+		// drop scale drag point
+		if (point_on != -1)
+			point_on = -1;
+	}else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+		event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN ){
+		mouse_down=true;
+	}else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+		event.MouseInput.Event == EMIE_MOUSE_MOVED ){
+			mouse_position.X=event.MouseInput.X;
+			mouse_position.Y=event.MouseInput.Y;
 	}else if (event.EventType == EET_KEY_INPUT_EVENT){
 
 		if (event.KeyInput.Key== KEY_DOWN){
@@ -254,6 +277,15 @@ bool cEditor::OnEvent(const SEvent& event)
 			{
 			case EGET_MENU_ITEM_SELECTED:
 				OnMenuItemSelected( (IGUIContextMenu*)event.GUIEvent.Caller );
+				break;
+			case EGET_ELEMENT_LEFT:
+				if (id > 299 && id < 324){
+					if (mouse_down == true){	
+						printf("Selected scaler id %i\n",id);
+						point_on = id - 300;
+					}
+				}
+
 				break;
 			case irr::gui::EGET_BUTTON_CLICKED:
 					switch(id)
@@ -310,5 +342,30 @@ bool cEditor::OnEvent(const SEvent& event)
 		isSplitScreen=false;
 		currentWindow=3;
 		break;
+	}
+}
+
+void cEditor::updatePoint(int id, vector3df position){
+	if (point_on == id){
+		position2di target = mouse_position;
+		target.X -= 5;
+		target.Y -= 5;
+
+		if (target.X < driver->getViewPort().UpperLeftCorner.X){
+			target.X = driver->getViewPort().UpperLeftCorner.X;
+		}else if (target.Y < driver->getViewPort().UpperLeftCorner.Y){
+			target.Y = driver->getViewPort().UpperLeftCorner.Y;
+		}
+
+		if (target.X > driver->getViewPort().LowerRightCorner.X){
+			target.X = driver->getViewPort().LowerRightCorner.X;
+		}else if (target.Y > driver->getViewPort().LowerRightCorner.Y){
+			target.Y = driver->getViewPort().LowerRightCorner.Y;
+		}
+
+		points[id] -> setRelativePosition(target);
+	}else{
+		vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera(),true);
+		points[id] -> setRelativePosition(position2di(driver->getViewPort().UpperLeftCorner.X+cpos.X-5, driver->getViewPort().UpperLeftCorner.Y+cpos.Y-5));
 	}
 }
