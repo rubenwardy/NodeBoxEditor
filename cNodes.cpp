@@ -13,7 +13,7 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 	}	
 }
 
-const sBox* cNode::addNodeBox(){
+sBox* cNode::addNodeBox(){
 	// Set up structure
 	boxes[number]=new sBox();
 
@@ -57,11 +57,6 @@ void cNode::changeID(int n_id){
 }
 
 void cNode::update(){
-	for (int a=0;a<number;a++){
-		if (boxes[a] && boxes[a]->model)
-			checkScaling(boxes[a]);
-	}
-
 	updateTexts();
 }
 
@@ -117,49 +112,6 @@ void cNode::resize(int side,f32 dir){
 	updateTexts();
 }
 
-void cNode::checkScaling(sBox* input){
-	// Load / Prerequistes
-	irr::core::vector3df extent = input->size;
-	bool tmp_change=false;
-
-	// Check X Axis scale
-	if (extent.X>1){
-		std::cout << "--auto correct: x" << std::endl;
-		input->size.X = 1;
-		tmp_change=true;
-	}else if(extent.X < NODE_THIN){
-		std::cout << "--auto correct: x" << std::endl;
-		input->size.X = NODE_THIN;
-		tmp_change=true;
-	}
-
-	// Check Y Axis scale
-	if (extent.Y > 1){
-		std::cout << "--auto correct: y" << std::endl;
-		input->size.Y = 1;
-		tmp_change=true;
-	}else if(extent.Y < NODE_THIN){
-		std::cout << "--auto correct: y" << std::endl;
-		input->size.Y = NODE_THIN;
-		tmp_change=true;
-	}
-
-	// Check Z Axis scale
-	if (extent.Z>1){
-		std::cout << "--auto correct: z" << std::endl;
-		input->size.Z = 1;
-		tmp_change=true;
-	}else if(extent.Z < NODE_THIN){
-		std::cout << "--auto correct: z" << std::endl;
-		input->size.Z = NODE_THIN;
-		tmp_change=true;
-	}
-
-	// Resize if required
-	if (tmp_change==true)
-		setsizeObject(input,input->size.X,input->size.Y,input->size.Z);
-}
-
 void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Check limits
 	if (px > 1 || px < NODE_THIN || py > 1 || py <  NODE_THIN || pz > 1 || pz <  NODE_THIN){
@@ -174,7 +126,7 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	input->model=NULL;
 
 	// Read the node
-	input->model=smgr->addCubeSceneNode(1,0,-1,vector3df(0,0,0));
+	input->model=smgr->addCubeSceneNode(1,0,-1,input->position);
 	input->model->setMaterialTexture(0, driver->getTexture("texture_box.png"));
 	input->model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);	
 	input->model->setName(nb);
@@ -194,17 +146,31 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	input->model->setScale(core::vector3df(sx, sy, sz));
 }
 
-const sBox* cNode::getCurrentNodeBox(){
+sBox* cNode::getCurrentNodeBox(){
 	return boxes[id];
 }
 
-void cNode::resizeNodeBoxFace(const sBox* nodebox,CDR_TYPE face, vector3df target){
-	// stuff to do here
+// NOTES: the node ingame stretches from -0.55 to 0.45
+void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
+	// Enter switch
 
-	// Print stuff
-	printf("Resizing to (%f,",target.X);
-	printf(" %f,",target.Y);
-	printf(" %f)\n",target.Z);
+	switch (face){
+	case CDR_X_P:
+		f32 opp = (((float)nodebox->size.X / (float)2) + nodebox->position.X);
+		nodebox->size.X = target.X - opp;
+
+		if (nodebox->size.X <= 0)
+			nodebox->size.X=NODE_THIN;
+
+		if (nodebox->size.X > 1)
+			nodebox->size.X=1;
+
+		f32 change = (((float)nodebox->size.X / (float)2) + nodebox->position.X)-opp;
+
+		nodebox->position.X += change;
+		setsizeObject(nodebox,nodebox->size.X,nodebox->size.Y,nodebox->size.Z);
+		break;
+	}
 
 	return;
 }

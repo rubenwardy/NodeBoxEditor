@@ -60,7 +60,7 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	matrix4 projMat;
 	irr::f32 orth_w = (float)driver->getScreenSize().Width / (float)driver->getScreenSize().Height;
 	orth_w = 3 * orth_w;
-	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,10);
+	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
 	
 	// Add rotational camera
 	pivot=smgr->addEmptySceneNode(0,199);
@@ -104,12 +104,19 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	light->setLightType(ELT_POINT);
 	light->setRadius(2000);
 
-	//Add Plane
+	// Add Plane
 	IMeshSceneNode* plane = smgr->addCubeSceneNode(1,0,-1,vector3df(0.5,-5.5,0.5),vector3df(0,0,0),vector3df(10,10,10));
 	plane->setMaterialTexture(0, driver->getTexture("texture_terrain.png"));
 	plane->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	plane->getMaterial(0).getTextureMatrix(0).setTextureScale(10,10);
-	plane_tri=smgr->createOctreeTriangleSelector(plane->getMesh(),plane);
+
+	// Add sky box
+	scene::IMeshSceneNode* skybox=smgr->addCubeSceneNode(50);
+	skybox->setMaterialTexture(0, driver->getTexture("sky.jpg"));
+	skybox->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
+	skybox->setMaterialFlag(video::EMF_LIGHTING,false);
+	smgr->getMeshManipulator()->flipSurfaces(skybox->getMesh());
+	plane_tri=smgr->createOctreeTriangleSelector(skybox->getMesh(),skybox);
 
 	//Setup Current Manager
 	nodes[0]=new cNode(device,data);
@@ -417,22 +424,34 @@ void cEditor::updatePoint(int start, int count){
 
 			switch (points[id]->type){
 			case CDR_X_P:
-				position.X = (nodes[curId]->getCurrentNodeBox()->size.X / 2) + nodes[curId]->getCurrentNodeBox()->position.X;
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X + ((float)nodes[curId]->getCurrentNodeBox()->size.X / (float)2);
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y;
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z;
 				break;
 			case CDR_X_N:
-				position.X = -((nodes[curId]->getCurrentNodeBox()->size.X / 2) + nodes[curId]->getCurrentNodeBox()->position.X);
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X - ((float)nodes[curId]->getCurrentNodeBox()->size.X / (float)2);
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y;
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z;
 				break;
 			case CDR_Y_P:
-				position.Y = (nodes[curId]->getCurrentNodeBox()->size.Y /2) + nodes[curId]->getCurrentNodeBox()->position.Y;
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X;
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y + ((float)nodes[curId]->getCurrentNodeBox()->size.Y / (float)2);
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z;
 				break;
 			case CDR_Y_N:
-				position.Y = -((nodes[curId]->getCurrentNodeBox()->size.Y / 2) + nodes[curId]->getCurrentNodeBox()->position.Y);
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X;
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y - ((float)nodes[curId]->getCurrentNodeBox()->size.Y / (float)2);
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z;
 				break;
 			case CDR_Z_P:
-				position.Z = (nodes[curId]->getCurrentNodeBox()->size.Z /2) + nodes[curId]->getCurrentNodeBox()->position.Z;
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X;
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y;
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z + ((float)nodes[curId]->getCurrentNodeBox()->size.Z / (float)2);
 				break;
 			case CDR_Z_N:
-				position.Z = -((nodes[curId]->getCurrentNodeBox()->size.Z / 2) + nodes[curId]->getCurrentNodeBox()->position.Z);
+				position.X = nodes[curId]->getCurrentNodeBox()->position.X;
+				position.Y = nodes[curId]->getCurrentNodeBox()->position.Y;
+				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z - ((float)nodes[curId]->getCurrentNodeBox()->size.Z / (float)2);
 				break;
 			}
 

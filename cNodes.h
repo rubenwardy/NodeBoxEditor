@@ -22,10 +22,10 @@ public:
 	bool save(wchar_t* output);
 
 	// NodeBox operation functions
-	const sBox* addNodeBox();
-	const sBox* getCurrentNodeBox();
+	sBox* addNodeBox();
+	sBox* getCurrentNodeBox();
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
-	void resizeNodeBoxFace(const sBox* nodebox,CDR_TYPE face, vector3df target);
+	void resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target);
 	
 	// Switch functions
 	bool switchFocus(ISceneNode* hit);
@@ -45,7 +45,6 @@ private:
 	ISceneManager* smgr;
 
 	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
-	void checkScaling(sBox* input);
 };
 
 #endif
