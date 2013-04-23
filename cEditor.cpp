@@ -17,6 +17,7 @@ enum GUI_ID
 
 	// Help
 	GUI_ID_HELP=200,
+	GUI_ID_ABOUT=215,
 
 	// View
 	GUI_ID_SP_ALL=210,
@@ -221,12 +222,22 @@ void cEditor::loadUI(){
 
 	// File
 	submenu = menubar->getSubMenu(0);
-	submenu->addItem(L"New",GUI_ID_NEW);
-	submenu->addItem(L"Load",GUI_ID_LOAD);
-	submenu->addItem(L"Save",GUI_ID_SAVE);
+	submenu->addItem(L"New",GUI_ID_NEW,false);
+	submenu->addItem(L"Load",GUI_ID_LOAD,false);
+	submenu->addItem(L"Save",GUI_ID_SAVE,false);
 	submenu->addSeparator();
-	submenu->addItem(L"Import",GUI_ID_IMPORT);
-	submenu->addItem(L"Export",GUI_ID_EX);
+	submenu->addItem(L"Import",GUI_ID_IMPORT,false);
+	submenu->addItem(L"Export",-1,true,true);
+
+	// Export
+	submenu = submenu->getSubMenu(5);
+	if (submenu){
+		submenu->addItem(L"Project",GUI_ID_EX);
+		submenu->addSeparator();
+		submenu->addItem(L"Entire Node",GUI_ID_EX);
+		submenu->addItem(L"Nodebox table",GUI_ID_EX);
+		submenu->addItem(L"Raw nodebox data",GUI_ID_EX);
+	}
 
 	// View
 	submenu = menubar->getSubMenu(1);
@@ -247,13 +258,13 @@ void cEditor::loadUI(){
 	submenu->addItem(L"Add a Node Box",GUI_ID_BOX);
 	submenu->addItem(L"Delete a Node Box",GUI_ID_BOX);
 	submenu->addSeparator();
-	submenu->addItem(L"Set texture...");
+	submenu->addItem(L"Set texture...",-1,false);
 
 	// Help
 	submenu = menubar->getSubMenu(4);
-	submenu->addItem(L"Help",GUI_ID_HELP);
+	submenu->addItem(L"Help",GUI_ID_HELP,false);
 	submenu->addSeparator();
-	submenu->addItem(L"About");
+	submenu->addItem(L"About",GUI_ID_ABOUT);
 }
 
 bool cEditor::OnEvent(const SEvent& event)
@@ -344,9 +355,8 @@ bool cEditor::OnEvent(const SEvent& event)
 	case GUI_ID_BOX:
 		nodes[curId]->addNodeBox();
 		break;
-	case GUI_ID_HELP:
-		printf("Showing help dialog\n");
-		guienv->addMessageBox(L"Help",L"Use insert>node box to add a node box. Use arrows to move the selected box, and wasd to resize it.");
+	case GUI_ID_ABOUT:
+		guienv->addMessageBox(L"About",L"This node box generator was made by Rubenwardy in C++ and Irrlicht");
 		break;	
 	case GUI_ID_SP_ALL:
 		printf("View mode changed to tiles\n");
