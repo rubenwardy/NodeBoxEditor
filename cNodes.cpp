@@ -53,7 +53,7 @@ bool cNode::switchFocus(ISceneNode* hit){
 void cNode::changeID(int n_id){
 	id=n_id;
 
-	updateTexts();	
+	updateTexts();
 }
 
 void cNode::update(){
@@ -255,4 +255,75 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 	}
 
 	return;
+}
+
+// This build individual nodebox tables
+stringc* cNode::build(sBox* nodebox){
+	if (!nodebox)
+		return NULL;
+
+	stringc* res = new stringc();
+	res->append("{");
+
+	// Bounds one
+	res->append(stringc(nodebox->position.X - ((float)nodebox->size.X / (float)2)));
+	res->append(",");
+	res->append(stringc(nodebox->position.Y - ((float)nodebox->size.Y / (float)2)));
+	res->append(",");
+	res->append(stringc(nodebox->position.Z - ((float)nodebox->size.Z / (float)2)));
+	res->append(",");
+
+	// Bounds two
+	res->append(stringc(nodebox->position.X + ((float)nodebox->size.X / (float)2)));
+	res->append(",");
+	res->append(stringc(nodebox->position.Y + ((float)nodebox->size.Y / (float)2)));
+	res->append(",");
+	res->append(stringc(nodebox->position.Z + ((float)nodebox->size.Z / (float)2)));
+
+	res->append("}");
+	return res;
+}
+
+// This puts all the nodeboxes together
+stringc* cNode::build(BUILD_TYPE type){
+	
+	stringc* res = new stringc();
+
+	if (type >= NBT_NBS)
+		res->append("minetest.register_node(\"test:node\",{\n");
+
+	if (type >= NBT_NBS)
+		if (type == NBT_FULL)
+			res->append("\tdrawtype=\"nodebox\",\n\tnodebox = {\n");
+		else
+			res->append("drawtype=\"nodebox\",\nnodebox = {\n");
+
+	int a;
+	for (a=0;a<number;a++){
+		stringc tmp = *build(boxes[a]);
+
+		if (tmp!=NULL){
+			for (int i=0;i<type-1;i++){
+				res->append("\t");
+				printf("tab");
+			}
+			res->append(tmp);
+			res->append("\n");
+		}
+	}
+
+	if (type >= NBT_NBS)
+		if (type == NBT_FULL)
+			res->append("\t}\n");
+		else
+			res->append("}\n");
+
+	if (type == NBT_FULL)
+		res->append("})");
+
+	// Print result
+	printf("\n===== res =====\n");
+	printf("%s\n",res->c_str());
+	printf("===============\n");
+	return res;
 }

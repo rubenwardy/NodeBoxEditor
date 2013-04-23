@@ -15,6 +15,13 @@
 	};
 	// CDR_TYPE::CDR_<axis>_<positive/negitive-direction>
 
+	enum BUILD_TYPE
+	{
+		NBT_NB = 1, // Just the node box table
+		NBT_NBS = 2, // The node box table with draw type and parent holder (nodebox={})
+		NBT_FULL = 3 // Whole node definition
+	};
+
 	// Defines
 	#define NODE_THIN 0.05
 	#define NODEB_MAX 50

@@ -196,6 +196,8 @@ void cEditor::loadUI(){
 	std::cout << "Loading the User Interface" << std::endl;
 	guienv->clear();
 
+	guienv->getSkin()->setFont(guienv->getFont("fontlucida.png"));
+
 	// The Status Text
 	int tmp_b=driver->getScreenSize().Height-46;
 	data->d_nb=guienv->addStaticText(L"NodeBox: -",rect<s32>(5,tmp_b,300,tmp_b+15));
@@ -224,7 +226,7 @@ void cEditor::loadUI(){
 	submenu->addItem(L"Save",GUI_ID_SAVE);
 	submenu->addSeparator();
 	submenu->addItem(L"Import",GUI_ID_IMPORT);
-	submenu->addItem(L"Export",GUI_ID_EX); 
+	submenu->addItem(L"Export",GUI_ID_EX);
 
 	// View
 	submenu = menubar->getSubMenu(1);
@@ -279,7 +281,6 @@ bool cEditor::OnEvent(const SEvent& event)
 			mouse_position.X=event.MouseInput.X;
 			mouse_position.Y=event.MouseInput.Y;
 	}else if (event.EventType == EET_KEY_INPUT_EVENT){
-
 		if (event.KeyInput.Key== KEY_DOWN){
 			pivot->setRotation(vector3df(pivot->getRotation().X-1,pivot->getRotation().Y,pivot->getRotation().Z));
 		}else if (event.KeyInput.Key== KEY_UP){
@@ -288,16 +289,7 @@ bool cEditor::OnEvent(const SEvent& event)
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y+1,pivot->getRotation().Z));
 		}else if (event.KeyInput.Key== KEY_RIGHT){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y-1,pivot->getRotation().Z));
-
-		}else if (event.KeyInput.Key== KEY_KEY_A){
-			if (nodes[curId])
-				nodes[curId]->resize(0,0.05);
-		}else if (event.KeyInput.Key== KEY_KEY_Z){
-			if (nodes[curId])
-				nodes[curId]->resize(0,-0.05);
 		}
-		
-
 	}else if (event.EventType == EET_GUI_EVENT){
 		
 		irr::s32 id = event.GUIEvent.Caller->getID();
@@ -339,13 +331,23 @@ bool cEditor::OnEvent(const SEvent& event)
 	IGUIEnvironment* env = device->getGUIEnvironment();
 	switch(id)
 	{
-	case GUI_ID_HELP:
-		printf("Showing help dialog\n");
-		guienv->addMessageBox(L"Help",L"Use insert>node box to add a node box. Use arrows to move the selected box, and wasd to resize it.");
+	case GUI_ID_EX:
+		{
+			stringc* res = nodes[curId]->build(NBT_FULL);
+			IGUIWindow* win = guienv->addWindow(rect<irr::s32>(50,50,50+320,50+320),false,L"Raw Code");
+			IGUIEditBox* codebox = guienv->addEditBox(convert(res->c_str()),rect<irr::s32>(10,30,310,310),true,win);
+			codebox->setMultiLine(true);
+			codebox->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+			codebox->setToolTipText(L"Ctrl+A, Ctrl+C to copy");
+		}
 		break;
 	case GUI_ID_BOX:
 		nodes[curId]->addNodeBox();
 		break;
+	case GUI_ID_HELP:
+		printf("Showing help dialog\n");
+		guienv->addMessageBox(L"Help",L"Use insert>node box to add a node box. Use arrows to move the selected box, and wasd to resize it.");
+		break;	
 	case GUI_ID_SP_ALL:
 		printf("View mode changed to tiles\n");
 		isSplitScreen=true;

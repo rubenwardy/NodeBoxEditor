@@ -26,6 +26,10 @@ public:
 	sBox* getCurrentNodeBox();
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
 	void resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target);
+
+	// Generation overload functions
+	stringc* build(BUILD_TYPE type);
+	stringc* build(sBox* nodebox);
 	
 	// Switch functions
 	bool switchFocus(ISceneNode* hit);
