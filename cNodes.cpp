@@ -112,10 +112,10 @@ void cNode::resize(int side,f32 dir){
 	updateTexts();
 }
 
-void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
+bool cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Check limits
 	if (px > 1 || px < NODE_THIN || py > 1 || py <  NODE_THIN || pz > 1 || pz <  NODE_THIN){
-		return;
+		return false;
 	}
 
 	// Hold the name temporary
@@ -144,31 +144,113 @@ void cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Do resize
 	input->size=vector3df(px,py,pz);
 	input->model->setScale(core::vector3df(sx, sy, sz));
+
+	return true;
 }
 
 sBox* cNode::getCurrentNodeBox(){
 	return boxes[id];
 }
 
-// NOTES: the node ingame stretches from -0.55 to 0.45
 void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
-	// Enter switch
+	// Print stuff
+	printf("Ray hit (%f,", target.X);
+	printf(" %f,",target.Y);
+	printf(" %f)\n",target.Z);
+
+	f32 opp,change;
+	vector3df tsize;
 
 	switch (face){
 	case CDR_X_P:
-		f32 opp = (((float)nodebox->size.X / (float)2) + nodebox->position.X);
-		nodebox->size.X = target.X - opp;
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.X + ((float)nodebox->size.X / (float)2); // Get the corner before		
+		tsize.X -= opp - target.X; // Adjust the size to now
+		if (tsize.X <= 0) // Validate
+			tsize.X=NODE_THIN;
+		if (tsize.X > 1) // Validate
+			tsize.X=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
-		if (nodebox->size.X <= 0)
-			nodebox->size.X=NODE_THIN;
-
-		if (nodebox->size.X > 1)
-			nodebox->size.X=1;
-
-		f32 change = (((float)nodebox->size.X / (float)2) + nodebox->position.X)-opp;
-
+		// Change position
+		change = (nodebox->position.X + ((float)nodebox->size.X / (float)2))-opp; 
 		nodebox->position.X += change;
-		setsizeObject(nodebox,nodebox->size.X,nodebox->size.Y,nodebox->size.Z);
+		break;
+	case CDR_X_N:
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.X - ((float)nodebox->size.X / (float)2); // Get the corner before			
+		tsize.X += opp - target.X; // Adjust the size to now
+		if (tsize.X <= 0) // Validate
+			tsize.X=NODE_THIN;
+		if (tsize.X > 1) // Validate
+			tsize.X=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
+
+		// Change position
+		change = (nodebox->position.X - ((float)nodebox->size.X / (float)2))-opp; 
+		nodebox->position.X += change;
+		break;
+	case CDR_Y_P:
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.Y + ((float)nodebox->size.Y / (float)2); // Get the corner before		
+		tsize.Y -= opp - target.Y; // Adjust the size to now
+		if (tsize.Y <= 0) // Validate
+			tsize.Y=NODE_THIN;
+		if (tsize.Y > 1) // Validate
+			tsize.Y=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
+
+		// Change position
+		change = (nodebox->position.Y + ((float)nodebox->size.Y / (float)2))-opp; 
+		nodebox->position.Y += change;
+		break;
+	case CDR_Y_N:
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.Y - ((float)nodebox->size.Y / (float)2); // Get the corner before			
+		tsize.Y += opp - target.Y; // Adjust the size to now
+		if (tsize.Y <= 0) // Validate
+			tsize.Y=NODE_THIN;
+		if (tsize.Y > 1) // Validate
+			tsize.Y=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
+
+		// Change position
+		change = (nodebox->position.Y - ((float)nodebox->size.Y / (float)2))-opp; 
+		nodebox->position.Y += change;
+		break;
+	case CDR_Z_P:
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.Z + ((float)nodebox->size.Z / (float)2); // Get the corner before		
+		tsize.Z -= opp - target.Z; // Adjust the size to now
+		if (tsize.Z <= 0) // Validate
+			tsize.Z=NODE_THIN;
+		if (tsize.Z > 1) // Validate
+			tsize.Z=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
+
+		// Change position
+		change = (nodebox->position.Z + ((float)nodebox->size.Z / (float)2))-opp; 
+		nodebox->position.Z += change;
+		break;
+	case CDR_Z_N:
+		// Resize
+		tsize=nodebox->size; // Save the size		
+		opp = nodebox->position.Z - ((float)nodebox->size.Z / (float)2); // Get the corner before			
+		tsize.Z += opp - target.Z; // Adjust the size to now
+		if (tsize.Z <= 0) // Validate
+			tsize.Z=NODE_THIN;
+		if (tsize.Z > 1) // Validate
+			tsize.Z=1;
+		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
+
+		// Change position
+		change = (nodebox->position.Z - ((float)nodebox->size.Z / (float)2))-opp; 
+		nodebox->position.Z += change;
 		break;
 	}
 

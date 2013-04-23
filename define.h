@@ -16,7 +16,7 @@
 	// CDR_TYPE::CDR_<axis>_<positive/negitive-direction>
 
 	// Defines
-	#define NODE_THIN 0.01
+	#define NODE_THIN 0.05
 	#define NODEB_MAX 50
 
 	// Structures

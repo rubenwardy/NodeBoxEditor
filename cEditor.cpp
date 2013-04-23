@@ -403,8 +403,8 @@ void cEditor::updatePoint(int start, int count){
 			points[id] -> image -> setRelativePosition(target);
 
 			position2di tar2 = target;
-			tar2.X -= driver->getViewPort().UpperLeftCorner.X;
-			tar2.Y -= driver->getViewPort().UpperLeftCorner.Y;
+			tar2.X -= driver->getViewPort().UpperLeftCorner.X - 5;
+			tar2.Y -= driver->getViewPort().UpperLeftCorner.Y - 5;
 
 			// get the ray
 			line3d<irr::f32> ray = coli -> getRayFromScreenCoordinates(tar2,smgr->getActiveCamera());

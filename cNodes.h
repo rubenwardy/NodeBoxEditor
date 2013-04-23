@@ -44,7 +44,7 @@ private:
 	IrrlichtDevice* device;
 	ISceneManager* smgr;
 
-	void setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
+	bool setsizeObject(sBox* input,irr::f32 px,irr::f32 py,irr::f32 pz);
 };
 
 #endif
