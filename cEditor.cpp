@@ -423,7 +423,11 @@ void cEditor::updatePoint(int start, int count){
 			
 			// contains the output values
 			vector3df wpos = vector3df(0,0,0); // the collision position
-			const ISceneNode* tmpNode; // not needed, but required for function
+			#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+				const ISceneNode* tmpNode; // not needed, but required for function
+			#else
+				ISceneNode* tmpNode; // not needed, but required for function
+			#endif
 			triangle3df tmpTri; // not needed, but required for function
 
 			// Execute function
@@ -466,8 +470,11 @@ void cEditor::updatePoint(int start, int count){
 				position.Z = nodes[curId]->getCurrentNodeBox()->position.Z - ((float)nodes[curId]->getCurrentNodeBox()->size.Z / (float)2);
 				break;
 			}
-
-			vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera());
+			#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+				vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera());
+			#else
+				vector2d<irr::s32> cpos = coli -> getScreenCoordinatesFrom3DPosition(position,smgr->getActiveCamera(),true);
+			#endif
 			points[id] -> image -> setRelativePosition(position2di(driver->getViewPort().UpperLeftCorner.X+cpos.X-5, driver->getViewPort().UpperLeftCorner.Y+cpos.Y-5));
 		}
 	}
