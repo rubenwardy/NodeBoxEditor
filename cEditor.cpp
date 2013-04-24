@@ -1,32 +1,6 @@
 #include "cEditor.h"
 #include <iostream>
 
-enum GUI_ID
-{
-	// File
-	GUI_ID_NEW=201,
-	GUI_ID_LOAD=202,
-	GUI_ID_SAVE=203,
-	GUI_ID_IMPORT=204,
-	GUI_ID_EX=205,
-
-	// Node
-	GUI_ID_ADDNODE=207,
-	GUI_ID_SWITCH=208,
-	GUI_ID_BOX=209,
-
-	// Help
-	GUI_ID_HELP=200,
-	GUI_ID_ABOUT=215,
-
-	// View
-	GUI_ID_SP_ALL=210,
-	GUI_ID_SP_PER=211,
-	GUI_ID_SP_TOP=212,
-	GUI_ID_SP_FRT=213,
-	GUI_ID_SP_RHT=214,
-};
-
 cEditor::cEditor(){
 	for (int i=0;i<4;i++){
 		camera[i]=NULL;
@@ -34,6 +8,10 @@ cEditor::cEditor(){
 
 	for (int i=0;i<12;i++){
 		points[i]=NULL;
+	}
+
+	for (int i=0;i<5;i++){
+		nodes[i]=NULL;
 	}
 
 	isSplitScreen=true;
@@ -50,8 +28,6 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	guienv = device->getGUIEnvironment();
 	
 	data=new ed_data();
-
-	loadUI();
 
 	coli=smgr->getSceneCollisionManager();
 	device->setWindowCaption(L"The NodeBox Generator");
@@ -73,32 +49,14 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	// Add Topdown camera
 	camera[1]=smgr->addCameraSceneNode(NULL,vector3df(0,2,-0.01),vector3df(0,0,0));
 	camera[1]->setProjectionMatrix(projMat,true);
-
-	// Add Topdown camera's CDRs
-	addPoint(0,CDR_Z_P);
-	addPoint(1,CDR_X_N);
-	addPoint(2,CDR_X_P);
-	addPoint(3,CDR_Z_N);
 	
 	// Add front camera
 	camera[2]=smgr->addCameraSceneNode(NULL,vector3df(0,0,-5),vector3df(0,0,0));
 	camera[2]->setProjectionMatrix(projMat,true);
 
-	// Add front camera's CDRs
-	addPoint(4,CDR_Y_P);
-	addPoint(5,CDR_X_N);
-	addPoint(6,CDR_X_P);
-	addPoint(7,CDR_Y_N);
-
 	// Add side camera
 	camera[3]=smgr->addCameraSceneNode(NULL,vector3df(-5,0,0),vector3df(0,0,0));
-	camera[3]->setProjectionMatrix(projMat,true);
-
-	// Add side camera's CDRs
-	addPoint(8,CDR_Y_P);
-	addPoint(9,CDR_Z_P);
-	addPoint(10,CDR_Z_N);
-	addPoint(11,CDR_Y_N);
+	camera[3]->setProjectionMatrix(projMat,true);	
 
 	// Add Light
 	ILightSceneNode* light=smgr->addLightSceneNode(0,vector3df(25,50,0));
@@ -122,7 +80,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	//Setup Current Manager
 	nodes[0]=new cNode(device,data);
 	curId=0;
-	
+
+	loadUI();
 
 	unsigned int counter=0;
 
@@ -147,10 +106,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[1]);
 				driver->setViewPort(rect<s32>(ResX/2,0,ResX,ResY/2));
 				smgr->drawAll();
-
-				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
-					updatePoint(0,4);
-				}
+				
+				updatePoint(0,4);
 			}
 
 			// Draw Camera 2
@@ -158,9 +115,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[2]);
 				driver->setViewPort(rect<s32>(0,ResY/2,ResX/2,ResY));
 				smgr->drawAll();
-				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
-					updatePoint(4,8);
-				}
+
+				updatePoint(4,8);
 			}
 
 			// Draw Camera 3
@@ -168,9 +124,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 				smgr->setActiveCamera(camera[3]);
 				driver->setViewPort(rect<s32>(ResX/2,ResY/2,ResX,ResY));				
 				smgr->drawAll();
-				if (nodes[curId]!=NULL && nodes[curId]->getCurrentNodeBox()!=NULL){
-					updatePoint(8,12);
-				}
+
+				updatePoint(8,12);
 			}
 		}else if (camera[currentWindow]){
 			smgr->setActiveCamera(camera[currentWindow]);
@@ -196,7 +151,6 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 void cEditor::loadUI(){
 	std::cout << "Loading the User Interface" << std::endl;
 	guienv->clear();
-
 	guienv->getSkin()->setFont(guienv->getFont("fontlucida.png"));
 
 	// The Status Text
@@ -209,62 +163,90 @@ void cEditor::loadUI(){
 	data->d_pos->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	data->d_rot->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 
-
 	// The Menu
-	IGUIContextMenu* menubar=guienv->addMenu();
-	menubar->addItem(L"File",-1,true,true);
-	//menubar->addItem(L"Edit",-1,true,true);
-	menubar->addItem(L"View",-1,true,true);
-	menubar->addItem(L"Project",-1,true,true);
-	menubar->addItem(L"Node",-1,true,true);
-	menubar->addItem(L"Help",-1,true,true);
-	gui::IGUIContextMenu* submenu;
+	{
+		IGUIContextMenu* menubar=guienv->addMenu();
+		menubar->addItem(L"File",-1,true,true);
+		//menubar->addItem(L"Edit",-1,true,true);
+		menubar->addItem(L"View",-1,true,true);
+		menubar->addItem(L"Project",-1,true,true);
+		menubar->addItem(L"Node",-1,true,true);
+		menubar->addItem(L"Help",-1,true,true);
+		gui::IGUIContextMenu* submenu;
 
-	// File
-	submenu = menubar->getSubMenu(0);
-	submenu->addItem(L"New",GUI_ID_NEW,false);
-	submenu->addItem(L"Load",GUI_ID_LOAD,false);
-	submenu->addItem(L"Save",GUI_ID_SAVE,false);
-	submenu->addSeparator();
-	submenu->addItem(L"Import",GUI_ID_IMPORT,false);
-	submenu->addItem(L"Export",-1,true,true);
-
-	// Export
-	submenu = submenu->getSubMenu(5);
-	if (submenu){
-		submenu->addItem(L"Project",GUI_ID_EX);
+		// File
+		submenu = menubar->getSubMenu(0);
+		submenu->addItem(L"New",GUI_ID_NEW,false);
+		submenu->addItem(L"Load",GUI_ID_LOAD,false);
+		submenu->addItem(L"Save",GUI_ID_SAVE,false);
 		submenu->addSeparator();
-		submenu->addItem(L"Entire Node",GUI_ID_EX);
-		submenu->addItem(L"Nodebox table",GUI_ID_EX);
-		submenu->addItem(L"Raw nodebox data",GUI_ID_EX);
+		submenu->addItem(L"Import",GUI_ID_IMPORT,false);
+		submenu->addItem(L"Export",-1,true,true);
+
+		// Export
+		submenu = submenu->getSubMenu(5);
+		if (submenu){
+			submenu->addItem(L"Project",GUI_ID_EX_PROJ);
+			submenu->addSeparator();
+			submenu->addItem(L"Entire Node",GUI_ID_EX_NODE);
+			submenu->addItem(L"Nodebox table",GUI_ID_EX_NBS);
+			submenu->addItem(L"Raw nodebox data",GUI_ID_EX_NB);
+		}
+
+		// View
+		submenu = menubar->getSubMenu(1);
+		submenu->addItem(L"Tiles",GUI_ID_SP_ALL);
+		submenu->addSeparator();
+		submenu->addItem(L"Perspective",GUI_ID_SP_PER);
+		submenu->addItem(L"Top",GUI_ID_SP_TOP);
+		submenu->addItem(L"Front",GUI_ID_SP_FRT);
+		submenu->addItem(L"Right",GUI_ID_SP_RHT);
+
+		// Project
+		submenu = menubar->getSubMenu(2);
+		submenu->addItem(L"Add a Node",GUI_ID_ADDNODE,false);
+		submenu->addItem(L"Switch Node",GUI_ID_SWITCH,false);
+
+		// Node
+		submenu = menubar->getSubMenu(3);
+		submenu->removeAllItems();
+		submenu->addItem(L"Set texture...",-1,false);
+		submenu->addSeparator();
+		submenu->addItem(L"Add a nodebox",GUI_ID_BOX);
+		submenu->addItem(L"Change nodebox name",GUI_ID_TEXT,false);
+		submenu->addItem(L"Delete current nodebox",GUI_ID_DELETENB);
+
+		for (int a=0;a<5;a++){
+			if (nodes[a]!=NULL){
+				nodes[a]->menu = submenu;
+			}
+		}
+
+		// Help
+		submenu = menubar->getSubMenu(4);
+		submenu->addItem(L"Help",GUI_ID_HELP,false);
+		submenu->addSeparator();
+		submenu->addItem(L"About",GUI_ID_ABOUT);
 	}
 
-	// View
-	submenu = menubar->getSubMenu(1);
-	submenu->addItem(L"Tiles",GUI_ID_SP_ALL);
-	submenu->addSeparator();
-	submenu->addItem(L"Perspective",GUI_ID_SP_PER);
-	submenu->addItem(L"Top",GUI_ID_SP_TOP);
-	submenu->addItem(L"Front",GUI_ID_SP_FRT);
-	submenu->addItem(L"Right",GUI_ID_SP_RHT);		
-
-	// Project
-	submenu = menubar->getSubMenu(2);
-	submenu->addItem(L"Add a Node");
-	submenu->addItem(L"Switch Node",GUI_ID_SWITCH);
-
-	// Node
-	submenu = menubar->getSubMenu(3);
-	submenu->addItem(L"Add a Node Box",GUI_ID_BOX);
-	submenu->addItem(L"Delete a Node Box",GUI_ID_BOX);
-	submenu->addSeparator();
-	submenu->addItem(L"Set texture...",-1,false);
-
-	// Help
-	submenu = menubar->getSubMenu(4);
-	submenu->addItem(L"Help",GUI_ID_HELP,false);
-	submenu->addSeparator();
-	submenu->addItem(L"About",GUI_ID_ABOUT);
+	// CDRs
+	{
+		// Add Topdown camera's CDRs
+		addPoint(0,CDR_Z_P);
+		addPoint(1,CDR_X_N);
+		addPoint(2,CDR_X_P);
+		addPoint(3,CDR_Z_N);
+		// Add front camera's CDRs
+		addPoint(4,CDR_Y_P);
+		addPoint(5,CDR_X_N);
+		addPoint(6,CDR_X_P);
+		addPoint(7,CDR_Y_N);
+		// Add side camera's CDRs
+		addPoint(8,CDR_Y_P);
+		addPoint(9,CDR_Z_P);
+		addPoint(10,CDR_Z_N);
+		addPoint(11,CDR_Y_N);
+	}
 }
 
 bool cEditor::OnEvent(const SEvent& event)
@@ -342,7 +324,7 @@ bool cEditor::OnEvent(const SEvent& event)
 	IGUIEnvironment* env = device->getGUIEnvironment();
 	switch(id)
 	{
-	case GUI_ID_EX:
+	case GUI_ID_EX_NODE:
 		{
 			stringc* res = nodes[curId]->build(NBT_FULL);
 			IGUIWindow* win = guienv->addWindow(rect<irr::s32>(50,50,50+320,50+320),false,L"Raw Code");
@@ -351,6 +333,29 @@ bool cEditor::OnEvent(const SEvent& event)
 			codebox->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 			codebox->setToolTipText(L"Ctrl+A, Ctrl+C to copy");
 		}
+		break;
+	case GUI_ID_EX_NBS:
+		{
+			stringc* res = nodes[curId]->build(NBT_NBS);
+			IGUIWindow* win = guienv->addWindow(rect<irr::s32>(50,50,50+320,50+320),false,L"Raw Code");
+			IGUIEditBox* codebox = guienv->addEditBox(convert(res->c_str()),rect<irr::s32>(10,30,310,310),true,win);
+			codebox->setMultiLine(true);
+			codebox->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+			codebox->setToolTipText(L"Ctrl+A, Ctrl+C to copy");
+		}
+		break;
+	case GUI_ID_EX_NB:
+		{
+			stringc* res = nodes[curId]->build(NBT_NB);
+			IGUIWindow* win = guienv->addWindow(rect<irr::s32>(50,50,50+320,50+320),false,L"Raw Code");
+			IGUIEditBox* codebox = guienv->addEditBox(convert(res->c_str()),rect<irr::s32>(10,30,310,310),true,win);
+			codebox->setMultiLine(true);
+			codebox->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+			codebox->setToolTipText(L"Ctrl+A, Ctrl+C to copy");
+		}
+		break;
+	case GUI_ID_DELETENB:
+		nodes[curId]->deleteNodebox(nodes[curId]->getCurrentNodeBox());
 		break;
 	case GUI_ID_BOX:
 		nodes[curId]->addNodeBox();
@@ -383,15 +388,24 @@ bool cEditor::OnEvent(const SEvent& event)
 		isSplitScreen=false;
 		currentWindow=3;
 		break;
+	default:
+		if (id>=230){
+			int i = id - 230;
+			nodes[curId]->changeID(i);
+		}
 	}
 }
 
 void cEditor::updatePoint(int start, int count){
 	for (int id=start;id<count;id++){
 		if (!points[id])
-			return;
+			continue;
 
-		points[id] -> image -> setVisible (true);
+		points[id] -> image -> setVisible (nodes[curId] && nodes[curId]->getCurrentNodeBox()!=NULL);
+
+		if (nodes[curId]==NULL || nodes[curId]->getCurrentNodeBox()==NULL)
+			continue;
+
 		if (point_on == id){
 			// get mouse position
 			position2di target = mouse_position;

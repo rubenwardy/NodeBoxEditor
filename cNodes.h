@@ -21,18 +21,25 @@ public:
 	bool load(wchar_t* input);
 	bool save(wchar_t* output);
 
-	// NodeBox operation functions
+	// NodeBox management functions
 	sBox* addNodeBox();
-	sBox* getCurrentNodeBox();
+	void deleteNodebox(sBox* nodebox);
+	void defrag();
+
+	// Nodebox resizing functions
 	void resize(int side, f32 dir); //0:Up 1:Left 2:Right 3:Down
 	void resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target);
 
+	// API Functions
+	sBox* getCurrentNodeBox();
+	IGUIContextMenu* menu;
+
 	// Generation overload functions
-	stringc* build(BUILD_TYPE type);
-	stringc* build(sBox* nodebox);
+	stringc* build(BUILD_TYPE type); // Build full node
+	stringc* build(sBox* nodebox); // Build node box
 	
-	// Switch functions
-	bool switchFocus(ISceneNode* hit);
+	// Switch 
+	void switchFocus(ISceneNode* hit);
 	void changeID(int n_id);
 
 	// Update functions

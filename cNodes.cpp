@@ -7,6 +7,7 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 	smgr = device->getSceneManager();
 	editor=n_ed;
 	number=0;
+	menu=NULL;
 
 	for (int i=0;i<NODEB_MAX;i++){
 		boxes[i]=NULL;
@@ -36,18 +37,20 @@ sBox* cNode::addNodeBox(){
 	number++;
 	printf("Nodebox added\n");
 
+	defrag();
+
 	return boxes[number-1];
 }
 
-bool cNode::switchFocus(ISceneNode* hit){
+void cNode::switchFocus(ISceneNode* hit){
 	for (int a=0;a<number;a++){
 		if (boxes[a] && boxes[a]->model)
 			if (boxes[a]->model==hit)
 				changeID(a);
-				return true;
+				return;
 
 	}
-	return false;
+	return;
 }
 
 void cNode::changeID(int n_id){
@@ -61,7 +64,7 @@ void cNode::update(){
 }
 
 void cNode::updateTexts(){
-	if (boxes[id] && number>id){
+	if (getCurrentNodeBox() && number>id){
 		core::stringw nb=L"NodeBox: ";
 		nb+=boxes[id]->model->getName();
 		editor->d_nb->setText(nb.c_str());
@@ -149,6 +152,9 @@ bool cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 }
 
 sBox* cNode::getCurrentNodeBox(){
+	if (id==-1)
+		return NULL;
+
 	return boxes[id];
 }
 
@@ -281,6 +287,9 @@ stringc* cNode::build(sBox* nodebox){
 	res->append(stringc(nodebox->position.Z + ((float)nodebox->size.Z / (float)2)));
 
 	res->append("}");
+	res->append(", --");
+	res->append(nodebox->model->getName());
+
 	return res;
 }
 
@@ -294,16 +303,16 @@ stringc* cNode::build(BUILD_TYPE type){
 
 	if (type >= NBT_NBS)
 		if (type == NBT_FULL)
-			res->append("\tdrawtype=\"nodebox\",\n\tnodebox = {\n");
+			res->append("\tdrawtype=\"nodebox\",\n\tparamtype = \"light\",\n\tnode_box = {\n\t\ttype = \"fixed\",\n\t\tfixed = {\n");
 		else
-			res->append("drawtype=\"nodebox\",\nnodebox = {\n");
+			res->append("drawtype=\"nodebox\",\nparamtype = \"light\",\nnode_box = {\n\ttype = \"fixed\",\n\tfixed = {\n");
 
 	int a;
 	for (a=0;a<number;a++){
 		stringc tmp = *build(boxes[a]);
 
 		if (tmp!=NULL){
-			for (int i=0;i<type-1;i++){
+			for (int i=0;i<type;i++){
 				res->append("\t");
 				printf("tab");
 			}
@@ -314,9 +323,9 @@ stringc* cNode::build(BUILD_TYPE type){
 
 	if (type >= NBT_NBS)
 		if (type == NBT_FULL)
-			res->append("\t}\n");
+			res->append("\t\t}\n\t}\n");
 		else
-			res->append("}\n");
+			res->append("\t}\n}\n");
 
 	if (type == NBT_FULL)
 		res->append("})");
@@ -326,4 +335,71 @@ stringc* cNode::build(BUILD_TYPE type){
 	printf("%s\n",res->c_str());
 	printf("===============\n");
 	return res;
+}
+
+void cNode::deleteNodebox(sBox* nodebox){
+	if (!nodebox)
+		return;
+
+	for (int a=0;a<number;a++){
+		if (boxes[a] && boxes[a]->model)
+			if (boxes[a]==nodebox){
+				delete boxes[a];
+				boxes[a]=NULL;
+
+				if (id==a)
+					id=-1;
+
+				defrag();
+				return;
+			}
+
+	}
+}
+
+void cNode::defrag(){
+	// Delete context menu stuff
+	if (menu)
+	{
+		menu->removeAllItems();
+		menu->addItem(L"Set texture...",-1,false);
+		menu->addSeparator();
+		menu->addItem(L"Add a nodebox",GUI_ID_BOX);
+		menu->addItem(L"Change nodebox name",GUI_ID_TEXT,false);
+		menu->addItem(L"Delete current nodebox",GUI_ID_DELETENB);
+		menu->addSeparator();
+	}
+
+	int a=0;
+	for (int i=0;i<NODEB_MAX;i++){
+		if (boxes[i]!=NULL){
+			boxes[a]=boxes[i];
+
+			// Add menu item
+			if (menu)
+			{
+				menu->addItem(convert(boxes[a]->model->getName()),230+a);
+			}
+
+			if (id==i)
+				id=a;
+			a++;
+		}else{
+			boxes[a]=NULL;
+		}
+	}
+
+	number = a;
+
+#ifdef _DEBUG
+	for (int i=0;i<NODEB_MAX;i++){
+		if (boxes[i]!=NULL && boxes[i]->model->getName()){
+			printf("%i> ",i);
+			printf("%s \n",boxes[i]->model->getName());
+		}else
+			printf("%i> NULL \n",i);
+	}
+
+	printf("There are %i boxes\n",a);
+#endif
 }

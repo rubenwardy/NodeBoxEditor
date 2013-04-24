@@ -41,7 +41,7 @@ private:
 	// GUI
 	IGUIEnvironment* guienv;
 	bool isSplitScreen;
-	int currentWindow;	
+	int currentWindow;
 	vector2di mouse_position;
 	bool mouse_down;
 	ITriangleSelector* plane_tri;
