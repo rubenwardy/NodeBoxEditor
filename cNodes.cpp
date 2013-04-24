@@ -298,7 +298,7 @@ stringc* cNode::build(BUILD_TYPE type){
 	
 	stringc* res = new stringc();
 
-	if (type >= NBT_NBS)
+	if (type == NBT_FULL)
 		res->append("minetest.register_node(\"test:node\",{\n");
 
 	if (type >= NBT_NBS)
