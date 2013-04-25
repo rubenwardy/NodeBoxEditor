@@ -54,6 +54,10 @@
 		GUI_ID_SP_TOP=219,
 		GUI_ID_SP_FRT=220,
 		GUI_ID_SP_RHT=221,
+
+		// Edit
+		GUI_ID_SNAP = 222,
+		GUI_ID_LIMIT = 223
 	};
 
 	// Defines
@@ -66,6 +70,9 @@
 		irr::gui::IGUIStaticText* d_nb;
 		irr::gui::IGUIStaticText* d_pos;
 		irr::gui::IGUIStaticText* d_rot;
+
+		bool snapping;
+		bool limiting;
 	};
 
 	struct CDR

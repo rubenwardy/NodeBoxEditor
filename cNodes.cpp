@@ -169,8 +169,23 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 
 	switch (face){
 	case CDR_X_P:
+		if (editor->snapping==true){
+			if (target.X > -0.05 && target.X < 0.05)
+				target.X = 0;
+			else if (target.X > 0.20 && target.X < 0.30)
+				target.X = 0.25;
+			else if (target.X > -0.30 && target.X < -0.20)
+				target.X = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.X < -0.5)
+				target.X = -0.5;
+			else if (target.X > 0.5)
+				target.X = 0.5;
+		}
+
 		// Resize
-		tsize=nodebox->size; // Save the size		
+		tsize=nodebox->size; // Save the size
 		opp = nodebox->position.X + ((float)nodebox->size.X / (float)2); // Get the corner before		
 		tsize.X -= opp - target.X; // Adjust the size to now
 		if (tsize.X <= 0) // Validate
@@ -184,6 +199,21 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.X += change;
 		break;
 	case CDR_X_N:
+		if (editor->snapping==true){
+			if (target.X > -0.05 && target.X < 0.05)
+				target.X = 0;
+			else if (target.X > 0.20 && target.X < 0.30)
+				target.X = 0.25;
+			else if (target.X > -0.30 && target.X < -0.20)
+				target.X = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.X < -0.5)
+				target.X = -0.5;
+			else if (target.X > 0.5)
+				target.X = 0.5;
+		}
+
 		// Resize
 		tsize=nodebox->size; // Save the size		
 		opp = nodebox->position.X - ((float)nodebox->size.X / (float)2); // Get the corner before			
@@ -199,6 +229,21 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.X += change;
 		break;
 	case CDR_Y_P:
+		if (editor->snapping==true){
+			if (target.Y > -0.05 && target.Y < 0.05)
+				target.Y = 0;
+			else if (target.Y > 0.20 && target.Y < 0.30)
+				target.Y = 0.25;
+			else if (target.Y > -0.30 && target.Y < -0.20)
+				target.Y = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.Y < -0.5)
+				target.Y = -0.5;
+			else if (target.Y > 0.5)
+				target.Y = 0.5;
+		}
+
 		// Resize
 		tsize=nodebox->size; // Save the size		
 		opp = nodebox->position.Y + ((float)nodebox->size.Y / (float)2); // Get the corner before		
@@ -214,6 +259,21 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.Y += change;
 		break;
 	case CDR_Y_N:
+		if (editor->snapping==true){
+			if (target.Y > -0.05 && target.Y < 0.05)
+				target.Y = 0;
+			else if (target.Y > 0.20 && target.Y < 0.30)
+				target.Y = 0.25;
+			else if (target.Y > -0.30 && target.Y < -0.20)
+				target.Y = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.Y < -0.5)
+				target.Y = -0.5;
+			else if (target.Y > 0.5)
+				target.Y = 0.5;
+		}
+
 		// Resize
 		tsize=nodebox->size; // Save the size		
 		opp = nodebox->position.Y - ((float)nodebox->size.Y / (float)2); // Get the corner before			
@@ -229,6 +289,21 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.Y += change;
 		break;
 	case CDR_Z_P:
+		if (editor->snapping==true){
+			if (target.Z > -0.05 && target.Z < 0.05)
+				target.Z = 0;
+			else if (target.Z > 0.20 && target.Z < 0.30)
+				target.Z = 0.25;
+			else if (target.Z > -0.30 && target.Z < -0.20)
+				target.Z = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.Z < -0.5)
+				target.Z = -0.5;
+			else if (target.Z > 0.5)
+				target.Z = 0.5;
+		}
+
 		// Resize
 		tsize=nodebox->size; // Save the size		
 		opp = nodebox->position.Z + ((float)nodebox->size.Z / (float)2); // Get the corner before		
@@ -244,6 +319,21 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.Z += change;
 		break;
 	case CDR_Z_N:
+		if (editor->snapping==true){
+			if (target.Z > -0.05 && target.Z < 0.05)
+				target.Z = 0;
+			else if (target.Z > 0.20 && target.Z < 0.30)
+				target.Z = 0.25;
+			else if (target.Z > -0.30 && target.Z < -0.20)
+				target.Z = -0.25;
+		}
+		if (editor->limiting==true){
+			if (target.Z < -0.5)
+				target.Z = -0.5;
+			else if (target.Z > 0.5)
+				target.Z = 0.5;
+		}
+
 		// Resize
 		tsize=nodebox->size; // Save the size		
 		opp = nodebox->position.Z - ((float)nodebox->size.Z / (float)2); // Get the corner before			

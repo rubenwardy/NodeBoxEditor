@@ -28,6 +28,8 @@ bool cEditor::run(IrrlichtDevice* irr_device){
 	guienv = device->getGUIEnvironment();
 	
 	data=new ed_data();
+	data->snapping = true;
+	data->limiting = true;
 
 	coli=smgr->getSceneCollisionManager();
 	device->setWindowCaption(L"The NodeBox Generator");
@@ -167,7 +169,7 @@ void cEditor::loadUI(){
 	{
 		IGUIContextMenu* menubar=guienv->addMenu();
 		menubar->addItem(L"File",-1,true,true);
-		//menubar->addItem(L"Edit",-1,true,true);
+		menubar->addItem(L"Edit",-1,true,true);
 		menubar->addItem(L"View",-1,true,true);
 		menubar->addItem(L"Project",-1,true,true);
 		menubar->addItem(L"Node",-1,true,true);
@@ -195,6 +197,11 @@ void cEditor::loadUI(){
 
 		// View
 		submenu = menubar->getSubMenu(1);
+		submenu->addItem(L"Snap to grid",GUI_ID_SNAP,true,false,true,true);
+		submenu->addItem(L"Limit to node size",GUI_ID_LIMIT,true,false,true,true);
+
+		// View
+		submenu = menubar->getSubMenu(2);
 		submenu->addItem(L"Tiles",GUI_ID_SP_ALL);
 		submenu->addSeparator();
 		submenu->addItem(L"Perspective",GUI_ID_SP_PER);
@@ -203,12 +210,12 @@ void cEditor::loadUI(){
 		submenu->addItem(L"Right",GUI_ID_SP_RHT);
 
 		// Project
-		submenu = menubar->getSubMenu(2);
+		submenu = menubar->getSubMenu(3);
 		submenu->addItem(L"Add a Node",GUI_ID_ADDNODE,false);
 		submenu->addItem(L"Switch Node",GUI_ID_SWITCH,false);
 
 		// Node
-		submenu = menubar->getSubMenu(3);
+		submenu = menubar->getSubMenu(4);
 		submenu->removeAllItems();
 		submenu->addItem(L"Set texture...",-1,false);
 		submenu->addSeparator();
@@ -223,7 +230,7 @@ void cEditor::loadUI(){
 		}
 
 		// Help
-		submenu = menubar->getSubMenu(4);
+		submenu = menubar->getSubMenu(5);
 		submenu->addItem(L"Help",GUI_ID_HELP,false);
 		submenu->addSeparator();
 		submenu->addItem(L"About",GUI_ID_ABOUT);
@@ -387,6 +394,12 @@ bool cEditor::OnEvent(const SEvent& event)
 		printf("View mode changed to right\n");
 		isSplitScreen=false;
 		currentWindow=3;
+		break;
+	case GUI_ID_SNAP:
+		data->snapping = menu->isItemChecked(menu->getSelectedItem());
+		break;
+	case GUI_ID_LIMIT:
+		data->limiting = menu->isItemChecked(menu->getSelectedItem());
 		break;
 	default:
 		if (id>=230){
