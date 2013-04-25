@@ -117,7 +117,7 @@ void cNode::resize(int side,f32 dir){
 
 bool cNode::setsizeObject(sBox* input,f32 px,f32 py,f32 pz){
 	// Check limits
-	if (px > 1 || px < NODE_THIN || py > 1 || py <  NODE_THIN || pz > 1 || pz <  NODE_THIN){
+	if (px < NODE_THIN|| py <  NODE_THIN || pz < NODE_THIN){
 		return false;
 	}
 
@@ -190,8 +190,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.X -= opp - target.X; // Adjust the size to now
 		if (tsize.X <= 0) // Validate
 			tsize.X=NODE_THIN;
-		if (tsize.X > 1) // Validate
-			tsize.X=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
@@ -220,8 +218,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.X += opp - target.X; // Adjust the size to now
 		if (tsize.X <= 0) // Validate
 			tsize.X=NODE_THIN;
-		if (tsize.X > 1) // Validate
-			tsize.X=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
@@ -250,8 +246,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.Y -= opp - target.Y; // Adjust the size to now
 		if (tsize.Y <= 0) // Validate
 			tsize.Y=NODE_THIN;
-		if (tsize.Y > 1) // Validate
-			tsize.Y=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
@@ -280,8 +274,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.Y += opp - target.Y; // Adjust the size to now
 		if (tsize.Y <= 0) // Validate
 			tsize.Y=NODE_THIN;
-		if (tsize.Y > 1) // Validate
-			tsize.Y=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
@@ -310,8 +302,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.Z -= opp - target.Z; // Adjust the size to now
 		if (tsize.Z <= 0) // Validate
 			tsize.Z=NODE_THIN;
-		if (tsize.Z > 1) // Validate
-			tsize.Z=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
@@ -340,8 +330,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		tsize.Z += opp - target.Z; // Adjust the size to now
 		if (tsize.Z <= 0) // Validate
 			tsize.Z=NODE_THIN;
-		if (tsize.Z > 1) // Validate
-			tsize.Z=1;
 		setsizeObject(nodebox,tsize.X,tsize.Y,tsize.Z); // Resize	
 
 		// Change position
