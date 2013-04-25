@@ -1,21 +1,18 @@
+# Set up project
+cmake_minimum_required(VERSION 2.6)
+project(NodeBoxGenerator)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-# :mode=cmake:noTabs=true:
+# Dependancies
+find_package(Irrlicht REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(X11 REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(JPEG REQUIRED)
+find_package(BZip2 REQUIRED)
+find_package(PNG REQUIRED)
 
-cmake_minimum_required(VERSION 2.8)
-
-find_path(irrlicht_include
-    NAMES irrlicht.h
-    HINTS /usr/include/irrlicht
-)
-
-find_library(irrlicht_lib
-    NAMES Irrlicht
-)
-
-include_directories(${irrlicht_include})
-
-project(NodeBoxGenerator CXX)
-
+# Source files
 set(NBGEN_SRC
     main.cpp
     cNodes.cpp
@@ -23,11 +20,39 @@ set(NBGEN_SRC
     cEditor.cpp
 )
 
-add_executable(nbgen_exe ${NBGEN_SRC})
+# Include Directories
+include_directories(
+	${PROJECT_BINARY_DIR}
+	${IRRLICHT_INCLUDE_DIR}
+	${ZLIB_INCLUDE_DIR}
+	${CMAKE_BUILD_TYPE}
+	${X11_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIR}
+	${PNG_INCLUDE_DIR}
+)
 
-set_target_properties(nbgen_exe
+add_executable(${PROJECT_NAME} ${NBGEN_SRC})
+
+target_link_libraries(
+	${PROJECT_NAME}
+	${IRRLICHT_LIBRARY}
+	${ZLIB_LIBRARIES}
+	${X11_LIBRARIES}
+	${OPENGL_LIBRARIES}
+	${JPEG_LIBRARIES}
+	${BZIP2_LIBRARIES}
+	${PNG_LIBRARIES}
+)
+
+set_target_properties(${PROJECT_NAME}
     PROPERTIES
     OUTPUT_NAME NodeBoxGenerator
 )
 
-target_link_libraries(nbgen_exe ${irrlicht_lib})
+# Install DLLs
+if(WIN32)
+	if(DEFINED IRRLICHT_DLL)
+		message(Installing irrlicht dll)
+		install(FILES ${IRRLICHT_DLL})
+	endif()
+endif()
