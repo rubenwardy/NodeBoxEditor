@@ -13,14 +13,14 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 		boxes[i]=NULL;
 	}
 
-	for (int i=0;i<15;i++){
+	for (int i=0;i<17;i++){
 		snappers[i]=NULL;
 	}
 
+	printf("Making 16 pixel snap grid: \n");
 	for (int a=-8;a<9;a++){
 		snappers[a+8] = a*0.0625;
-		printf("%i - ",a+8);
-		printf("%f\n",snappers[a+8]);
+		printf(">> %f\n",snappers[a+8]);
 	}
 }
 
