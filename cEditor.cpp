@@ -220,7 +220,7 @@ void cEditor::loadUI(){
 		submenu->addItem(L"Set texture...",-1,false);
 		submenu->addSeparator();
 		submenu->addItem(L"Add a nodebox",GUI_ID_BOX);
-		submenu->addItem(L"Change nodebox name",GUI_ID_TEXT,false);
+		submenu->addItem(L"Nodebox properties",GUI_ID_TEXT);
 		submenu->addItem(L"Delete current nodebox",GUI_ID_DELETENB);
 
 		for (int a=0;a<5;a++){
@@ -359,6 +359,25 @@ bool cEditor::OnEvent(const SEvent& event)
 			codebox->setMultiLine(true);
 			codebox->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 			codebox->setToolTipText(L"Ctrl+A, Ctrl+C to copy");
+		}
+		break;
+	case GUI_ID_TEXT:
+		if (nodes[curId] && nodes[curId]->getCurrentNodeBox() && nodes[curId]->getCurrentNodeBox()->model)
+		{
+			IGUIWindow* win = guienv->addWindow(rect<irr::s32>(50,50,50+320,50+162),false,L"Properties");
+			guienv->addEditBox(convert(nodes[curId]->getCurrentNodeBox()->model->getName()),rect<irr::s32>(32,32,290,52),true,win,GUI_ID_BOX_NAME);
+
+			// Add the co-ordinate boxes
+			{
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.X - ((float)nodes[curId]->getCurrentNodeBox()->size.X / (float)2)).c_str()),rect<irr::s32>(32,60,112,80),true,win,230);
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.Y - ((float)nodes[curId]->getCurrentNodeBox()->size.Y / (float)2)).c_str()),rect<irr::s32>(32+90,60,112+90,80),true,win,230);
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.Z - ((float)nodes[curId]->getCurrentNodeBox()->size.Z / (float)2)).c_str()),rect<irr::s32>(32+180,60,112+180,80),true,win,230);
+
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.X + ((float)nodes[curId]->getCurrentNodeBox()->size.X / (float)2)).c_str()),rect<irr::s32>(32,60+30,112,80+30),true,win,230);
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.Y + ((float)nodes[curId]->getCurrentNodeBox()->size.Y / (float)2)).c_str()),rect<irr::s32>(32+90,60+30,112+90,80+30),true,win,230);
+				guienv->addEditBox(convert(stringc(nodes[curId]->getCurrentNodeBox()->position.Z + ((float)nodes[curId]->getCurrentNodeBox()->size.Z / (float)2)).c_str()),rect<irr::s32>(32+180,60+30,112+180,80+30),true,win,230);
+			}
+			guienv->addButton(rect<irr::s32>(100,120,220,152),win,GUI_ID_SUBMIT,L"Update");
 		}
 		break;
 	case GUI_ID_DELETENB:

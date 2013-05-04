@@ -57,7 +57,11 @@
 
 		// Edit
 		GUI_ID_SNAP = 222,
-		GUI_ID_LIMIT = 223
+		GUI_ID_LIMIT = 223,
+
+		// Windows
+		GUI_ID_SUBMIT = 226,
+		GUI_ID_BOX_NAME = 227
 	};
 
 	// Defines

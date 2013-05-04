@@ -4,8 +4,6 @@
 #include "define.h"
 #include "cNodes.h"
 
-
-
 class cEditor : public IEventReceiver
 {
 public:
