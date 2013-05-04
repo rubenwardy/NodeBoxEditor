@@ -50,6 +50,7 @@ private:
 	int id;
 	int number;
 	sBox* boxes[NODEB_MAX];
+	f32 snappers[17];
 
 	IVideoDriver* driver;
 	IrrlichtDevice* device;

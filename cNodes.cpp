@@ -11,7 +11,17 @@ cNode::cNode(IrrlichtDevice* mdevice, ed_data* n_ed){
 
 	for (int i=0;i<NODEB_MAX;i++){
 		boxes[i]=NULL;
-	}	
+	}
+
+	for (int i=0;i<15;i++){
+		snappers[i]=NULL;
+	}
+
+	for (int a=-8;a<9;a++){
+		snappers[a+8] = a*0.0625;
+		printf("%i - ",a+8);
+		printf("%f\n",snappers[a+8]);
+	}
 }
 
 sBox* cNode::addNodeBox(){
@@ -167,22 +177,45 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 	f32 opp,change;
 	vector3df tsize;
 
+	// Do snapping
+	if (editor->snapping==true){
+		for (int i=0;i<15;i++){
+			if (target.X > snappers[i]-0.0313 && target.X < snappers[i]+0.0313){
+				target.X = snappers[i];
+			}
+			if (target.Y > snappers[i]-0.0313 && target.Y < snappers[i]+0.0313){
+				target.Y = snappers[i];
+			}
+			if (target.Z > snappers[i]-0.0313 && target.Z < snappers[i]+0.0313){
+				target.Z = snappers[i];
+			}
+		}
+	}
+
+	// Do node limiting
+	if (editor->limiting==true){
+		// X Axis
+		if (target.X < -0.5)
+			target.X = -0.5;
+		else if (target.X > 0.5)
+			target.X = 0.5;
+
+		// Y Axis
+		if (target.Y < -0.5)
+			target.Y = -0.5;
+		else if (target.Y > 0.5)
+			target.Y = 0.5;
+
+		// Z Axis
+		if (target.Z < -0.5)
+			target.Z = -0.5;
+		else if (target.Z > 0.5)
+			target.Z = 0.5;
+	}
+
 	switch (face){
 	case CDR_X_P:
-		if (editor->snapping==true){
-			if (target.X > -0.05 && target.X < 0.05)
-				target.X = 0;
-			else if (target.X > 0.20 && target.X < 0.30)
-				target.X = 0.25;
-			else if (target.X > -0.30 && target.X < -0.20)
-				target.X = -0.25;
-		}
-		if (editor->limiting==true){
-			if (target.X < -0.5)
-				target.X = -0.5;
-			else if (target.X > 0.5)
-				target.X = 0.5;
-		}
+		
 
 		// Resize
 		tsize=nodebox->size; // Save the size
@@ -197,14 +230,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.X += change;
 		break;
 	case CDR_X_N:
-		if (editor->snapping==true){
-			if (target.X > -0.05 && target.X < 0.05)
-				target.X = 0;
-			else if (target.X > 0.20 && target.X < 0.30)
-				target.X = 0.25;
-			else if (target.X > -0.30 && target.X < -0.20)
-				target.X = -0.25;
-		}
 		if (editor->limiting==true){
 			if (target.X < -0.5)
 				target.X = -0.5;
@@ -225,14 +250,6 @@ void cNode::resizeNodeBoxFace(sBox* nodebox,CDR_TYPE face, vector3df target){
 		nodebox->position.X += change;
 		break;
 	case CDR_Y_P:
-		if (editor->snapping==true){
-			if (target.Y > -0.05 && target.Y < 0.05)
-				target.Y = 0;
-			else if (target.Y > 0.20 && target.Y < 0.30)
-				target.Y = 0.25;
-			else if (target.Y > -0.30 && target.Y < -0.20)
-				target.Y = -0.25;
-		}
 		if (editor->limiting==true){
 			if (target.Y < -0.5)
 				target.Y = -0.5;
