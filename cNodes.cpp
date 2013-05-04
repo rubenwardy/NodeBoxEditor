@@ -443,7 +443,7 @@ void cNode::defrag(){
 		menu->addItem(L"Set texture...",-1,false);
 		menu->addSeparator();
 		menu->addItem(L"Add a nodebox",GUI_ID_BOX);
-		menu->addItem(L"Nodebox properties",GUI_ID_TEXT);
+		menu->addItem(L"Nodebox properties",GUI_ID_TEXT,false);
 		menu->addItem(L"Delete current nodebox",GUI_ID_DELETENB);
 		menu->addSeparator();
 	}

@@ -220,7 +220,7 @@ void cEditor::loadUI(){
 		submenu->addItem(L"Set texture...",-1,false);
 		submenu->addSeparator();
 		submenu->addItem(L"Add a nodebox",GUI_ID_BOX);
-		submenu->addItem(L"Nodebox properties",GUI_ID_TEXT);
+		submenu->addItem(L"Nodebox properties",GUI_ID_TEXT,false);
 		submenu->addItem(L"Delete current nodebox",GUI_ID_DELETENB);
 
 		for (int a=0;a<5;a++){
