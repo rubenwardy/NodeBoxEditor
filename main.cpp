@@ -9,6 +9,10 @@
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef _DEBUG
+#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif
+
 using namespace irr;
 using namespace gui;
 using namespace scene;
