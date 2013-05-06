@@ -281,13 +281,13 @@ bool cEditor::OnEvent(const SEvent& event)
 			mouse_position.X=event.MouseInput.X;
 			mouse_position.Y=event.MouseInput.Y;
 	}else if (event.EventType == EET_KEY_INPUT_EVENT){
-		if (event.KeyInput.Key== KEY_DOWN){
+		if (event.KeyInput.Key== KEY_DOWN || event.KeyInput.Key== KEY_KEY_S){
 			pivot->setRotation(vector3df(pivot->getRotation().X-1,pivot->getRotation().Y,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_UP){
+		}else if (event.KeyInput.Key== KEY_UP || event.KeyInput.Key== KEY_KEY_W){
 			pivot->setRotation(vector3df(pivot->getRotation().X+1,pivot->getRotation().Y,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_LEFT){
+		}else if (event.KeyInput.Key== KEY_LEFT || event.KeyInput.Key== KEY_KEY_A){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y+1,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_RIGHT){
+		}else if (event.KeyInput.Key== KEY_RIGHT || event.KeyInput.Key== KEY_KEY_D){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y-1,pivot->getRotation().Z));
 		}
 	}else if (event.EventType == EET_GUI_EVENT){
