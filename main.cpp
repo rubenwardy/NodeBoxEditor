@@ -1,34 +1,24 @@
-// Copyright (c) to Andrew "rubenwardy" Ward
-
-
 #include <irrlicht.h>
-#include "define.h"
-#include "cEditor.h"
+#include "common.h"
+#include "Editor.h"
 
-#ifdef _IRR_WINDOWS_
+#ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
-#ifndef _DEBUG
-#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
-#endif
 #endif
 
-using namespace irr;
-using namespace gui;
-using namespace scene;
-using namespace core;
-using namespace video;
+int main(){
+	// create device
+    irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480));
 
+    if (device == 0)
+        return 0; // could not create selected driver.
 
-int main()
-{  
-	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(800, 640), 16,false, false, false, 0);
-	if (!device)
-		return 0;
-	device->setWindowCaption(L"Loading Engine...");
+    irr::video::IVideoDriver* driver = device->getVideoDriver();
+    irr::scene::ISceneManager* smgr = device->getSceneManager();
+    irr::gui::IGUIEnvironment* gui = device->getGUIEnvironment();
 
-	cEditor* editor=new cEditor();
-	device->setEventReceiver(editor);
+	Editor* editor = new Editor();
 	editor->run(device);
 
-	return 1;
+    return 1;
 }

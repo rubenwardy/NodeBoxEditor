@@ -1,7 +1,12 @@
+#ifndef _COMMON_H_INCLUDED_
+#define _COMMON_H_INCLUDED_
 #include <irrlicht.h>
-
-#ifndef _define_included_
-#define _define_included_
+#include <iostream>
+using namespace irr;
+using namespace core;
+using namespace scene;
+using namespace gui;
+using namespace video;
 
 	// Enums
 	enum CDR_TYPE 
@@ -11,7 +16,10 @@
 		CDR_Y_P = 3,
 		CDR_Y_N = 4,
 		CDR_Z_P = 5,
-		CDR_Z_N = 6
+		CDR_Z_N = 6,
+		CDR_XZ = 7,
+		CDR_XY = 8,
+		CDR_ZY = 9
 	};
 	// CDR_TYPE::CDR_<axis>_<positive/negitive-direction>
 
@@ -20,6 +28,14 @@
 		NBT_NB = 1, // Just the node box table
 		NBT_NBS = 2, // The node box table with draw type and parent holder (nodebox={})
 		NBT_FULL = 3 // Whole node definition
+	};
+
+	enum TOOL_TYPE
+	{
+		TOOL_NEWNODE = 1,
+		TOOL_NODE = 2,
+		TOOL_NODEB = 3,
+		TOOL_TEXT = 4
 	};
 
 	enum GUI_ID
@@ -33,6 +49,7 @@
 		GUI_ID_EX_NODE=206,
 		GUI_ID_EX_NBS=207,
 		GUI_ID_EX_NB=208,
+		GUI_ID_EXIT=230,
 
 		// Project
 		GUI_ID_ADDNODE=209,
@@ -58,49 +75,47 @@
 		// Edit
 		GUI_ID_SNAP = 222,
 		GUI_ID_LIMIT = 223,
+		GUI_ID_TOOL_NNODE = 224,
+		GUI_ID_TOOL_NODE = 225,
+		GUI_ID_TOOL_NODEB = 226,
+		GUI_ID_TOOL_TEXT = 227,
 
 		// Windows
-		GUI_ID_SUBMIT = 226,
-		GUI_ID_BOX_NAME = 227
+		GUI_ID_SUBMIT = 228,
+		GUI_ID_BOX_NAME = 229
 	};
 
 	// Defines
-	#define NODE_THIN 0.05
-	#define NODEB_MAX 50
+	#define EDITOR_TEXT_VERSION "0.5.0 - Dirt"
+	#define EDITOR_VERSION 1
+	#define EDITOR_PARSER 1
+	#define NODE_RES 16 // The resolution of the snapping (16)
+	#define NODE_THIN 1/NODE_RES // The smallest a box can be (1/NODE_RES)
+	#define NODEB_MAX 10 // Maximum amount of nodeboxes (50)
 
 	// Structures
 	struct ed_data
 	{
-		irr::gui::IGUIStaticText* d_nb;
-		irr::gui::IGUIStaticText* d_pos;
-		irr::gui::IGUIStaticText* d_rot;
+		IGUIStaticText* d_nb;
+		IGUIStaticText* d_pos;
+		IGUIStaticText* d_rot;
+		IGUIContextMenu* menu;
 
 		bool snapping;
 		bool limiting;
+		TOOL_TYPE type;
 	};
 
 	struct CDR
 	{
 		CDR_TYPE type;
 		irr::gui::IGUIImage* image;
+		int camera;
 	};
 
-	class sBox
-	{
-	public:
-		~sBox(){
-			if (model)
-				model->remove();
-		}
-		irr::core::vector3df position;
-		irr::core::vector3df size;
-		irr::scene::IMeshSceneNode* model;
-	};
+#include "NodeBox.h"
 
 	// Functions: Convertors
 	const wchar_t* convert(const char* input); //Convertor: char to wchar_t
 	char* convert(wchar_t* input); //Convertor: wchar_t to char
-
-	// Functions: Misc
-	irr::core::vector3df* calcVectors(irr::io::IrrXMLReader* xml,const char* prefix);
 #endif

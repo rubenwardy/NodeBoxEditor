@@ -14,10 +14,12 @@ find_package(PNG REQUIRED)
 
 # Source files
 set(NBGEN_SRC
-    main.cpp
-    cNodes.cpp
-    CommonFunctions.cpp
-    cEditor.cpp
+	main.cpp
+	Editor.cpp
+	Node.cpp
+	NBPropertiesDialog.cpp
+	CodeDialog.cpp
+	CommonFunctions.cpp
 )
 
 # Include Directories
