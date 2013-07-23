@@ -8,9 +8,8 @@ class Project
 public:
 	// Constructors
 	Project(io::path file)
+	:Project()
 	{
-		Project::Project();
-
 		// Encode reader here
 		filepath = file;
 	}
