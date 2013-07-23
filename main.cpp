@@ -4,6 +4,9 @@
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
+#ifndef _DEBUG
+#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif
 #endif
 
 int main(){
