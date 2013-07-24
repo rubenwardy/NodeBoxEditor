@@ -8,15 +8,19 @@ class Project
 public:
 	// Constructors
 	Project(io::path file)
-	:Project()
 	{
+		Project::Project();
+
 		// Encode reader here
 		filepath = file;
 	}
 
 	Project()
-	:filepath(NULL),mod("untitled"),_id(NULL)
 	{
+		filepath = "";
+		mod = "untitled";
+		_id = NULL;
+
 		for (int i=0;i<5;i++){
 			nodes[i]=NULL;
 		}

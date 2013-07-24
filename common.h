@@ -91,7 +91,7 @@ using namespace video;
 	#define EDITOR_PARSER 1
 	#define NODE_RES 16 // The resolution of the snapping (16)
 	#define NODE_THIN 1/NODE_RES // The smallest a box can be (1/NODE_RES)
-	#define NODEB_MAX 10 // Maximum amount of nodeboxes (50)
+	#define NODEB_MAX 50 // Maximum amount of nodeboxes (50)
 
 	// Structures
 	struct ed_data
