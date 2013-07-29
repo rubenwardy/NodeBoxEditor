@@ -9,7 +9,7 @@ public:
 	// Constructors
 	Project(io::path file)
 	{
-		Project::Project();
+		Project();
 
 		// Encode reader here
 		filepath = file;
@@ -19,7 +19,7 @@ public:
 	{
 		filepath = "";
 		mod = "untitled";
-		_id = NULL;
+		_id = 0;
 
 		for (int i=0;i<5;i++){
 			nodes[i]=NULL;
