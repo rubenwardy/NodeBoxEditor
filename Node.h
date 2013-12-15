@@ -1,51 +1,44 @@
 #ifndef _NODE_H_INCLUDED_
 #define _NODE_H_INCLUDED_
 #include "common.h"
+#include "EditorState.h"
+#include "Nodebox.h"
 
+class EditorState;
+class NodeBox;
 class Node
 {
 public:
 	// Construction / Destruction
-	Node(IrrlichtDevice* mdevice,ed_data* n_ed);
+	Node(IrrlichtDevice* mdevice,EditorState* state);
 	~Node();
 
-	// Get functions
-	int GetId();
+	// Node box manager
+	int GetId(){return _id;}
 	NodeBox* GetCurrentNodeBox();
 	NodeBox* GetNodeBox(int id);
-
-	// Operation functions
 	NodeBox* addNodeBox();
-	void select(int id);
-	void update();
-	void resizeNodeBoxFace(CDR_TYPE type,vector3df position,bool both);
-	void moveNodeBox(CDR_TYPE type,vector3df position);
 	void deleteNodebox(int id);
-	vector3df getPosition() const;
-	void setPosition(vector3df in);	
-
-	// Build node models
-	void update(int id);
-	void remesh();
-
-	// Build code 
-	stringc* build(BUILD_TYPE type); // Build full node
-	stringc* build(NodeBox* nodebox); // Build node box
-
-	void defrag();
+	void select(int id){_id = id;}
+	
+	// Node properties	
+	vector3di getPosition() const{return nd_position;}
+	void setPosition(vector3di in){nd_position = in;}
+	stringc name;
+	
+	// Node bulk updaters
+	void remesh(); // creates the node mesh
+	void defrag(); // Defragments node array
 private:
 	// Data
 	NodeBox* boxes[NODEB_MAX];
-	ed_data* editor;
 	int _id;
 	int number;	
-	f32 snappers[NODE_RES+1];
-	vector3df nd_position;
+	vector3di nd_position;
 
 	// Irrlicht
-	video::IVideoDriver* driver;
-	IrrlichtDevice* device;
-	ISceneManager* smgr;
+	IrrlichtDevice* _device;
+	EditorState* _state;
 };
 
 #endif

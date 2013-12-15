@@ -15,11 +15,16 @@ find_package(PNG REQUIRED)
 # Source files
 set(NBGEN_SRC
 	main.cpp
+	Configuration.cpp
 	Editor.cpp
+	EditorState.cpp
+	LUAFileParser.cpp
+	MenuState.cpp
+	NBEditor.cpp
+	NBEFileParser.cpp
 	Node.cpp
-	NBPropertiesDialog.cpp
-	CodeDialog.cpp
-	CommonFunctions.cpp
+	NodeBox.cpp
+	Project.cpp
 )
 
 # Include Directories
@@ -48,7 +53,7 @@ target_link_libraries(
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
-    OUTPUT_NAME NodeBoxGenerator
+    OUTPUT_NAME NodeBoxEditor
 )
 
 # Install DLLs

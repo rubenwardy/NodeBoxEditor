@@ -1,0 +1,23 @@
+# In node box editor mode, snapping makes node boxes
+# snap to pixels
+snapping = true
+
+# limiting stops node boxes going out of node bounds
+limiting = true
+
+# Driver used to render
+driver = opengl
+
+# Hide the sidebar
+hide_sidebar = false
+
+# Whether the position draw handle should be shown
+always_show_position_handle = false
+
+# Vertical syncronisation
+dont_use_vsync = false
+
+# Screen settings
+fullscreen = false
+width = 896
+height = 480

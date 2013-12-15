@@ -3,53 +3,33 @@
 #include "common.h"
 #include "Node.h"
 
+class Node;
 class Project
 {
 public:
-	// Constructors
-	Project(io::path file)
-	{
-		Project();
+	Project();
+	~Project();
 
-		// Encode reader here
-		filepath = file;
-	}
+	// Properties
+	stringc name;
+	stringc file;
 
-	Project()
-	{
-		filepath = "";
-		mod = "untitled";
-		_id = 0;
-
-		for (int i=0;i<5;i++){
-			nodes[i]=NULL;
-		}
-	}
-
-	~Project(){
-		for (int i=0;i<5;i++){
-			if (nodes[i])
-				delete nodes[i];
-		}
-	}
-
-	// Data
-	stringc mod;
-	io::path filepath;
-
-	// Nodes
-	Node* nodes[5];
-	Node* GetNode(int id){
-		if (id>=5)
+	void AddNode(Node* node) const;	
+	void SelectNode(int id){snode = id;}
+	Node* GetNode(int id) const;
+	Node* GetNode(vector3di pos) const;	
+	Node* GetCurrentNode() const{
+		if (snode>-1){
+			return GetNode(snode);
+		}else{
 			return NULL;
-
-		return nodes[id];
-	}
-	Node* GetCurNode(){
-		return GetNode(_id);		
-	}	
+		}
+	};
+	list<Node*>* GetList() const{return nodes;}
 private:
-	int _id;
+	int snode;
+	list<Node*>* nodes;
+	unsigned int number_of_nodes;
 };
 
 #endif
