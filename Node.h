@@ -2,7 +2,7 @@
 #define _NODE_H_INCLUDED_
 #include "common.h"
 #include "EditorState.h"
-#include "Nodebox.h"
+#include "NodeBox.h"
 
 class EditorState;
 class NodeBox;
