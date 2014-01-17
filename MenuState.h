@@ -3,6 +3,7 @@
 #include "common.h"
 #include "EditorState.h"
 
+
 // FILE
 // --> New Project
 // --> New Item
@@ -73,7 +74,11 @@ enum GUI_ID
 	// Sidebar
 	GUI_SIDEBAR_TITLE = 220,
 	GUI_SIDEBAR_LISTBOX = 221,
-	GUI_SIDEBAR_LABEL = 222
+	GUI_SIDEBAR_LABEL = 222,
+
+	// File Dialog
+	GUI_FILEDIALOG_PATH = 223,
+	GUI_FILEDIALOG_FORM = 224
 };
 
 class EditorState;
@@ -92,6 +97,7 @@ private:
 	IGUIContextMenu* menubar;
 	IGUIContextMenu* _projectmb;
 	IGUIStaticText* _sidebar;
+	IGUIWindow* addFileDialog(FileParserType type,int submit,const wchar_t* title,const wchar_t* button);
 };
 
 #endif

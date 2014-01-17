@@ -9,6 +9,16 @@
 #endif
 #endif
 
+const wchar_t* convert(const char* input){
+        #define MAXSIZE 1024
+        size_t origsize = strlen(input) + 1;
+        static wchar_t wcstring[MAXSIZE];
+        mbstowcs(wcstring, input, origsize);
+        wcscat(wcstring, L"");
+        return wcstring;
+        #undef MAXSIZE
+}
+
 int main(){
 	printf(
 		" _   _           _        ____              _____    _ _ _             \n"

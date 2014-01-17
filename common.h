@@ -37,6 +37,15 @@ enum BUILD_TYPE
 	NBT_FULL = 3 // Whole node definition
 };
 
+
+enum FileParserType
+{
+	EFPT_SAVE_PROJ = 1,
+	EFPT_LOAD_PROJ = 2,
+	EFPT_EXPORT = 3,
+	EFPT_IMPORT = 4
+};
+
 // Defines
 #define EDITOR_TEXT_VERSION "0.6.0 - Stone"
 #define EDITOR_VERSION 1
@@ -45,4 +54,7 @@ enum BUILD_TYPE
 #define NODE_THIN 1/NODE_RES // The smallest a box can be (1/NODE_RES)
 #define NODEB_MAX 50 // Maximum amount of nodeboxes (50)
 #define NODEB_MENU_START 250
+
+
+const wchar_t* convert(const char* input);
 #endif

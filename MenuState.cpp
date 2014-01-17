@@ -84,31 +84,27 @@ bool MenuState::OnEvent(const SEvent& event){
 			switch (menu->getItemCommandId(menu->getSelectedItem())){
 			case GUI_FILE_OPEN_PROJECT:
 				{
-					NBEFileParser parser(GetState());
-					Project* tmp = parser.open("save.nbe");
-
-					if (tmp){
-						delete GetState()->project;
-						GetState()->project = tmp;
-						GetState()->project->SelectNode(0);
-						GetState()->Mode()->unload();
-						init();
-						GetState()->Mode()->load();
-					}
+					addFileDialog(EFPT_LOAD_PROJ,GUI_FILE_OPEN_PROJECT,L"Open Project",L"Open");
 					return true;
 				}
 				break;
 			case GUI_FILE_SAVE_PROJECT:
 				{
-					NBEFileParser parser(GetState());
-					parser.save(GetState()->project,"save.nbe");
+					if (!GetState()->project){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"You have not yet opened a project.");
+						return true;
+					}
+					addFileDialog(EFPT_SAVE_PROJ,GUI_FILE_SAVE_PROJECT,L"Save Project",L"Save");
 					return true;
 				}
 				break;
 			case GUI_FILE_EXPORT:
 				{
-					LUAFileParser parser(GetState());
-					parser.save(GetState()->project,"export.lua");
+					if (!GetState()->project){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"You have not yet opened a project.");
+						return true;
+					}
+					addFileDialog(EFPT_EXPORT,GUI_FILE_SAVE_PROJECT,L"Export",L"Export");
 					return true;
 				}
 				break;
@@ -158,11 +154,96 @@ bool MenuState::OnEvent(const SEvent& event){
 				break;
 			}	
 		}else if(event.GUIEvent.EventType == EGET_BUTTON_CLICKED){
-			if (event.GUIEvent.Caller->getID() == GUI_FILE_EXIT){
-				NBEFileParser parser(GetState());
-				parser.save(GetState()->project,"exit.nbe");
-				GetState()->CloseEditor();
-				return true;
+			switch (event.GUIEvent.Caller->getID()){
+			case GUI_FILE_EXIT:
+				{
+					if (GetState()->project){
+						NBEFileParser parser(GetState());
+						parser.save(GetState()->project,"exit.nbe");
+					}
+					GetState()->CloseEditor();
+					return true;
+				}
+			case GUI_FILE_SAVE_PROJECT:
+				{
+					if (!GetState()->project){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"You have not yet opened a project.");
+						return true;
+					}
+					IGUIWindow* parent = static_cast<IGUIWindow*>(event.GUIEvent.Caller->getParent());
+					if (!parent){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"Error trying to get the dialog.");
+						return true;
+					}
+					IGUIEditBox* box = static_cast<IGUIEditBox*>(parent->getElementFromId(GUI_FILEDIALOG_PATH));
+					IGUIComboBox* cb = static_cast<IGUIComboBox*>(parent->getElementFromId(GUI_FILEDIALOG_FORM));
+
+					if (!box || !cb){						
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"Error trying to get the dialog's contents.");
+						return true;
+					}
+
+					FileParser* parser = getFromType(cb->getItemData(cb->getSelected()),GetState());
+					if (parser){
+						stringc after = box->getText();
+
+						if (after.findFirst('.')==-1)
+							after.append(parser->getEXT());
+
+						parser->save(GetState()->project,after);
+						delete parser;
+					}else{
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"File format does not exist.");
+						return true;
+					}
+
+					// Remove
+					parent->remove();
+				}
+			case GUI_FILE_OPEN_PROJECT:
+				{
+					IGUIWindow* parent = static_cast<IGUIWindow*>(event.GUIEvent.Caller->getParent());
+					if (!parent){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open",L"Error trying to get the dialog.");
+						return true;
+					}
+					IGUIEditBox* box = static_cast<IGUIEditBox*>(parent->getElementFromId(GUI_FILEDIALOG_PATH));
+					IGUIComboBox* cb = static_cast<IGUIComboBox*>(parent->getElementFromId(GUI_FILEDIALOG_FORM));
+
+					if (!box || !cb){						
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open",L"Error trying to get the dialog's contents.");
+						return true;
+					}
+
+					FileParser* parser = getFromType(cb->getItemData(cb->getSelected()),GetState());
+					if (parser){
+						stringc after = box->getText();
+
+						if (after.findFirst('.')==-1)
+							after.append(parser->getEXT());
+		
+						Project* tmp = parser->open(after);
+
+						if (tmp){
+							delete GetState()->project;
+							GetState()->project = tmp;
+							GetState()->project->SelectNode(0);
+							GetState()->Mode()->unload();
+							init();
+							GetState()->Mode()->load();
+						}else{
+							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open",L"Something went wrong.");
+						}
+						delete parser;
+						return true;
+					}else{
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open",L"File format does not exist.");
+						return true;
+					}
+
+					// Remove
+					parent->remove();
+				}
 			}
 		}
 	}
@@ -180,4 +261,33 @@ void MenuState::draw(IVideoDriver* driver){
 		
 	}
 
+}
+
+IGUIWindow* MenuState::addFileDialog(FileParserType type,int submit,const wchar_t* title,const wchar_t* button){
+	IGUIEnvironment* guienv = GetState()->GetDevice()->getGUIEnvironment();
+	IGUIWindow* win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 160),true,title);
+	guienv->addButton(rect<irr::s32>(250, 30, 320, 60),win,submit,button);
+	stringc path = GetState()->project->name.trim();
+	if (path == ""){
+		path = "test";
+	}
+	IGUIEditBox* box = guienv->addEditBox(convert(path.c_str()),rect<irr::s32>(10, 30, 240, 60),true,win,GUI_FILEDIALOG_PATH);
+
+	IGUIComboBox* cb = guienv->addComboBox(rect<irr::s32>(60, 70, 240, 100),win,GUI_FILEDIALOG_FORM);
+	IGUIStaticText* txt = guienv->addStaticText(L"Format:",rect<irr::s32>(10, 70, 60, 100),false,true,win,-1,false);
+					
+	if (box)
+		txt->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	if (cb){
+		if (type==EFPT_SAVE_PROJ || type==EFPT_LOAD_PROJ)
+			cb->addItem(L"NodeBoxEditor file (*.nbe)",0);
+
+		if (type==EFPT_EXPORT)
+			cb->addItem(L"Lua file (*.lua)",1);
+
+		if (cb->getItemCount() > 0)
+			cb->setSelected(0);
+	}
+	return win;
 }
