@@ -164,6 +164,7 @@ bool MenuState::OnEvent(const SEvent& event){
 					GetState()->CloseEditor();
 					return true;
 				}
+				break;
 			case GUI_FILE_SAVE_PROJECT:
 				{
 					if (!GetState()->project){
@@ -200,6 +201,7 @@ bool MenuState::OnEvent(const SEvent& event){
 					// Remove
 					parent->remove();
 				}
+				break;
 			case GUI_FILE_OPEN_PROJECT:
 				{
 					IGUIWindow* parent = static_cast<IGUIWindow*>(event.GUIEvent.Caller->getParent());
@@ -244,6 +246,7 @@ bool MenuState::OnEvent(const SEvent& event){
 					// Remove
 					parent->remove();
 				}
+				break;
 			}
 		}
 	}
