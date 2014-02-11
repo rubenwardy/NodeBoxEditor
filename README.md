@@ -9,4 +9,4 @@ License
 
 Andrew "rubenwardy" Ward
 
-http://creativecommons.org/licenses/by-sa/3.0/
+https://www.gnu.org/licenses/gpl-3.0.txt
