@@ -57,7 +57,7 @@ public:
 	EditorMode(EditorState* st):_state(st){}
 	virtual void load() = 0;
 	virtual void unload() = 0;
-	virtual void update() = 0;
+	virtual void update(double dtime) = 0;
 	virtual void draw(irr::video::IVideoDriver* driver) = 0;
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset) = 0;
 	virtual bool OnEvent(const irr::SEvent &event) = 0;
