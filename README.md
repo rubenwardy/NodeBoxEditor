@@ -1,7 +1,9 @@
-The NodeBox Generator
-=====================
+Node Box Editor
+===============
 
 Use this editor to make nodeboxes for nodes in Minetest.
+
+Version: 0.6.1-prop_wip
 
 
 License
