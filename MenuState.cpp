@@ -72,7 +72,7 @@ void MenuState::init(){
 		rect<s32>(
 			(GetState()->GetDevice()->getVideoDriver()->getScreenSize().Width - 246), top+10,
 			GetState()->GetDevice()->getVideoDriver()->getScreenSize().Width, GetState()->GetDevice()->getVideoDriver()->getScreenSize().Height
-		),false,true,0,GUI_SIDEBAR_TITLE
+		),false,true,0,GUI_SIDEBAR
 	);
 	_sidebar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 }

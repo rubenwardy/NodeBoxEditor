@@ -169,6 +169,9 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 			camera[3]=smgr->addCameraSceneNode(target,vector3df(-5,0,0),vector3df(0,0,0));
 			camera[3]->setProjectionMatrix(projMat,true);
 		}
+
+		if (GetState()->Mode())
+			GetState()->Mode()->update((1000.0/60.0));
 	}
 
 	return true;

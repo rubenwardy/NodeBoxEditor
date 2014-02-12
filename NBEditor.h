@@ -25,10 +25,11 @@ public:
 	// Interface
 	virtual void load();
 	virtual void unload();
-	virtual void update();
+	virtual void update(double dtime);
 	virtual void draw(irr::video::IVideoDriver* driver);
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
+	void triggerCDRmoved(){prop_needs_update = true;}
 
 	// Snapping
 	f32 snappers[NODE_RES+1];
@@ -37,6 +38,8 @@ private:
 	int current;
 	CDR cdrs[15];
 	void load_ui();
+	void fillProperties();
+	bool prop_needs_update;
 };
 
 #endif

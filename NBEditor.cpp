@@ -1,7 +1,25 @@
 #include "NBEditor.h"
 
+// The gui id numbers for this mode
+// NOTE: the maximum that can be here is 20
+//       see in MenuState.h to raise limit
+enum ENB_GUI{
+	ENB_GUI_MAIN_LISTBOX = GUI_SIDEBAR + 1,	
+	ENB_GUI_MAIN_MSG = GUI_SIDEBAR + 2,
+	ENB_GUI_PROP = GUI_SIDEBAR + 3,
+	ENB_GUI_PROP_X1 = GUI_SIDEBAR + 4,
+	ENB_GUI_PROP_Y1 = GUI_SIDEBAR + 5,
+	ENB_GUI_PROP_Z1 = GUI_SIDEBAR + 6,
+	ENB_GUI_PROP_X2 = GUI_SIDEBAR + 7,
+	ENB_GUI_PROP_Y2 = GUI_SIDEBAR + 8,
+	ENB_GUI_PROP_Z2 = GUI_SIDEBAR + 9,
+	ENB_GUI_PROP_NAME = GUI_SIDEBAR + 19,
+	ENB_GUI_PROP_UPDATE = GUI_SIDEBAR + 11,
+	ENB_GUI_PROP_REVERT = GUI_SIDEBAR + 12
+};
+
 NBEditor::NBEditor(EditorState* st)
-:EditorMode(st),current(-1)
+:EditorMode(st),current(-1),prop_needs_update(false)
 {
 	// Top Window
 	cdrs[0] = CDR(EVIEW_XZ,CDR_X_P);
@@ -37,38 +55,85 @@ NBEditor::NBEditor(EditorState* st)
 	}
 }
 
+void addBox(IGUIElement* parent,IGUIEnvironment* guienv, vector2di pos,int index,const wchar_t* label){
+	guienv->addStaticText(label,rect<s32>(pos.X,pos.Y,pos.X+20,pos.Y+20),false,true,parent)->setNotClipped(true);
+	guienv->addEditBox(L"",rect<s32>(pos.X+15,pos.Y,pos.X+200,pos.Y+20),true,parent,index)->setNotClipped(true);
+}
+void addXYZ(IGUIElement* parent,IGUIEnvironment* guienv, vector2di pos,int startIndex){
+	addBox(parent,guienv,vector2di(pos.X,pos.Y),startIndex,L"X");   // 0,0
+	addBox(parent,guienv,vector2di(pos.X,pos.Y+30),startIndex+1,L"Y");   // 80, 0
+	addBox(parent,guienv,vector2di(pos.X,pos.Y+60),startIndex+2,L"Z");  // 160, 0
+}
+
 void NBEditor::load(){
 	IGUIStaticText* sidebar = GetState()->Menu()->GetSideBar();
 	IGUIEnvironment* guienv = GetState()->GetDevice()->getGUIEnvironment();
-	sidebar->setText(L"Node boxes");
-	IGUIStaticText* t = guienv->addStaticText(L"No node selected",rect<s32>(20,30,140,100),false,true,sidebar,GUI_SIDEBAR_LABEL);
-	
-	if (t)
-		t->setVisible(false);
-	
-	IGUIListBox* lb = guienv->addListBox(rect<s32>(20,30,230,128),sidebar,GUI_SIDEBAR_LISTBOX,true);
 
-	if (lb){
-		lb->setVisible(false);
-		IGUIButton* b = guienv->addButton(rect<s32>(20-20,130-30,70-20,155-30),lb,GUI_PROJ_NEW_BOX,L"+",L"Add a node box");
-		IGUIButton* c = guienv->addButton(rect<s32>(80-20,130-30,130-20,155-30),lb,GUI_PROJ_DELETE_BOX,L"-",L"Delete node box");
-		b->setNotClipped(true);
-		c->setNotClipped(true);
+	if (sidebar){
+		sidebar->setText(L"Node Box Tool");
+		IGUIStaticText* t = guienv->addStaticText(L"No node selected",rect<s32>(20,30,140,100),false,true,sidebar,ENB_GUI_MAIN_MSG);
+		
+		IGUIListBox* lb = guienv->addListBox(rect<s32>(20,30,230,128),sidebar,ENB_GUI_MAIN_LISTBOX,true);
+
+		if (lb){
+			lb->setVisible(false);
+			IGUIButton* b = guienv->addButton(rect<s32>(0,100,50,125),lb,GUI_PROJ_NEW_BOX,L"+",L"Add a node box");
+			IGUIButton* c = guienv->addButton(rect<s32>(60,100,110,125),lb,GUI_PROJ_DELETE_BOX,L"-",L"Delete node box");
+			b->setNotClipped(true);
+			c->setNotClipped(true);
+		}
+
+		// Create nodebox properties
+		{
+			// Create properties
+			t = guienv->addStaticText(L"Properties",rect<s32>(0,170,120,190),false,true,sidebar,ENB_GUI_PROP);
+			t->setVisible(false);
+
+			// Add name properties box
+			guienv->addStaticText(L"Name:",rect<s32>(10,30,50,50),false,true,t)->setNotClipped(true);
+			guienv->addEditBox(L"",rect<s32>(60,30,210,50),true,t,ENB_GUI_PROP_NAME)->setNotClipped(true);		
+
+			// Add positioning
+			addXYZ(t,guienv,vector2di(10,60),ENB_GUI_PROP_X1);
+			addXYZ(t,guienv,vector2di(10,160),ENB_GUI_PROP_X2); // 60
+
+			// Add buttons
+			guienv->addButton(rect<s32>(30,250,100,280),t,ENB_GUI_PROP_UPDATE,L"Update",L"")->setNotClipped(true);
+			guienv->addButton(rect<s32>(110,250,180,280),t,ENB_GUI_PROP_REVERT,L"Revert",L"")->setNotClipped(true);
+		}
 	}
-
 	load_ui();
+}
+
+void fillTB(IGUIElement* sidebar,int parentId,int id,float value){
+	IGUIElement* e = sidebar->getElementFromId(parentId)->getElementFromId(id);
+
+	if (e){
+		IGUIEditBox* b = static_cast<IGUIEditBox*>(e);
+
+		if (!b)
+			return;
+
+		b->setText(stringw(value).c_str());
+	}
 }
 
 void NBEditor::load_ui(){
 	IGUIStaticText* sidebar = GetState()->Menu()->GetSideBar();
+
+	if (!sidebar)
+		return;
+
 	IGUIEnvironment* guienv = GetState()->GetDevice()->getGUIEnvironment();
 	Node* node = GetState()->project->GetCurrentNode();
 	if (!node){
-		sidebar->getElementFromId(GUI_SIDEBAR_LABEL)->setVisible(true);
-		sidebar->getElementFromId(GUI_SIDEBAR_LISTBOX)->setVisible(false);
+		sidebar->getElementFromId(ENB_GUI_MAIN_MSG)->setVisible(true);
+		sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX)->setVisible(false);
+		sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(false);
 	}else{
-		IGUIListBox* lb = (IGUIListBox*) sidebar->getElementFromId(GUI_SIDEBAR_LISTBOX);		
-		sidebar->getElementFromId(GUI_SIDEBAR_LABEL)->setVisible(false);
+		IGUIListBox* lb = (IGUIListBox*) sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);		
+		sidebar->getElementFromId(ENB_GUI_MAIN_MSG)->setVisible(false);
+		sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(false);
 
 		if (lb){
 			lb->clear();
@@ -85,13 +150,50 @@ void NBEditor::load_ui(){
 			}
 			lb->setSelected(lb->getListItem(node->GetId()));
 		}
+
+		fillProperties();
 	}
 }
 
-void NBEditor::unload(){
+void NBEditor::fillProperties(){
+	IGUIStaticText* sidebar = GetState()->Menu()->GetSideBar();
+
+	if (!sidebar)
+		return;
+
+	Node* node = GetState()->project->GetCurrentNode();
+
+	if (!node)
+		return;
+
+	NodeBox* nb = node->GetCurrentNodeBox();
+
+	if (!nb)	
+		return;
+
+	sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(true);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_X1,nb->one.X);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Y1,nb->one.Y);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Z1,nb->one.Z);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_X2,nb->two.X);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Y2,nb->two.Y);
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Z2,nb->two.Z);
+
+	IGUIElement* e = sidebar->getElementFromId(ENB_GUI_PROP)->getElementFromId(ENB_GUI_PROP_NAME);
+
+	if (e){
+		IGUIEditBox* b = static_cast<IGUIEditBox*>(e);
+
+		if (!b)
+			return;
+
+		b->setText(stringw(nb->name).c_str());
+	}
 }
 
-void NBEditor::update(){
+void NBEditor::unload(){}
+
+void NBEditor::update(double dtime){
 }
 
 void NBEditor::draw(irr::video::IVideoDriver* driver){
@@ -236,6 +338,8 @@ void CDR::update(NBEditor* editor,bool drag,rect<s32> offset){
 				box->moveNodeBox(editor->GetState(),type,wpos);
 			}
 			node->remesh();
+
+			editor->triggerCDRmoved();
 	}
 
 	vector3df pos;
@@ -309,7 +413,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 			case GUI_PROJ_DELETE_BOX:
 				{
 					Node* node = GetState()->project->GetCurrentNode();
-					IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(GUI_SIDEBAR_LISTBOX);	
+					IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
 					if (node && node->GetNodeBox(lb->getSelected())){
 						printf("Clicked delete nb!\n");
 						node->deleteNodebox(lb->getSelected());
@@ -317,10 +421,49 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 					}
 				}
 				break;
+			case ENB_GUI_PROP_REVERT:
+				{
+					fillProperties();
+				}
+				break;
+			case ENB_GUI_PROP_UPDATE:
+				{
+
+					IGUIElement* prop = GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_PROP);
+
+					if (!prop)
+						return false;
+
+					Node* node = GetState()->project->GetCurrentNode();
+
+					if (!node)
+						return false;
+
+					NodeBox* nb = node->GetCurrentNodeBox();
+
+					if (!nb)	
+						return false;
+
+					try{
+						nb->name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
+						nb->name = nb->name.replace(" ","_");
+						nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(),NULL);
+						nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(),NULL);
+						nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(),NULL);
+						nb->two.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(),NULL);
+						nb->two.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(),NULL);
+						nb->two.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(),NULL);
+						node->remesh();
+						load_ui();
+					}catch(void* e){
+						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed",L"Please check that the properties contain only numbers.");
+					}
+				}
+				break;
 			}
 		}else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED){
 			Node* node = GetState()->project->GetCurrentNode();
-			IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(GUI_SIDEBAR_LISTBOX);	
+			IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
 			if (node && lb && node->GetNodeBox(lb->getSelected())){
 				node->select(lb->getSelected());
 				load_ui();
