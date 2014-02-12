@@ -83,15 +83,24 @@ void NBEditor::load(){
 			c->setNotClipped(true);
 		}
 
-		t = guienv->addStaticText(L"Properties",rect<s32>(0,170,120,190),false,true,sidebar,ENB_GUI_PROP);
+		// Create nodebox properties
+		{
+			// Create properties
+			t = guienv->addStaticText(L"Properties",rect<s32>(0,170,120,190),false,true,sidebar,ENB_GUI_PROP);
+			t->setVisible(false);
 
-		t->setVisible(false);
+			// Add name properties box
+			guienv->addStaticText(L"Name:",rect<s32>(10,30,50,50),false,true,t)->setNotClipped(true);
+			guienv->addEditBox(L"",rect<s32>(60,30,210,50),true,t,ENB_GUI_PROP_NAME)->setNotClipped(true);		
 
-		addXYZ(t,guienv,vector2di(10,30),ENB_GUI_PROP_X1);
-		addXYZ(t,guienv,vector2di(10,130),ENB_GUI_PROP_X2); // 60
+			// Add positioning
+			addXYZ(t,guienv,vector2di(10,60),ENB_GUI_PROP_X1);
+			addXYZ(t,guienv,vector2di(10,160),ENB_GUI_PROP_X2); // 60
 
-		guienv->addButton(rect<s32>(30,230,100,260),t,ENB_GUI_PROP_UPDATE,L"Update",L"")->setNotClipped(true);
-		guienv->addButton(rect<s32>(110,230,180,260),t,ENB_GUI_PROP_REVERT,L"Revert",L"")->setNotClipped(true);
+			// Add buttons
+			guienv->addButton(rect<s32>(30,250,100,280),t,ENB_GUI_PROP_UPDATE,L"Update",L"")->setNotClipped(true);
+			guienv->addButton(rect<s32>(110,250,180,280),t,ENB_GUI_PROP_REVERT,L"Revert",L"")->setNotClipped(true);
+		}
 	}
 	load_ui();
 }
@@ -168,7 +177,18 @@ void NBEditor::fillProperties(){
 	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Z1,nb->one.Z);
 	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_X2,nb->two.X);
 	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Y2,nb->two.Y);
-	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Z2,nb->two.Z);	
+	fillTB(sidebar,ENB_GUI_PROP,ENB_GUI_PROP_Z2,nb->two.Z);
+
+	IGUIElement* e = sidebar->getElementFromId(ENB_GUI_PROP)->getElementFromId(ENB_GUI_PROP_NAME);
+
+	if (e){
+		IGUIEditBox* b = static_cast<IGUIEditBox*>(e);
+
+		if (!b)
+			return;
+
+		b->setText(stringw(nb->name).c_str());
+	}
 }
 
 void NBEditor::unload(){}
@@ -425,6 +445,8 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 						return false;
 
 					try{
+						nb->name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
+						nb->name = nb->name.replace(" ","_");
 						nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(),NULL);
 						nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(),NULL);
 						nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(),NULL);
@@ -432,6 +454,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 						nb->two.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(),NULL);
 						nb->two.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(),NULL);
 						node->remesh();
+						load_ui();
 					}catch(void* e){
 						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed",L"Please check that the properties contain only numbers.");
 					}

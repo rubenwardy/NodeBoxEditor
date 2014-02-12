@@ -42,7 +42,7 @@ int main(){
 	conf->setStringSetting("dont_use_vsync","false");
 	conf->setStringSetting("fullscreen","false");
 	conf->setStringSetting("width","896");
-	conf->setStringSetting("height","480");
+	conf->setStringSetting("height","520");
 	conf->load("editor.conf");
 
 	E_DRIVER_TYPE driv = irr::video::EDT_OPENGL;
@@ -62,7 +62,7 @@ int main(){
 	if (w==0)
 		w=896;
 	if (h==0)
-		h=480;
+		h=520;
 
 	if (conf->getSettingAsBool("dont_use_vsync"))
 		printf("[WARNING] You have disabled vsync, so expect major CPU usage!\n");
