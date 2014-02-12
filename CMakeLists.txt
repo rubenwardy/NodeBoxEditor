@@ -53,7 +53,7 @@ target_link_libraries(
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
-    OUTPUT_NAME NodeBoxEditor
+    OUTPUT_NAME bin/NodeBoxEditor
 )
 
 # Install DLLs
