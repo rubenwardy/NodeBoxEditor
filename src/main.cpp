@@ -40,6 +40,7 @@ int main(){
 	conf->setStringSetting("hide_sidebar","false");
 	conf->setStringSetting("always_show_position_handle","false");
 	conf->setStringSetting("dont_use_vsync","false");
+	conf->setStringSetting("use_sleep","false");
 	conf->setStringSetting("fullscreen","false");
 	conf->setStringSetting("width","896");
 	conf->setStringSetting("height","520");
