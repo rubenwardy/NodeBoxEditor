@@ -14,17 +14,17 @@ find_package(PNG REQUIRED)
 
 # Source files
 set(NBGEN_SRC
-	main.cpp
-	Configuration.cpp
-	Editor.cpp
-	EditorState.cpp
-	LUAFileParser.cpp
-	MenuState.cpp
-	NBEditor.cpp
-	NBEFileParser.cpp
-	Node.cpp
-	NodeBox.cpp
-	Project.cpp
+	src/main.cpp
+	src/Configuration.cpp
+	src/Editor.cpp
+	src/EditorState.cpp
+	src/LUAFileParser.cpp
+	src/MenuState.cpp
+	src/NBEditor.cpp
+	src/NBEFileParser.cpp
+	src/Node.cpp
+	src/NodeBox.cpp
+	src/Project.cpp
 )
 
 # Include Directories
