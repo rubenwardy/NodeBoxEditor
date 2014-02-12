@@ -47,7 +47,7 @@ enum FileParserType
 };
 
 // Defines
-#define EDITOR_TEXT_VERSION "0.6.1 - Stone"
+#define EDITOR_TEXT_VERSION "0.6.2 - Stone"
 #define EDITOR_VERSION 1
 #define EDITOR_PARSER 1
 #define NODE_RES 16 // The resolution of the snapping (16)

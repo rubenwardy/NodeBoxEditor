@@ -1,4 +1,6 @@
 #include "Editor.h"
+#include <ctime>
+#include <time.h>
 
 Editor::Editor()
 :_state(NULL),_device(NULL),target(NULL),pivot(NULL),currentWindow(-1)
@@ -45,6 +47,10 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 			LastX -= 256;
 	int LastY = driver->getScreenSize().Height;
 	int lastFPS = -1;
+
+	bool dosleep = GetState()->Settings()->getSettingAsBool("use_sleep");
+	u32 last = std::clock();
+	double dtime = 0;
 	while (GetDevice()->run()){
 		if (GetState()->NeedsClose()){
 			GetDevice()->closeDevice();
@@ -170,8 +176,19 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 			camera[3]->setProjectionMatrix(projMat,true);
 		}
 
+		// Update
 		if (GetState()->Mode())
-			GetState()->Mode()->update((1000.0/60.0));
+			GetState()->Mode()->update(dtime);
+
+		// Do sleep
+		unsigned int now = std::clock();
+		if (dosleep){
+			u32 sleeptime = int(double(1000)/double(65)) - (now - last);
+			if (sleeptime > 0 && sleeptime < 200)
+				GetDevice()->sleep(sleeptime);
+		}
+		dtime = double(now - last)/1000;
+		last = now;		
 	}
 
 	return true;

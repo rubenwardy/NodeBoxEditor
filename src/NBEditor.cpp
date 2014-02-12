@@ -446,7 +446,11 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 
 					try{
 						nb->name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
-						nb->name = nb->name.replace(" ","_");
+						#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+						nb->name.replace(' ','_');
+						#else
+						nb->name = nb->name.replace(' ','_');
+						#endif
 						nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(),NULL);
 						nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(),NULL);
 						nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(),NULL);
