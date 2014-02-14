@@ -1,7 +1,7 @@
 #include "Project.h"
 
 Project::Project()
-:number_of_nodes(0),snode(-1)
+:number_of_nodes(0),snode(-1),node_count(0)
 {
 	nodes = new list<Node*>();
 }
@@ -41,6 +41,13 @@ Node* Project::GetNode(vector3di pos) const{
 	return NULL;
 }
 
-void Project::AddNode(Node* node) const{
+void Project::AddNode(Node* node){
+	node_count ++;
+
+	if (node->name == ""){
+		core::stringc nd="Node";
+		nd+=node_count;
+		node->name = nd;
+	}
 	nodes->push_back(node);
 }

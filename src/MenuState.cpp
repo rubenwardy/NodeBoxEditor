@@ -78,7 +78,7 @@ void MenuState::init(){
 bool MenuState::OnEvent(const SEvent& event){
 	if (
 		event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-		event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP
+		event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN
 	){
 		if (rect<s32>(10,32,42,64).isPointInside(GetState()->mouse_position)){
 				mode_icons_open = !mode_icons_open;

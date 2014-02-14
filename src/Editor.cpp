@@ -136,7 +136,22 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 		if (GetState()->Mode())
 			GetState()->Mode()->draw(driver);
 
+		if (GetState()->project&&GetState()->project->GetCurrentNode()){
+			vector3df pos = vector3df(
+				GetState()->project->GetCurrentNode()->getPosition().X,
+				GetState()->project->GetCurrentNode()->getPosition().Y,
+				GetState()->project->GetCurrentNode()->getPosition().Z
+			);
+			target->setPosition(pos);
+
+			camera[0]->setTarget(pos);
+			camera[1]->setTarget(pos);
+			camera[2]->setTarget(pos);
+			camera[3]->setTarget(pos);
+		}
+
 		guienv->drawAll();
+
 		driver->endScene();
 
 		#ifdef _DEBUG
@@ -229,6 +244,15 @@ bool Editor::OnEvent(const SEvent& event)
 			GetState()->keys[event.KeyInput.Key] = EKS_DOWN;
 		}else{
 			GetState()->keys[event.KeyInput.Key] = EKS_UP;
+		}
+		if (event.KeyInput.Key== KEY_DOWN || event.KeyInput.Key== KEY_KEY_S){
+			pivot->setRotation(vector3df(pivot->getRotation().X-1,pivot->getRotation().Y,pivot->getRotation().Z));
+		}else if (event.KeyInput.Key== KEY_UP || event.KeyInput.Key== KEY_KEY_W){
+			pivot->setRotation(vector3df(pivot->getRotation().X+1,pivot->getRotation().Y,pivot->getRotation().Z));
+		}else if (event.KeyInput.Key== KEY_LEFT || event.KeyInput.Key== KEY_KEY_A){
+			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y+1,pivot->getRotation().Z));
+		}else if (event.KeyInput.Key== KEY_RIGHT || event.KeyInput.Key== KEY_KEY_D){
+			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y-1,pivot->getRotation().Z));
 		}
 	}
 	if (event.EventType == EET_GUI_EVENT){
