@@ -2,10 +2,8 @@
 #include "FileParser.h"
 
 MenuState::MenuState(EditorState* state)
-:_state(state),
-		_projectmb(NULL),
-		menubar(NULL)
-	{}
+:_state(state),_projectmb(NULL),menubar(NULL),mode_icons_open(false)
+{}
 
 
 void MenuState::init(){
@@ -78,6 +76,36 @@ void MenuState::init(){
 }
 
 bool MenuState::OnEvent(const SEvent& event){
+	if (
+		event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+		event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP
+	){
+		if (rect<s32>(10,32,42,64).isPointInside(GetState()->mouse_position)){
+				mode_icons_open = !mode_icons_open;
+				return true;
+		}
+		if (mode_icons_open){
+			if (!(rect<s32>(10,32,210,64).isPointInside(GetState()->mouse_position))){
+				mode_icons_open = false;
+				return true;
+			}
+			EditorMode* curs = GetState()->Mode();
+			int x = 0;
+			for (int i=0;i<5;i++){
+				EditorMode* m = GetState()->Mode(i);
+
+				if (m && m!=curs){
+					if (rect<s32>(47+37*x,32,79+37*x,64).isPointInside(GetState()->mouse_position)){
+						// Run select
+						GetState()->SelectMode(i);
+						mode_icons_open = false;
+						return true;
+					}
+					x ++;
+				}
+			}
+		}
+	}
 	if (event.EventType == EET_GUI_EVENT){
 		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED){
 			IGUIContextMenu* menu = (IGUIContextMenu*)event.GUIEvent.Caller;
@@ -263,7 +291,21 @@ void MenuState::draw(IVideoDriver* driver){
 			->draw3DWindowBackground(NULL,false,0,rect<s32>((driver->getScreenSize().Width - 256),top,driver->getScreenSize().Width,driver->getScreenSize().Height));
 		
 	}
+	EditorMode* curs = GetState()->Mode();
+	if (curs)
+		driver->draw2DImage(driver->getTexture(curs->icon()),rect<s32>(10,32,42,64),rect<s32>(0,0,32,32),0,0,true);
 
+	if (mode_icons_open){
+		int x = 0;
+		for (int i=0;i<5;i++){
+			EditorMode* m = GetState()->Mode(i);
+
+			if (m && m!=curs){
+				driver->draw2DImage(driver->getTexture(m->icon()),rect<s32>(47+37*x,32,79+37*x,64),rect<s32>(0,0,32,32),0,0,true);
+				x ++;
+			}
+		}
+	}
 }
 
 IGUIWindow* MenuState::addFileDialog(FileParserType type,int submit,const wchar_t* title,const wchar_t* button){

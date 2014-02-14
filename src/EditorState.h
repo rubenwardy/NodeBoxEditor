@@ -8,7 +8,7 @@
 #define NUMBER_OF_KEYS 252
 enum KeyState{
 	EKS_UP = false,
-	EKS_DOWN = true,
+	EKS_DOWN = true
 };
 
 class Project;
@@ -27,7 +27,17 @@ public:
 	Project* project;
 
 	// Editor
-	EditorMode* Mode() const;
+	EditorMode* Mode(int id) const{
+		if (id < 0 || id >= 5){
+			return NULL;
+		}
+		return _modes[id];
+	}
+	EditorMode* Mode() const{
+		return Mode(currentmode);
+	}
+	void SelectMode(int id);
+	
 	void AddMode(EditorMode* value);	
 	MenuState* Menu() const{return _menu;}
 	void SetMenu(MenuState* stat){_menu=stat;}	
@@ -39,13 +49,13 @@ public:
 	irr::core::vector2di mouse_position;
 	KeyState keys[NUMBER_OF_KEYS];
 	
-	
 	// Settings
 	Configuration* Settings() const{return _settings;}
 private:
 	irr::IrrlichtDevice* _device;
 	int currentmode;
-	list<EditorMode*>* _modes;
+	EditorMode* _modes[5];
+	int _modeCount;
 	Configuration* _settings;
 	MenuState* _menu;
 	bool close_requested;
@@ -61,8 +71,12 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver) = 0;
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset) = 0;
 	virtual bool OnEvent(const irr::SEvent &event) = 0;
+	virtual const char* icon() const = 0;
 	EditorState* GetState() const {return _state;}
+	int getId() const{return _id;}
+	void setId(int id){_id = id;}
 private:
 	EditorState* _state;
+	int _id;
 };
 #endif

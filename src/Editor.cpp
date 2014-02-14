@@ -31,6 +31,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 
 	// Add editor modes
 	GetState()->AddMode(new NBEditor(GetState()));
+	GetState()->AddMode(new NodeEditor(GetState()));
 
 	// Set up project
 	proj->AddNode(new Node(GetDevice(),GetState()));
@@ -38,15 +39,16 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 
 	// Load user interface
 	LoadScene();	
-	GetState()->Menu()->init();
-	GetState()->Mode()->load();
+	GetState()->SelectMode(0);
 	printf("Complete!\n");
 
 	int LastX = driver->getScreenSize().Width;
 	if (!GetState()->Settings()->getSettingAsBool("hide_sidebar"))
 			LastX -= 256;
 	int LastY = driver->getScreenSize().Height;
+#ifdef _DEBUG
 	int lastFPS = -1;
+#endif
 
 	bool dosleep = GetState()->Settings()->getSettingAsBool("use_sleep");
 	u32 last = std::clock();
@@ -137,6 +139,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
 		guienv->drawAll();
 		driver->endScene();
 
+		#ifdef _DEBUG
 		int fps = driver->getFPS();
         if (lastFPS != fps)
         {
@@ -147,6 +150,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf){
             GetDevice()->setWindowCaption(str.c_str());
             lastFPS = fps;
         }
+		#endif
 
 		if (LastX != ResX || LastY != ResY){
 			printf("Adjusting FOV to new screen size...\n");

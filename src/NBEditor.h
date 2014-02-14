@@ -29,7 +29,8 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver);
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
-	void triggerCDRmoved(){prop_needs_update = true;}
+	virtual const char* icon() const{ return "media/icon_mode_nodebox.png"; }
+	void triggerCDRmoved(){prop_needs_update = true;}	
 
 	// Snapping
 	f32 snappers[NODE_RES+1];
