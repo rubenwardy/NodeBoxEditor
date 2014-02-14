@@ -19,9 +19,7 @@ void NodeEditor::load(){
 		IGUIButton* c = guienv->addButton(rect<s32>(60,100,110,125),lb,ENG_GUI_MAIN_DEL,L"-",L"Delete node");
 		IGUIButton* d = guienv->addButton(rect<s32>(120,100,170,125),lb,ENG_GUI_MAIN_EDIT,L"Edit",L"Edit node boxes");
 		b->setNotClipped(true);
-		b->setEnabled(false);
 		c->setNotClipped(true);
-		c->setEnabled(false);
 		d->setNotClipped(true);
 	}
 
@@ -126,6 +124,20 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 					}
 				}
 				break;
+			case ENG_GUI_MAIN_ADD:
+				{
+					GetState()->project->AddNode(new Node(GetState()->GetDevice(),GetState()));
+					load_ui();
+				}
+				break;
+			case ENG_GUI_MAIN_DEL:
+				{
+					if (GetState()->project->GetCurrentNode()){
+						//GetState()->project->Remove
+						return true;
+					}
+				}
+				break;
 			case ENG_GUI_PROP_REVERT:
 				{
 					fillProperties();
@@ -164,6 +176,13 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 				}
 				break;
 			}
+		}else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED){
+			IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);	
+			if (lb && GetState()->project->GetNode(lb->getSelected())){
+				GetState()->project->SelectNode(lb->getSelected());
+				load_ui();
+			}
+					
 		}
 	}	
 	return false;

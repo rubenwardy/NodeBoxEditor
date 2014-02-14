@@ -49,5 +49,6 @@ void Project::AddNode(Node* node){
 		nd+=node_count;
 		node->name = nd;
 	}
+	node->setPosition(vector3di(node_count-1,0,0));
 	nodes->push_back(node);
 }
