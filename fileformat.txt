@@ -1,5 +1,5 @@
 # ------------------------------------------------ #
-# FILE FORMAT FOR MT FILES USING PARSER VERSION 1  #
+# FILE FORMAT FOR NBE FILES USING PARSER VERSION 1 #
 # This is the file format for .nbe files           #
 # Comments ARE NOT allowed in real format          #
 # Axis Y is height                                 #
