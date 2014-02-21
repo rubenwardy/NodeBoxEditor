@@ -1,0 +1,38 @@
+# ------------------------------------------------ #
+# FILE FORMAT FOR MT FILES USING PARSER VERSION 1  #
+# This is the file format for .nbe files           #
+# Comments ARE NOT allowed in real format          #
+# Axis Y is height                                 #
+# ------------------------------------------------ #
+
+MINETEST NODEBOX EDITOR   # Tells the parser that this is a .nbe file
+PARSER 1                  # What version the parser uses. Versions may not be backwards compatible.
+NAME my_mod_namespace     # The folder the mod should be in
+
+
+# Blank lines are okay
+
+
+# -------------------------------------------------- #
+# this is a node block which adds an individual node #
+# -------------------------------------------------- #
+NODE tree_block    # Declares a node, and gives it its name.
+POSITION 0 0 0      # position in editor grid
+# <name> <x1> <y1> <z1> <x2> <y2> <z2>
+NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # A single box called name.  
+NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # a single box called name
+END NODE
+
+
+# Blank line
+
+
+# -------------------------------------------------- #
+# this is a node block which adds an individual node #
+# -------------------------------------------------- #
+NODE tree_block_2    # Declares a node, and gives it its name.
+POSITION 1 0 0      # position in editor grid.
+# <name> <x1> <y1> <z1> <x2> <y2> <z2>
+NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # A single box called name.  
+NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # a single box called name
+END NODE
