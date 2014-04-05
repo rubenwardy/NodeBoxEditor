@@ -3,6 +3,7 @@
 #include "common.h"
 #include "EditorState.h"
 #include "NBEditor.h"
+#include "NodeEditor.h"
 #include "Project.h"
 #include "FileParser.h"
 

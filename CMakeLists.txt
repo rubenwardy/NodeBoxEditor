@@ -21,6 +21,7 @@ set(NBGEN_SRC
 	src/LUAFileParser.cpp
 	src/MenuState.cpp
 	src/NBEditor.cpp
+	src/NodeEditor.cpp
 	src/NBEFileParser.cpp
 	src/Node.cpp
 	src/NodeBox.cpp

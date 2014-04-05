@@ -97,6 +97,7 @@ private:
 	IGUIContextMenu* _projectmb;
 	IGUIStaticText* _sidebar;
 	IGUIWindow* addFileDialog(FileParserType type,int submit,const wchar_t* title,const wchar_t* button);
+	bool mode_icons_open;
 };
 
 #endif

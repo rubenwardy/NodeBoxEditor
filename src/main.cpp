@@ -9,16 +9,6 @@
 #endif
 #endif
 
-const wchar_t* convert(const char* input){
-        #define MAXSIZE 1024
-        size_t origsize = strlen(input) + 1;
-        static wchar_t wcstring[MAXSIZE];
-        mbstowcs(wcstring, input, origsize);
-        wcscat(wcstring, L"");
-        return wcstring;
-        #undef MAXSIZE
-}
-
 int main(){
 	printf(
 		" _   _           _        ____              _____    _ _ _             \n"
@@ -86,4 +76,50 @@ int main(){
 	conf->save("editor.conf");
 
     return 1;
+}
+
+// Define class independant functions
+const wchar_t* convert(const char* input){
+        #define MAXSIZE 1024
+        size_t origsize = strlen(input) + 1;
+        static wchar_t wcstring[MAXSIZE];
+        mbstowcs(wcstring, input, origsize);
+        wcscat(wcstring, L"");
+        return wcstring;
+        #undef MAXSIZE
+}
+
+void fillTB(IGUIElement* sidebar,int parentId,int id,float value){
+	IGUIElement* e = sidebar->getElementFromId(parentId)->getElementFromId(id);
+
+	if (e){
+		IGUIEditBox* b = static_cast<IGUIEditBox*>(e);
+
+		if (!b)
+			return;
+
+		b->setText(stringw(value).c_str());
+	}
+}
+void fillTB(IGUIElement* sidebar,int parentId,int id,int value){
+	IGUIElement* e = sidebar->getElementFromId(parentId)->getElementFromId(id);
+
+	if (e){
+		IGUIEditBox* b = static_cast<IGUIEditBox*>(e);
+
+		if (!b)
+			return;
+
+		b->setText(stringw(value).c_str());
+	}
+}
+
+void addBox(IGUIElement* parent,IGUIEnvironment* guienv, vector2di pos,int index,const wchar_t* label){
+	guienv->addStaticText(label,rect<s32>(pos.X,pos.Y,pos.X+20,pos.Y+20),false,true,parent)->setNotClipped(true);
+	guienv->addEditBox(L"",rect<s32>(pos.X+15,pos.Y,pos.X+200,pos.Y+20),true,parent,index)->setNotClipped(true);
+}
+void addXYZ(IGUIElement* parent,IGUIEnvironment* guienv, vector2di pos,int startIndex){
+	addBox(parent,guienv,vector2di(pos.X,pos.Y),startIndex,L"X");   // 0,0
+	addBox(parent,guienv,vector2di(pos.X,pos.Y+30),startIndex+1,L"Y");   // 80, 0
+	addBox(parent,guienv,vector2di(pos.X,pos.Y+60),startIndex+2,L"Z");  // 160, 0
 }
