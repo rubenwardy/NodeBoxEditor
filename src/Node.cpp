@@ -1,7 +1,7 @@
 #include "Node.h"
 
-Node::Node(IrrlichtDevice* mdevice,EditorState* state)
-	:_device(mdevice),_state(state),number(0),_id(-1)
+Node::Node(IrrlichtDevice* mdevice,EditorState* state, unsigned int id)
+:_device(mdevice), _state(state), number(0), _selected(-1), _nid(id)
 {
 	for (int i=0;i<NODEB_MAX;i++){
 		boxes[i] = NULL;
@@ -81,7 +81,7 @@ void Node::defrag(){
 		if (boxes[i]!=NULL){
 			boxes[a]=boxes[i];
 			if (GetId()==i)
-				_id=a;
+				_selected=a;
 			a++;
 		}else{
 			boxes[a]=NULL;

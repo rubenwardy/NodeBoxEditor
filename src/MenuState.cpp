@@ -22,9 +22,9 @@ void MenuState::init(){
 
 	// File
 	submenu = menubar->getSubMenu(0);
-	submenu->addItem(L"New Project",GUI_FILE_NEW_PROJECT,false);
-	submenu->addItem(L"New Item",GUI_FILE_NEW_ITEM,false);
-	submenu->addSeparator();
+	//submenu->addItem(L"New Project",GUI_FILE_NEW_PROJECT,false);
+	//submenu->addItem(L"New Item",GUI_FILE_NEW_ITEM,false);
+	//submenu->addSeparator();
 	submenu->addItem(L"Open Project",GUI_FILE_OPEN_PROJECT);
 	submenu->addSeparator();
 	submenu->addItem(L"Save Project",GUI_FILE_SAVE_PROJECT);
@@ -34,9 +34,9 @@ void MenuState::init(){
 
 	// Edit
 	submenu = menubar->getSubMenu(1);
-	submenu->addItem(L"Undo",GUI_EDIT_UNDO,false);
-	submenu->addItem(L"Redo",GUI_EDIT_REDO,false);
-	submenu->addSeparator();
+	//submenu->addItem(L"Undo",GUI_EDIT_UNDO,false);
+	//submenu->addItem(L"Redo",GUI_EDIT_REDO,false);
+	//submenu->addSeparator();
 	submenu->addItem(
 		L"Snapping",GUI_EDIT_SNAP,true,false,
 		GetState()->Settings()->getSettingAsBool("snapping"),

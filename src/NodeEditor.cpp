@@ -126,14 +126,16 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 				break;
 			case ENG_GUI_MAIN_ADD:
 				{
-					GetState()->project->AddNode(new Node(GetState()->GetDevice(),GetState()));
+					GetState()->project->AddNode(GetState());
 					load_ui();
+					return true;
 				}
 				break;
 			case ENG_GUI_MAIN_DEL:
 				{
 					if (GetState()->project->GetCurrentNode()){
-						//GetState()->project->Remove
+						GetState()->project->DeleteNode(GetState()->project->GetSelectedNodeId());
+						load_ui();
 						return true;
 					}
 				}

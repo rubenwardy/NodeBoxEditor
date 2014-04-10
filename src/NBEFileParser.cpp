@@ -123,7 +123,7 @@ void NBEFileParser::parseLine(stringc line){
 		}else if (lw.find("node ") == 0){
 			printf("-- is node\n");
 			stage = ERS_NODE;
-			node = new Node(state->GetDevice(),state);
+			node = new Node(state->GetDevice(),state,proj->GetNodeCount());
 			stringc name = l.subString(4,l.size());
 			name = name.trim();
 			printf("-- Name: '%s'\n",name.c_str());

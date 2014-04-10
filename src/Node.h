@@ -10,16 +10,17 @@ class Node
 {
 public:
 	// Construction / Destruction
-	Node(IrrlichtDevice* mdevice,EditorState* state);
+	Node(IrrlichtDevice* mdevice,EditorState* state,unsigned int id);
 	~Node();
 
 	// Node box manager
-	int GetId(){return _id;}
+	int GetId()const{ return _selected;}
+	unsigned int NodeId()const{ return _nid; }
 	NodeBox* GetCurrentNodeBox();
 	NodeBox* GetNodeBox(int id);
 	NodeBox* addNodeBox();
 	void deleteNodebox(int id);
-	void select(int id){_id = id;}
+	void select(int id){_selected = id;}
 	
 	// Node properties	
 	vector3di getPosition() const{return nd_position;}
@@ -32,7 +33,8 @@ public:
 private:
 	// Data
 	NodeBox* boxes[NODEB_MAX];
-	int _id;
+	int _selected;
+	unsigned int _nid; // the node's id.
 	int number;	
 	vector3di nd_position;
 
