@@ -71,7 +71,7 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver) = 0;
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset) = 0;
 	virtual bool OnEvent(const irr::SEvent &event) = 0;
-	virtual const char* icon() const = 0;
+	virtual irr::video::ITexture* icon() = 0;
 	EditorState* GetState() const {return _state;}
 	int getId() const{return _id;}
 	void setId(int id){_id = id;}

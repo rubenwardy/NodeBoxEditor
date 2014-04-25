@@ -284,7 +284,6 @@ bool MenuState::OnEvent(const SEvent& event){
 void MenuState::draw(IVideoDriver* driver){
 	EditorState* state = GetState();
 	EditorMode* curs = state->Mode();
-	static irr::video::ITexture* icon = driver->getTexture(curs->icon());
 
 	if (state->Settings()->getSettingAsBool("hide_sidebar")) {
 		GetSideBar()->setVisible(false);
@@ -301,9 +300,8 @@ void MenuState::draw(IVideoDriver* driver){
 			);
 	}
 
-
 	if (curs) {
-		driver->draw2DImage(icon,
+		driver->draw2DImage(curs->icon(),
 			rect<s32>(10, 32, 42, 64),
 			rect<s32>( 0,  0, 32, 32),
 			0, 0, true);
@@ -315,7 +313,7 @@ void MenuState::draw(IVideoDriver* driver){
 			EditorMode* m = state->Mode(i);
 
 			if (m && m != curs) {
-				driver->draw2DImage(icon,
+				driver->draw2DImage(m->icon(),
 					rect<s32>(47 + 37 * x, 32, 79 + 37 * x, 64),
 					rect<s32>(0, 0, 32, 32),
 					0, 0, true);

@@ -16,7 +16,11 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver);
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
-	virtual const char* icon() const{ return "media/icon_mode_node.png"; }
+	virtual irr::video::ITexture* icon(){
+		static irr::video::ITexture* icon = GetState()->GetDevice()->
+				getVideoDriver()->getTexture("media/icon_mode_node.png");
+		return icon;
+	}
 
 	// The gui id numbers for this mode
 	// NOTE: the maximum that can be here is 20

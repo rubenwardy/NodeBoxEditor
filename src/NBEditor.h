@@ -29,7 +29,11 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver);
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
-	virtual const char* icon() const{ return "media/icon_mode_nodebox.png"; }
+	virtual irr::video::ITexture* icon(){
+		static irr::video::ITexture* icon = GetState()->GetDevice()->
+			getVideoDriver()->getTexture("media/icon_mode_nodebox.png");
+		return icon;
+	}
 	void triggerCDRmoved(){prop_needs_update = true;}	
 
 	// Snapping
