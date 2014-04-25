@@ -176,8 +176,10 @@ void NBEditor::update(double dtime){
 
 void NBEditor::draw(irr::video::IVideoDriver* driver){
 	if (wasmd && !GetState()->mousedown){
-		current = -1;		
+		current = -1;
 	}
+
+	static irr::video::ITexture* scale = driver->getTexture("media/gui_scale.png");
 
 	for (int i=0;i<15;i++){
 		if (cdrs[i].visible){
@@ -196,7 +198,7 @@ void NBEditor::draw(irr::video::IVideoDriver* driver){
 			}
 
 			driver->draw2DImage(
-				driver->getTexture("media/gui_scale.png"),
+				scale,
 				drawarea.UpperLeftCorner,
 				rect<s32>(0,0,10,10),NULL,color,true
 			);

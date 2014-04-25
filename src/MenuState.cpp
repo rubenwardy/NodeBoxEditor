@@ -282,27 +282,44 @@ bool MenuState::OnEvent(const SEvent& event){
 }
 
 void MenuState::draw(IVideoDriver* driver){
-	if (GetState()->Settings()->getSettingAsBool("hide_sidebar")){
+	EditorState* state = GetState();
+	EditorMode* curs = state->Mode();
+	static irr::video::ITexture* icon = driver->getTexture(curs->icon());
+
+	if (state->Settings()->getSettingAsBool("hide_sidebar")) {
 		GetSideBar()->setVisible(false);
-	}else{
+	} else {
 		GetSideBar()->setVisible(true);
 		u32 top = menubar->getAbsoluteClippingRect().LowerRightCorner.Y;
-		GetState()->GetDevice()->getGUIEnvironment()->getSkin()
-			->draw3DWindowBackground(NULL,false,0,rect<s32>((driver->getScreenSize().Width - 256),top,driver->getScreenSize().Width,driver->getScreenSize().Height));
-		
+		state->GetDevice()->getGUIEnvironment()->getSkin()
+			->draw3DWindowBackground(NULL, false, 0,
+				rect<s32>((driver->getScreenSize().Width - 256),
+					top,
+					driver->getScreenSize().Width,
+					driver->getScreenSize().Height
+				)
+			);
 	}
-	EditorMode* curs = GetState()->Mode();
-	if (curs)
-		driver->draw2DImage(driver->getTexture(curs->icon()),rect<s32>(10,32,42,64),rect<s32>(0,0,32,32),0,0,true);
 
-	if (mode_icons_open){
+
+	if (curs) {
+		driver->draw2DImage(icon,
+			rect<s32>(10, 32, 42, 64),
+			rect<s32>( 0,  0, 32, 32),
+			0, 0, true);
+	}
+
+	if (mode_icons_open) {
 		int x = 0;
-		for (int i=0;i<5;i++){
-			EditorMode* m = GetState()->Mode(i);
+		for (int i = 0; i < 5; i++) {
+			EditorMode* m = state->Mode(i);
 
-			if (m && m!=curs){
-				driver->draw2DImage(driver->getTexture(m->icon()),rect<s32>(47+37*x,32,79+37*x,64),rect<s32>(0,0,32,32),0,0,true);
-				x ++;
+			if (m && m != curs) {
+				driver->draw2DImage(icon,
+					rect<s32>(47 + 37 * x, 32, 79 + 37 * x, 64),
+					rect<s32>(0, 0, 32, 32),
+					0, 0, true);
+				x++;
 			}
 		}
 	}
