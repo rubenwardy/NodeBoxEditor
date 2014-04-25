@@ -36,26 +36,26 @@ void NBEFileParser::save(Project* project,irr::core::stringc file){
 			myfile << node->getPosition().Z;
 			myfile << "\n";
 
-			for (int i = 0;i<NODEB_MAX;i++){
-				NodeBox* box = node->GetNodeBox(i);
-
-				if (box){
-					myfile << "NODEBOX ";
-					myfile << box->name.c_str();
-					myfile << " ";
-					myfile << box->one.X;
-					myfile << " ";
-					myfile << box->one.Y;
-					myfile << " ";
-					myfile << box->one.Z;
-					myfile << " ";
-					myfile << box->two.X;
-					myfile << " ";
-					myfile << box->two.Y;
-					myfile << " ";
-					myfile << box->two.Z;
-					myfile << "\n";
-				}
+			std::vector<NodeBox*> boxes = node->GetBoxes();
+			for (std::vector<NodeBox*>::const_iterator it = boxes.begin();
+					it != boxes.end();
+					++it) {
+				NodeBox* box = *it;
+				myfile << "NODEBOX ";
+				myfile << box->name.c_str();
+				myfile << " ";
+				myfile << box->one.X;
+				myfile << " ";
+				myfile << box->one.Y;
+				myfile << " ";
+				myfile << box->one.Z;
+				myfile << " ";
+				myfile << box->two.X;
+				myfile << " ";
+				myfile << box->two.Y;
+				myfile << " ";
+				myfile << box->two.Z;
+				myfile << "\n";
 			}
 
 			myfile << "END NODE";
@@ -72,7 +72,7 @@ Project* NBEFileParser::open(irr::core::stringc file){
 	std::ifstream myfile(file.c_str());
 	if (myfile.is_open()){	
 		// Read parser header
-		if (!std::getline (myfile,line) ||	!std::getline (myfile,line))
+		if (!std::getline (myfile,line) || !std::getline (myfile,line))
 			return NULL;
 		if (line!="PARSER 1"){
 			printf("Not parser 1!\n");
@@ -84,7 +84,7 @@ Project* NBEFileParser::open(irr::core::stringc file){
 		// Parse file
 		proj = new Project();
 		stage = ERS_ROOT;
-		while (std::getline (myfile,line) )
+		while (std::getline(myfile, line))
 		{
 			parseLine(irr::core::stringc(line.c_str()));
 		}
@@ -102,9 +102,6 @@ void NBEFileParser::parseLine(stringc line){
 	if (l == "")
 		return;
 
-	printf("Parsing line: %s\n",l.c_str());
-
-	
 	#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
 		stringc lw = irr::core::stringc(l);
 		lw.make_lower();		
@@ -115,32 +112,20 @@ void NBEFileParser::parseLine(stringc line){
 
 	if (stage == ERS_ROOT){
 		if (lw.find("name ") == 0){
-			printf("-- is project name\n");
-			stringc name = l.subString(4,l.size());
-			name = name.trim();
-			printf("-- Name: '%s'\n",name.c_str());
-			proj->name = name;
+			stringc name = l.subString(4, l.size());
+			proj->name = name.trim();
 		}else if (lw.find("node ") == 0){
-			printf("-- is node\n");
 			stage = ERS_NODE;
 			node = new Node(state->GetDevice(),state,proj->GetNodeCount());
 			stringc name = l.subString(4,l.size());
-			name = name.trim();
-			printf("-- Name: '%s'\n",name.c_str());
-			node->name = name;
+			node->name = name.trim();
 		}
 	}else if (stage == ERS_NODE){
-		if (!node){
-			printf("In node stage, but no node active\n");
-		}
-
 		if (lw.find("position ") == 0){
 			printf("-- position parser not complete!\n");
 		}else if (lw.find("nodebox ") == 0){
-			printf("-- reading nodebox data!\n");
 			stringc n = l.subString(7,l.size());
 			n = n.trim();
-			printf("-- read name\n");
 			stringc ls[7];
 			int i = 0;
 			while (n!=""){
@@ -164,16 +149,11 @@ void NBEFileParser::parseLine(stringc line){
 			node->GetCurrentNodeBox()->one = vector3df(atof(ls[1].c_str()),atof(ls[2].c_str()),atof(ls[3].c_str()));
 			node->GetCurrentNodeBox()->two = vector3df(atof(ls[4].c_str()),atof(ls[5].c_str()),atof(ls[6].c_str()));
 			node->remesh();
-			printf("-- added nodebox\n");
-
 		}else if (lw.find("end node") == 0){
-			printf("-- is exit, saving and returning...\n");
 			proj->AddNode(node);
 			node = NULL;
 			stage = ERS_ROOT;
 		}		
 	}
-
-
-
 }
+
