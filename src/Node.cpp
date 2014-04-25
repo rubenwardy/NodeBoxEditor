@@ -55,6 +55,8 @@ void Node::deleteNodebox(int id){
 
 	delete boxes[id];
 	boxes.erase(boxes.begin() + id);
+	if (GetId() >= boxes.size())
+		_selected = boxes.size() - 1;
 }
 
 // Build node models
