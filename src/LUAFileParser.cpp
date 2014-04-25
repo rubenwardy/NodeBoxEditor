@@ -24,7 +24,6 @@ void LUAFileParser::save(Project* project,irr::core::stringc file){
 		int a = 1;
 		list<Node*>* nodes = project->GetList();
 		for (irr::core::list<Node*>::Iterator it=nodes->begin();it!=nodes->end();it++){
-			printf("Looping...\n");
 			Node* node = *it;
 			myfile << "minetest.register_node(\"";
 			if (node->name == ""){
@@ -40,29 +39,28 @@ void LUAFileParser::save(Project* project,irr::core::stringc file){
 			myfile << "\tdrawtype=\"nodebox\",\n"
 				"\tparamtype = \"light\",\n"
 				"\tnode_box = {\n"
-                "\t\ttype = \"fixed\",\n"
-                "\t\tfixed = {\n";
+				"\t\ttype = \"fixed\",\n"
+				"\t\tfixed = {\n";
 
-			for (int i = 0;i<NODEB_MAX;i++){
-				NodeBox* box = node->GetNodeBox(i);
-
-				if (box){
-					myfile << "\t\t\t{";
-					myfile << box->one.X;
-					myfile << ",";
-					myfile << box->one.Y;
-					myfile << ",";
-					myfile << box->one.Z;
-					myfile << ",";
-					myfile << box->two.X;
-					myfile << ",";
-					myfile << box->two.Y;
-					myfile << ",";
-					myfile << box->two.Z;
-					myfile << "}, --";
-					myfile << box->name.c_str();
-					myfile << "\n";
-				}
+			std::vector<NodeBox*> boxes = node->GetBoxes();
+			for (std::vector<NodeBox*>::const_iterator it = boxes.begin();
+					it != boxes.end();
+					++it) {
+				myfile << "\t\t\t{";
+				myfile << (*it)->one.X;
+				myfile << ",";
+				myfile << (*it)->one.Y;
+				myfile << ",";
+				myfile << (*it)->one.Z;
+				myfile << ",";
+				myfile << (*it)->two.X;
+				myfile << ",";
+				myfile << (*it)->two.Y;
+				myfile << ",";
+				myfile << (*it)->two.Z;
+				myfile << "}, --";
+				myfile << (*it)->name.c_str();
+				myfile << "\n";
 			}
 
 			myfile << "\t\t}\n\t}\n";
@@ -71,6 +69,7 @@ void LUAFileParser::save(Project* project,irr::core::stringc file){
 		}
 
 		myfile.close();
-	}else
+	} else {
 		printf("Unable to write to file\n");
+	}
 }

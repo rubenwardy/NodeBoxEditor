@@ -58,14 +58,10 @@ void NodeEditor::load_ui(){
 
 		list<Node*>* nodes = GetState()->project->GetList();
 		for (irr::core::list<Node*>::Iterator it=nodes->begin();it!=nodes->end();it++){
-			Node* node = *it;
-			if (node){
-				size_t origsize = strlen(node->name.c_str()) + 1;
-				static wchar_t wcstring[1024];
-				mbstowcs(wcstring, node->name.c_str(), origsize);
-				wcscat(wcstring, L"");
-				lb->addItem(wcstring);
-			}
+			size_t origsize = (*it)->name.size() + 1;
+			static wchar_t wcstring[1024];
+			mbstowcs(wcstring, (*it)->name.c_str(), origsize);
+			lb->addItem(wcstring);
 		}
 		lb->setSelected(lb->getListItem(GetState()->project->GetSelectedNodeId()));
 

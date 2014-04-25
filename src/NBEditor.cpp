@@ -116,15 +116,11 @@ void NBEditor::load_ui(){
 		if (lb){
 			lb->clear();
 			lb->setVisible(true);
-			for (int i = 0;i<NODEB_MAX;i++){
-				NodeBox* box = node->GetNodeBox(i);
-				if (box){
-					size_t origsize = strlen(box->name.c_str()) + 1;
-					static wchar_t wcstring[1024];
-					mbstowcs(wcstring, box->name.c_str(), origsize);
-					wcscat(wcstring, L"");
-					lb->addItem(wcstring);
-				}
+			std::vector<NodeBox*> boxes = node->GetBoxes();
+			for (std::vector<NodeBox*>::const_iterator it = boxes.begin();
+					it != boxes.end();
+					++it) {
+				lb->addItem((*it)->name.c_str());
 			}
 			lb->setSelected(lb->getListItem(node->GetId()));
 		}
@@ -176,8 +172,10 @@ void NBEditor::update(double dtime){
 
 void NBEditor::draw(irr::video::IVideoDriver* driver){
 	if (wasmd && !GetState()->mousedown){
-		current = -1;		
+		current = -1;
 	}
+
+	static irr::video::ITexture* scale = driver->getTexture("media/gui_scale.png");
 
 	for (int i=0;i<15;i++){
 		if (cdrs[i].visible){
@@ -196,7 +194,7 @@ void NBEditor::draw(irr::video::IVideoDriver* driver){
 			}
 
 			driver->draw2DImage(
-				driver->getTexture("media/gui_scale.png"),
+				scale,
 				drawarea.UpperLeftCorner,
 				rect<s32>(0,0,10,10),NULL,color,true
 			);
