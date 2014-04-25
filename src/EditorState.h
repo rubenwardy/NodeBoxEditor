@@ -1,7 +1,7 @@
 #ifndef _EDITORSTATE_H_INCLUDE_
 #define _EDITORSTATE_H_INCLUDE_
 #include "common.h"
-#include "Configuration.h"
+#include "Configuration.hpp"
 #include "Project.h"
 #include "MenuState.h"
 

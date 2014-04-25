@@ -223,11 +223,11 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset) {
 		return;
 	}
 
-	if (!editor->GetState()->Settings()->getSettingAsBool("always_show_position_handle") &&
+	if (!editor->GetState()->Settings()->getBool("always_show_position_handle") &&
 			(editor->GetState()->keys[KEY_LSHIFT] == EKS_UP) ==
-			(type == CDR_XY || type == CDR_XZ || type == CDR_ZY)
-		)   // (keyup && ispos) || (!keyup && !ispos)
-			return;
+			(type == CDR_XY || type == CDR_XZ || type == CDR_ZY)) {
+		return;
+	}
 
 	Node *node = editor->GetState()->project->GetCurrentNode();
 
@@ -269,14 +269,14 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset) {
 			// Snapping
 			wpos -= vector3df(node->getPosition().X, node->getPosition().Y, node->getPosition().Z);
 
-			if (editor->GetState()->Settings()->getSettingAsBool("snapping") == true) {
+			if (editor->GetState()->Settings()->getBool("snapping")) {
 				wpos.X = round((wpos.X + 0.5) * 16) / 16 - 0.5;
 				wpos.Y = round((wpos.Y + 0.5) * 16) / 16 - 0.5;
 				wpos.Z = round((wpos.Z + 0.5) * 16) / 16 - 0.5;
 			}
 
 			// Do node limiting
-			if (editor->GetState()->Settings()->getSettingAsBool("limiting") == true) {
+			if (editor->GetState()->Settings()->getBool("limiting")) {
 				// X Axis
 				if (wpos.X < -0.5)
 					wpos.X = -0.5;
@@ -413,7 +413,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event)
 	} else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown) {
 		if (
 			GetState()->GetDevice()->getGUIEnvironment()->getFocus() &&
-			GetState()->GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			GetState()->GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
 			)
 				return false;
 

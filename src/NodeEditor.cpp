@@ -156,7 +156,7 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 	}else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown){
 		if (
 			GetState()->GetDevice()->getGUIEnvironment()->getFocus() &&
-			GetState()->GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			GetState()->GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
 			)
 				return false;
 

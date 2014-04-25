@@ -7,7 +7,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 
 			f32 new_opp = one.X - (position.X - two.X);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -20,7 +20,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 		if (both){
 			f32 new_opp = two.X - (position.X - one.X);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -33,7 +33,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 		if (both){
 			f32 new_opp = one.Y - (position.Y - two.Y);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -46,7 +46,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 		if (both){
 			f32 new_opp = two.Y - (position.Y - one.Y);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -59,7 +59,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 		if (both){
 			f32 new_opp = one.Z - (position.Z - two.Z);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -72,7 +72,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor,CDR_TYPE type,vector3df posi
 		if (both){
 			f32 new_opp = two.Z - (position.Z - one.Z);
 
-			if (editor->Settings()->getSettingAsBool("limiting")==true){
+			if (editor->Settings()->getBool("limiting")==true){
 				if (new_opp > 0.5 || new_opp < -0.5)
 					return;
 			}
@@ -119,7 +119,7 @@ void NodeBox::moveNodeBox(EditorState* editor,CDR_TYPE type,vector3df position){
 				new_one.X+move_dist.X >= -0.5 &&
 				new_two.X+move_dist.X <= 0.5 &&
 				new_two.X+move_dist.X >= -0.5)||
-				!editor->Settings()->getSettingAsBool("limiting")
+				!editor->Settings()->getBool("limiting")
 			){
 			new_one.X+=move_dist.X;
 			new_two.X+=move_dist.X;
@@ -132,7 +132,7 @@ void NodeBox::moveNodeBox(EditorState* editor,CDR_TYPE type,vector3df position){
 				new_one.Y+move_dist.Y >= -0.5 &&
 				new_two.Y+move_dist.Y <= 0.5 &&
 				new_two.Y+move_dist.Y >= -0.5)||
-				!editor->Settings()->getSettingAsBool("limiting")
+				!editor->Settings()->getBool("limiting")
 			){
 			new_one.Y+=move_dist.Y;
 			new_two.Y+=move_dist.Y;
@@ -145,7 +145,7 @@ void NodeBox::moveNodeBox(EditorState* editor,CDR_TYPE type,vector3df position){
 				new_one.Z+move_dist.Z >= -0.5 &&
 				new_two.Z+move_dist.Z <= 0.5 &&
 				new_two.Z+move_dist.Z >= -0.5)||
-				!editor->Settings()->getSettingAsBool("limiting")){
+				!editor->Settings()->getBool("limiting")){
 			new_one.Z+=move_dist.Z;
 			new_two.Z+=move_dist.Z;
 		}

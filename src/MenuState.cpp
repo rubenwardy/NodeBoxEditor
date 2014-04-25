@@ -40,12 +40,12 @@ void MenuState::init()
 	//submenu->addSeparator();
 	submenu->addItem(
 		L"Snapping", GUI_EDIT_SNAP, true, false,
-		GetState()->Settings()->getSettingAsBool("snapping"),
+		GetState()->Settings()->getBool("snapping"),
 		true
 	);
 	submenu->addItem(
 		L"Limiting", GUI_EDIT_LIMIT, true, false,
-		GetState()->Settings()->getSettingAsBool("limiting"),
+		GetState()->Settings()->getBool("limiting"),
 		true
 	);
 
@@ -151,21 +151,21 @@ bool MenuState::OnEvent(const SEvent& event)
 				case GUI_EDIT_SNAP:
 					{					
 						if (menu->isItemChecked(menu->getSelectedItem()))
-							GetState()->Settings()->setStringSetting("snapping", "true");
+							GetState()->Settings()->set("snapping", "true");
 						else
-							GetState()->Settings()->setStringSetting("snapping", "false");
+							GetState()->Settings()->set("snapping", "false");
 
-						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getSettingAsBool("snapping"));
+						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getBool("snapping"));
 					}
 					break;
 				case GUI_EDIT_LIMIT:
 					{					
 						if (menu->isItemChecked(menu->getSelectedItem()))
-							GetState()->Settings()->setStringSetting("limiting", "true");
+							GetState()->Settings()->set("limiting", "true");
 						else
-							GetState()->Settings()->setStringSetting("limiting", "false");
+							GetState()->Settings()->set("limiting", "false");
 
-						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getSettingAsBool("limiting"));
+						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getBool("limiting"));
 					}
 					break;
 				case GUI_HELP_ABOUT:
@@ -298,7 +298,7 @@ void MenuState::draw(IVideoDriver* driver){
 	EditorState* state = GetState();
 	EditorMode* curs = state->Mode();
 
-	if (state->Settings()->getSettingAsBool("hide_sidebar")) {
+	if (state->Settings()->getBool("hide_sidebar")) {
 		GetSideBar()->setVisible(false);
 	} else {
 		GetSideBar()->setVisible(true);

@@ -19,7 +19,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	IGUIEnvironment *guienv = GetDevice()->getGUIEnvironment();	
 	GetDevice()->setEventReceiver(this);
 
-	if (!conf->getSettingAsBool("fullscreen"))
+	if (!conf->getBool("fullscreen"))
 		GetDevice()->setResizable(true);
 
 	// Project and state
@@ -43,13 +43,14 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	GetState()->SelectMode(0);
 
 	int LastX = driver->getScreenSize().Width;
-	if (!GetState()->Settings()->getSettingAsBool("hide_sidebar"))
+	if (!GetState()->Settings()->getBool("hide_sidebar"))
 			LastX -= 256;
 	int LastY = driver->getScreenSize().Height;
 #ifdef _DEBUG
 	int lastFPS = -1;
 #endif
-	bool dosleep = GetState()->Settings()->getSettingAsBool("use_sleep");
+
+	bool dosleep = GetState()->Settings()->getBool("use_sleep");
 	u32 last = std::clock();
 	double dtime = 0;
 	while (GetDevice()->run()) {
@@ -61,7 +62,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		driver->beginScene(true, true, irr::video::SColor(255,150,150,150));
 
 		int ResX = driver->getScreenSize().Width;
-		if (!GetState()->Settings()->getSettingAsBool("hide_sidebar"))
+		if (!GetState()->Settings()->getBool("hide_sidebar"))
 			ResX -= 256;
 		
 		int ResY = driver->getScreenSize().Height;
@@ -239,7 +240,7 @@ bool Editor::OnEvent(const SEvent& event)
 
 		if (
 			GetDevice()->getGUIEnvironment()->getFocus() &&
-			GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
 			)
 				return false;
 
@@ -332,5 +333,6 @@ void Editor::LoadScene()
 	skybox->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	skybox->setMaterialFlag(video::EMF_LIGHTING, false);
 	smgr->getMeshManipulator()->flipSurfaces(skybox->getMesh());
-	GetState()->plane_tri = smgr->createOctreeTriangleSelector(skybox->getMesh(),skybox);
+	GetState()->plane_tri = smgr->createOctreeTriangleSelector(skybox->getMesh(), skybox);
 }
+

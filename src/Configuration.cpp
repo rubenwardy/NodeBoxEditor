@@ -1,134 +1,89 @@
-#include "Configuration.h"
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
+#include "Configuration.hpp"
+#include "util/string.hpp"
 
-void Configuration::load(irr::core::stringc file){
+
+bool Configuration::load(const std::string & filename){
 	std::string line;
-	std::ifstream myfile(file.c_str());
-	if (myfile.is_open()){
-		while (std::getline (myfile,line) )
-		{
-			doLine(irr::core::stringc(line.c_str()));
-		}
-		myfile.close();
-	}else
-		printf("Unable to open editor.conf\n"); 
-	return;
+	std::ifstream file(filename.c_str());
+	if (!file) {
+		return false;
+	}
+	while (std::getline(file, line)) {
+		readLine(line);
+	}
+	file.close();
+	return true;
 }
 
-void Configuration::doLine(irr::core::stringc line){
-	irr::core::stringc l = line;
 
-	// Remove comments
-	irr::s32 first = l.findFirst(irr::c8('#'));
-	if (first!=-1)
-		l = l.subString(0,first);
-	l = l.trim(" \t\n\r");
+void Configuration::readLine(std::string & line){
+	// Skip comments
+	if (line[0] == '#')
+		return;
+	line = trim(line);
 
-	// Check that string hash content
-	if (l==""){
+	if (line.empty()) {
 		return;
 	}
 
 	// Split string into hash and value per
-	first = l.findFirst(irr::c8('='));
-	irr::core::stringc hash = l.subString(0,first).trim();
-	irr::core::stringc value = l.subString(first+1,l.size()).trim();
-
-	#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
-		stringc lower = irr::core::stringc(value);
-		lower.make_lower();		
-	#else
-		stringc lower = value.make_lower();
-	#endif
-
-	// convert boolean to lower case
-	if (lower=="true"){
-		value = "true";
-	}else if (lower=="false"){
-		value = "false";
+	size_t eqPos = line.find('=');
+	if (eqPos == std::string::npos) {
+		return;
 	}
+	const std::string key = trim(line.substr(0, eqPos));
+	const std::string value = trim(line.substr(eqPos + 1));
 
 	// Create setting
-	setStringSetting(hash,value);
+	settings[key] = value;
 }
 
-void Configuration::save(irr::core::stringc file){
-	std::ofstream myfile (file.c_str());
-	if (myfile.is_open()){
-		for (irr::core::list<setting*>::Iterator it=list->begin();it!=list->end();it++){
-			printf("Looping...\n");
-			setting* set = *it;
-			printf("%s = ",set->hash.c_str());
-			printf("%s\n",set->value.c_str());
-			myfile << set->hash.c_str();
-			myfile << " = ";
-			myfile << set->value.c_str();
-			myfile << "\n";
-		}
-		myfile.close();
-	}else
-		printf("Unable to write to file\n");
-}
 
-Configuration::setting* Configuration::getSetting(irr::core::stringc hash,bool warning_on_not_found) const{
-	for (irr::core::list<setting*>::Iterator it=list->begin();it!=list->end();it++){
-		setting* set = *it;
-		if (set->hash == hash){
-			return set;
-		}
+bool Configuration::save(const std::string & filename){
+	std::ofstream file(filename.c_str());
+	if (!file) {
+		return false;
 	}
-	if (warning_on_not_found)
-		printf("[Warning] Setting not found '%s'\n",hash.c_str());
-
-	return NULL;
-}
-
-void Configuration::setStringSetting(irr::core::stringc hash,irr::core::stringc value){
-	setting* set = getSetting(hash,false);
-
-	if (set){
-		set->value = value;
-	}else{
-		setting* newset = new setting();
-		newset->hash = hash;
-		newset->value = value;
-		list->push_back(newset);
+	for (std::map<std::string, std::string>::const_iterator it = settings.begin();
+			it != settings.end();
+			++it) {
+		file << it->first << " = " << it->second << "\n";
 	}
+	file.close();
+	return true;
 }
 
-irr::core::stringc* Configuration::getSettingAsString(irr::core::stringc hash) const{
-	setting* set = getSetting(hash);
 
-	if (set)
-		return &set->value;
-
-	return NULL;
+const std::string & Configuration::get(const std::string & key) const
+{
+	return settings.find(key)->second;
 }
 
-bool Configuration::getSettingAsBool(irr::core::stringc hash) const{
-	setting* set = getSetting(hash);
 
-	if (set){
-		if (set->value == "true" || set->value == "1"){
-			return true;
-		}else if (set->value == "false" || set->value == "0"){		
-			return false;
-		}
-		printf("[Warning] Setting '%s' is not a boolean!\n",hash.c_str());
-	}	
-
-	return false;
+void Configuration::set(const std::string & key, const std::string & value)
+{
+	settings[key] = value;
 }
 
-int Configuration::getSettingAsInt(irr::core::stringc hash) const{
-	setting* set = getSetting(hash);
 
-	if (set){
-		return atoi(set->value.c_str());
-	}
-
-	return false;
+static inline bool to_bool(const std::string & str)
+{
+	std::string s = str_to_lower(str);
+	return s == "true" || s == "yes" || s == "1" || s == "on";
 }
+
+
+bool Configuration::getBool(const std::string & key) const
+{
+	return to_bool(settings.find(key)->second);
+}
+
+
+int Configuration::getInt(const std::string & key) const
+{
+	return atoi(settings.find(key)->second.c_str());
+}
+

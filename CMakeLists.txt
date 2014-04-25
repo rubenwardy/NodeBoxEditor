@@ -27,6 +27,7 @@ set(NBGEN_SRC
 	src/Node.cpp
 	src/NodeBox.cpp
 	src/Project.cpp
+	src/util/string.cpp
 )
 
 # Include Directories
