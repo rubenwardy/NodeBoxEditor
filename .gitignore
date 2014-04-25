@@ -1,3 +1,14 @@
+# Build
+bin
+
+# Build system
+CMake*
+cmake*
+Makefile
+
+# Configuration/generated
+editor.conf
+
 #################
 ## Eclipse
 #################
