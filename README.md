@@ -19,6 +19,16 @@ Credits:
 * Kaeza: small linux based fixes, and the start of the CMAKELISTS.txt (now modified)
 * Traxie21: small changed textures for node.
 * jmf: Fixed small compile bugs.
+* ShadowNinja: Unlimited node boxes, small fixes.
+
+Building
+--------
+
+# download source and go to the root folder
+$ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
+$ cmake .
+# replace 2 with the number of cores you have + 1
+$ make -j2
 
 
 Using the editor
