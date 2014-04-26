@@ -33,17 +33,26 @@ Building
 Using the editor
 ================
 
-What actions you can take are limited by which mode you are in.
-There is currently only one mode in this editor.
+What actions you can take are limited by which mode / tool you are in.
 
-Node Box Mode
+Editor
+------
+
+* Use WASD to move the perspective view.
+* Use the options under view to pick which view port to show.
+* Use the mode icon on the top left of the screen to change modes / tools.
+..* Click the icon to pop out a list of modes / tools
+..* Click an icon to select the corresponding mode.
+
+Node Box Tool
 -------------
 
-In this mode, you can edit the contents of a node.
+In this mode / tool, you can edit the contents of a node.
+Icon: A blue cube with a chunk taken out of it.
 
 * Click + on the sidebar to add a node box.
 * Click an item in the listbox to select a node box.
-* Click - on the sidebar to remove a selected node box.
+* Click - on the sidebar to remove the selected node box.
 * Size the node box using the handles in the orthographic viewports.
 * Scale the node box by pressing control, and using the handles in the orthographic viewports.
 * Position the node box by pressing shift, and using the handles in the orthographic viewports.
@@ -51,3 +60,12 @@ In this mode, you can edit the contents of a node.
 ..* Click update to apply your changes.
 ..* Click revert to discard your changes, and get the current properties.
 
+Node Tool
+---------
+
+In this mode / tool, you can create multiple nodes and manage them.
+Icon: A yellow cube.
+
+* Click + on the sidebar to add a node.
+* Click an item in the listbox to select a node.
+* Click - on the sidebar to remove the selected node.
