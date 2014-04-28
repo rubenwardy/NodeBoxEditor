@@ -41,8 +41,10 @@ Editor
 * Use WASD to move the perspective view.
 * Use the options under view to pick which view port to show.
 * Use the mode icon on the top left of the screen to change modes / tools.
-    * Click the icon to pop out a list of modes / tools
+    * Click the icon to pop out a list of modes / tools.
     * Click an icon to select the corresponding mode.
+* Press N to enter the node tool.
+* Press B to enter the node box tool.
 
 Node Box Tool
 -------------
@@ -50,9 +52,9 @@ Node Box Tool
 In this mode / tool, you can edit the contents of a node.
 Icon: A blue cube with a chunk taken out of it.
 
-* Click + on the sidebar to add a node box.
-* Click an item in the listbox to select a node box.
-* Click - on the sidebar to remove the selected node box.
+* Click + on the sidebar to add a node box. (or press insert)
+* Click an item in the listbox to select a node box. (or press up/down)
+* Click - on the sidebar to remove the selected node box. (or press delete)
 * Size the node box using the handles in the orthographic viewports.
 * Scale the node box by pressing control, and using the handles in the orthographic viewports.
 * Position the node box by pressing shift, and using the handles in the orthographic viewports.
@@ -66,6 +68,6 @@ Node Tool
 In this mode / tool, you can create multiple nodes and manage them.
 Icon: A yellow cube.
 
-* Click + on the sidebar to add a node.
-* Click an item in the listbox to select a node.
-* Click - on the sidebar to remove the selected node.
+* Click + on the sidebar to add a node. (or press insert)
+* Click an item in the listbox to select a node. (or press up/down)
+* Click - on the sidebar to remove the selected node. (or press delete)

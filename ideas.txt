@@ -1,4 +1,0 @@
-WIM format
-Middle mouse button to move viewports
-Drag handles in perspective
-rubenwardy: just remembering some trouble I had with Sproxel, some flipping, rotating and mirroring features might be usefull
