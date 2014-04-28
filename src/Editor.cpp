@@ -245,14 +245,18 @@ bool Editor::OnEvent(const SEvent& event)
 		}else{
 			GetState()->keys[event.KeyInput.Key] = EKS_UP;
 		}
-		if (event.KeyInput.Key== KEY_DOWN || event.KeyInput.Key== KEY_KEY_S){
+		if (event.KeyInput.Key == KEY_KEY_S){
 			pivot->setRotation(vector3df(pivot->getRotation().X-1,pivot->getRotation().Y,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_UP || event.KeyInput.Key== KEY_KEY_W){
+		}else if (event.KeyInput.Key == KEY_KEY_W){
 			pivot->setRotation(vector3df(pivot->getRotation().X+1,pivot->getRotation().Y,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_LEFT || event.KeyInput.Key== KEY_KEY_A){
+		}else if (event.KeyInput.Key == KEY_KEY_A){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y+1,pivot->getRotation().Z));
-		}else if (event.KeyInput.Key== KEY_RIGHT || event.KeyInput.Key== KEY_KEY_D){
+		}else if (event.KeyInput.Key == KEY_KEY_D){
 			pivot->setRotation(vector3df(pivot->getRotation().X,pivot->getRotation().Y-1,pivot->getRotation().Z));
+		}else if (event.KeyInput.Key == KEY_KEY_B && !event.KeyInput.PressedDown){
+			GetState()->SelectMode(0);
+		}else if (event.KeyInput.Key == KEY_KEY_N && !event.KeyInput.PressedDown){
+			GetState()->SelectMode(1);
 		}
 	}
 	if (event.EventType == EET_GUI_EVENT){

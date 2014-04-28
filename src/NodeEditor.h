@@ -41,6 +41,7 @@ public:
 private:
 	void load_ui();
 	void fillProperties();
+	void updateProperties();
 };
 
 #endif

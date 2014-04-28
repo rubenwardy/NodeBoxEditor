@@ -142,36 +142,7 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 				}
 				break;
 			case ENG_GUI_PROP_UPDATE:
-				{
-
-					IGUIElement* prop = GetState()->Menu()->GetSideBar()->getElementFromId(ENG_GUI_PROP);
-
-					if (!prop)
-						return false;
-
-					Node* node = GetState()->project->GetCurrentNode();
-
-					if (!node)
-						return false;
-
-					try{
-						node->name = prop->getElementFromId(ENG_GUI_PROP_NAME)->getText();
-						#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
-						node->name.replace(' ','_');
-						#else
-						node->name = node->name.replace(' ','_');
-						#endif
-						node->setPosition(vector3di(
-							wcstod(prop->getElementFromId(ENG_GUI_PROP_X)->getText(),NULL),
-							wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(),NULL),
-							wcstod(prop->getElementFromId(ENG_GUI_PROP_Z)->getText(),NULL)
-						));
-						node->remesh();
-						load_ui();
-					}catch(void* e){
-						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed",L"Please check that the properties contain only numbers.");
-					}
-				}
+				updateProperties();
 				break;
 			}
 		}else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED){
@@ -182,6 +153,64 @@ bool NodeEditor::OnEvent(const irr::SEvent &event){
 			}
 					
 		}
-	}	
+	}else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown){
+		if (event.KeyInput.Key == KEY_INSERT){
+			GetState()->project->AddNode(GetState());
+			load_ui();
+		}else if (event.KeyInput.Key == KEY_DELETE){
+			if (GetState()->project->GetCurrentNode()){
+				GetState()->project->DeleteNode(GetState()->project->GetSelectedNodeId());
+				load_ui();
+				return true;
+			}
+		}else if (event.KeyInput.Key == KEY_RETURN){
+			updateProperties();
+		}else if (event.KeyInput.Key == KEY_DOWN){
+			IGUIListBox* lb = (IGUIListBox*)GetState()->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);
+			int idx = GetState()->project->GetSelectedNodeId();
+			if (lb && idx < GetState()->project->GetNodeCount()-1){
+				GetState()->project->SelectNode(idx + 1);
+				load_ui();
+			}
+		}else if (event.KeyInput.Key == KEY_UP){
+			IGUIListBox* lb = (IGUIListBox*)GetState()->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);
+			int idx = GetState()->project->GetSelectedNodeId();
+			if (lb && idx > 0){
+				GetState()->project->SelectNode(idx - 1);
+				load_ui();
+			}
+		}
+	}
 	return false;
+}
+
+void NodeEditor::updateProperties(){
+	IGUIElement* prop = GetState()->Menu()->GetSideBar()->getElementFromId(ENG_GUI_PROP);
+
+	if (!prop)
+		return;
+
+	Node* node = GetState()->project->GetCurrentNode();
+
+	if (!node)
+		return;
+
+	try{
+		node->name = prop->getElementFromId(ENG_GUI_PROP_NAME)->getText();
+#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+		node->name.replace(' ', '_');
+#else
+		node->name = node->name.replace(' ', '_');
+#endif
+		node->setPosition(vector3di(
+			wcstod(prop->getElementFromId(ENG_GUI_PROP_X)->getText(), NULL),
+			wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(), NULL),
+			wcstod(prop->getElementFromId(ENG_GUI_PROP_Z)->getText(), NULL)
+			));
+		node->remesh();
+		load_ui();
+	}
+	catch (void* e){
+		GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed", L"Please check that the properties contain only numbers.");
+	}
 }

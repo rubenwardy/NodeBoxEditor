@@ -41,6 +41,7 @@ private:
 	CDR cdrs[15];
 	void load_ui();
 	void fillProperties();
+	void updateProperties();
 	bool prop_needs_update;
 };
 

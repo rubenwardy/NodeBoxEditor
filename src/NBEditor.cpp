@@ -360,7 +360,6 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 				{
 					Node* node = GetState()->project->GetCurrentNode();
 					if (node){
-						printf("Clicked add nb!\n");
 						node->addNodeBox();
 						load_ui();
 					}
@@ -371,7 +370,6 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 					Node* node = GetState()->project->GetCurrentNode();
 					IGUIListBox* lb = (IGUIListBox*) GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
 					if (node && node->GetNodeBox(lb->getSelected())){
-						printf("Clicked delete nb!\n");
 						node->deleteNodebox(lb->getSelected());
 						load_ui();
 					}
@@ -383,42 +381,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 				}
 				break;
 			case ENB_GUI_PROP_UPDATE:
-				{
-
-					IGUIElement* prop = GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_PROP);
-
-					if (!prop)
-						return false;
-
-					Node* node = GetState()->project->GetCurrentNode();
-
-					if (!node)
-						return false;
-
-					NodeBox* nb = node->GetCurrentNodeBox();
-
-					if (!nb)	
-						return false;
-
-					try{
-						nb->name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
-						#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
-						nb->name.replace(' ','_');
-						#else
-						nb->name = nb->name.replace(' ','_');
-						#endif
-						nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(),NULL);
-						nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(),NULL);
-						nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(),NULL);
-						nb->two.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(),NULL);
-						nb->two.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(),NULL);
-						nb->two.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(),NULL);
-						node->remesh();
-						load_ui();
-					}catch(void* e){
-						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed",L"Please check that the properties contain only numbers.");
-					}
-				}
+				updateProperties();
 				break;
 			}
 		}else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED){
@@ -430,7 +393,80 @@ bool NBEditor::OnEvent(const irr::SEvent &event){
 			}
 					
 		}
+	}else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown){
+		if (event.KeyInput.Key == KEY_INSERT){
+			Node* node = GetState()->project->GetCurrentNode();
+			if (node){
+				node->addNodeBox();
+				load_ui();
+			}
+		}else if (event.KeyInput.Key == KEY_DELETE){
+			Node* node = GetState()->project->GetCurrentNode();
+			IGUIListBox* lb = (IGUIListBox*)GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);
+			if (node && node->GetNodeBox(lb->getSelected())){
+				node->deleteNodebox(lb->getSelected());
+				load_ui();
+			}
+		}else if (event.KeyInput.Key == KEY_RETURN){
+			updateProperties();
+		}else if (event.KeyInput.Key == KEY_DOWN){
+			IGUIListBox* lb = (IGUIListBox*)GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);
+			Node* node = GetState()->project->GetCurrentNode();
+			if (node){
+				int idx = node->GetId();
+				if (lb && idx < node->GetBoxes().size() - 1){
+					node->select(idx + 1);
+					load_ui();
+				}
+			}
+		}else if (event.KeyInput.Key == KEY_UP){
+			IGUIListBox* lb = (IGUIListBox*)GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_MAIN_LISTBOX);
+			Node* node = GetState()->project->GetCurrentNode();
+			if (node){
+				int idx = node->GetId();
+				if (lb && idx > 0){
+					node->select(idx - 1);
+					load_ui();
+				}
+			}
+		}
 	}
-
 	return false;
+}
+
+void NBEditor::updateProperties(){
+	IGUIElement* prop = GetState()->Menu()->GetSideBar()->getElementFromId(ENB_GUI_PROP);
+
+	if (!prop)
+		return;
+
+	Node* node = GetState()->project->GetCurrentNode();
+
+	if (!node)
+		return;
+
+	NodeBox* nb = node->GetCurrentNodeBox();
+
+	if (!nb)
+		return;
+
+	try{
+		nb->name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
+#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+		nb->name.replace(' ', '_');
+#else
+		nb->name = nb->name.replace(' ', '_');
+#endif
+		nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL);
+		nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL);
+		nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(), NULL);
+		nb->two.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(), NULL);
+		nb->two.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(), NULL);
+		nb->two.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(), NULL);
+		node->remesh();
+		load_ui();
+	}
+	catch (void* e){
+		GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Update failed", L"Please check that the properties contain only numbers.");
+	}
 }
