@@ -50,9 +50,7 @@ enum FileParserType
 #define EDITOR_TEXT_VERSION "0.6.3 - Stone"
 #define EDITOR_VERSION 1
 #define EDITOR_PARSER 1
-#define NODE_RES 16 // The resolution of the snapping (16) - doesn't work
-#define NODE_THIN 1/NODE_RES // The smallest a box can be (1/NODE_RES)  - don't think this works
-#define NODEB_MENU_START 250 // No idea what this does
+#define NODEB_MENU_START 250
 
 
 const wchar_t* convert(const char* input);
