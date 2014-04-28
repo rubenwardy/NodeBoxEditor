@@ -35,9 +35,6 @@ public:
 		return icon;
 	}
 	void triggerCDRmoved(){prop_needs_update = true;}	
-
-	// Snapping
-	f32 snappers[NODE_RES+1];
 private:
 	bool wasmd;
 	int current;

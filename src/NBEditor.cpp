@@ -42,18 +42,6 @@ NBEditor::NBEditor(EditorState* st)
 	cdrs[12] = CDR(EVIEW_ZY,CDR_Z_P);
 	cdrs[13] = CDR(EVIEW_ZY,CDR_Z_N);
 	cdrs[14] = CDR(EVIEW_ZY,CDR_ZY);
-
-	// Snappers
-	for (int i=0;i<17;i++){
-		snappers[i]=NULL;
-	}
-
-	printf("Making 16 pixel snap grid: \n");
-
-	for (int a=-(NODE_RES/2);a<(NODE_RES/2)+1;a++){
-		snappers[a+(NODE_RES/2)] = a*((float)1/(float)NODE_RES);
-		printf(">> %f\n",snappers[a+8]);
-	}
 }
 
 void NBEditor::load(){
@@ -273,17 +261,9 @@ void CDR::update(NBEditor* editor,bool drag,rect<s32> offset){
 			wpos -= vector3df(node->getPosition().X,node->getPosition().Y,node->getPosition().Z);
 
 			if (editor->GetState()->Settings()->getSettingAsBool("snapping")==true){
-				for (int i=0;i<15;i++){
-					if (wpos.X > editor->snappers[i]-0.0313 && wpos.X < editor->snappers[i]+0.0313){
-						wpos.X = editor->snappers[i];
-					}
-					if (wpos.Y > editor->snappers[i]-0.0313 && wpos.Y < editor->snappers[i]+0.0313){
-						wpos.Y = editor->snappers[i];
-					}
-					if (wpos.Z > editor->snappers[i]-0.0313 && wpos.Z < editor->snappers[i]+0.0313){
-						wpos.Z = editor->snappers[i];
-					}
-				}
+				wpos.X = round((wpos.X + 0.5) * 16) / 16 - 0.5;
+				wpos.Y = round((wpos.Y + 0.5) * 16) / 16 - 0.5;
+				wpos.Z = round((wpos.Z + 0.5) * 16) / 16 - 0.5;
 			}
 
 			// Do node limiting
