@@ -277,6 +277,15 @@ bool MenuState::OnEvent(const SEvent& event){
 				break;
 			}
 		}
+	}else if (event.EventType == EET_KEY_INPUT_EVENT){
+		if (event.KeyInput.Control && event.KeyInput.Key == KEY_KEY_S && !event.KeyInput.PressedDown){
+			if (!GetState()->project){
+				GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save",L"You have not yet opened a project.");
+				return true;
+			}
+			addFileDialog(EFPT_SAVE_PROJ,GUI_FILE_SAVE_PROJECT,L"Save Project",L"Save");
+			return true;
+		}
 	}
 	return false;
 }
