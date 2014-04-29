@@ -1,11 +1,17 @@
 #include "Editor.h"
+#include "NBEditor.h"
+#include "Node.h"
 #include <ctime>
 #include <time.h>
 
-Editor::Editor()
-:_state(NULL),_device(NULL),target(NULL),pivot(NULL),currentWindow(-1)
+Editor::Editor() :
+	state(NULL),
+	device(NULL),
+	target(NULL),
+	pivot(NULL),
+	currentWindow(-1)
 {
-	for (int i=0;i<4;i++){
+	for (int i = 0; i < 4; i++) {
 		camera[i] = NULL;
 	}
 }
@@ -13,56 +19,58 @@ Editor::Editor()
 bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 {
 	// Do Irrlicht Stuff
-	_device = irr_device;
-	IVideoDriver *driver = GetDevice()->getVideoDriver();
-	ISceneManager *smgr = GetDevice()->getSceneManager();
-	IGUIEnvironment *guienv = GetDevice()->getGUIEnvironment();	
-	GetDevice()->setEventReceiver(this);
+	device = irr_device;
+	IVideoDriver *driver = device->getVideoDriver();
+	ISceneManager *smgr = device->getSceneManager();
+	IGUIEnvironment *guienv = device->getGUIEnvironment();	
+	device->setEventReceiver(this);
 
-	if (!conf->getBool("fullscreen"))
-		GetDevice()->setResizable(true);
+	if (!conf->getBool("fullscreen")) {
+		device->setResizable(true);
+	}
 
 	// Project and state
 	Project *proj = new Project();
-	_state = new EditorState(GetDevice(), proj, conf);
+	state = new EditorState(device, proj, conf);
 
 	// Menu State
-	MenuState *ms = new MenuState(GetState());
-	GetState()->SetMenu(ms);
+	MenuState *ms = new MenuState(state);
+	state->SetMenu(ms);
 
 	// Add editor modes
-	GetState()->AddMode(new NBEditor(GetState()));
-	GetState()->AddMode(new NodeEditor(GetState()));
+	state->AddMode(new NBEditor(state));
+	state->AddMode(new NodeEditor(state));
 
 	// Set up project
-	proj->AddNode(GetState());
+	proj->AddNode(state);
 	proj->SelectNode(0);
 
 	// Load user interface
 	LoadScene();	
-	GetState()->SelectMode(0);
+	state->SelectMode(0);
 
 	int LastX = driver->getScreenSize().Width;
-	if (!GetState()->Settings()->getBool("hide_sidebar"))
+	if (!state->settings->getBool("hide_sidebar")) {
 			LastX -= 256;
+	}
 	int LastY = driver->getScreenSize().Height;
 #ifdef _DEBUG
 	int lastFPS = -1;
 #endif
 
-	bool dosleep = GetState()->Settings()->getBool("use_sleep");
+	bool dosleep = state->settings->getBool("use_sleep");
 	u32 last = std::clock();
 	double dtime = 0;
-	while (GetDevice()->run()) {
-		if (GetState()->NeedsClose()) {
-			GetDevice()->closeDevice();
+	while (device->run()) {
+		if (state->NeedsClose()) {
+			device->closeDevice();
 			return true;
 		}
 
-		driver->beginScene(true, true, irr::video::SColor(255,150,150,150));
+		driver->beginScene(true, true, irr::video::SColor(255, 150, 150, 150));
 
 		int ResX = driver->getScreenSize().Width;
-		if (!GetState()->Settings()->getBool("hide_sidebar"))
+		if (!state->settings->getBool("hide_sidebar"))
 			ResX -= 256;
 		
 		int ResY = driver->getScreenSize().Height;
@@ -75,8 +83,8 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				driver->setViewPort(offset);
 				smgr->drawAll();
 
-				if (GetState()->Mode())
-					GetState()->Mode()->viewportTick(EVIEW_PERS, driver, offset);
+				if (state->Mode())
+					state->Mode()->viewportTick(VIEW_PERS, driver, offset);
 			}
 
 			// Draw Camera 1
@@ -86,8 +94,8 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				driver->setViewPort(offset);
 				smgr->drawAll();
 
-				if (GetState()->Mode())
-					GetState()->Mode()->viewportTick(EVIEW_XZ, driver, offset);
+				if (state->Mode())
+					state->Mode()->viewportTick(VIEW_XZ, driver, offset);
 			}
 
 			// Draw Camera 2
@@ -97,8 +105,8 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				driver->setViewPort(offset);
 				smgr->drawAll();
 
-				if (GetState()->Mode())
-					GetState()->Mode()->viewportTick(EVIEW_XY, driver, offset);
+				if (state->Mode())
+					state->Mode()->viewportTick(VIEW_XY, driver, offset);
 
 			}
 
@@ -109,8 +117,8 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				driver->setViewPort(offset);
 				smgr->drawAll();
 
-				if (GetState()->Mode())
-					GetState()->Mode()->viewportTick(EVIEW_ZY, driver, offset);
+				if (state->Mode())
+					state->Mode()->viewportTick(VIEW_ZY, driver, offset);
 			}
 
 			// Draw GUI
@@ -124,22 +132,26 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			driver->setViewPort(rect<s32>(0, 0, ResX, ResY));
 			smgr->drawAll();
 
-			if (GetState()->Mode())
-					GetState()->Mode()->viewportTick((VIEWPORT)currentWindow, driver, rect<s32>(0, 0, ResX, ResY));
+			if (state->Mode()) {
+				state->Mode()->viewportTick((Viewport) currentWindow,
+						driver, rect<s32>(0, 0, ResX, ResY));
+			}
 
 			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 		}
 
-		if (GetState()->Menu())
-			GetState()->Menu()->draw(driver);
-		if (GetState()->Mode())
-			GetState()->Mode()->draw(driver);
+		if (state->Menu()) {
+			state->Menu()->draw(driver);
+		}
+		if (state->Mode()) {
+			state->Mode()->draw(driver);
+		}
 
-		if (GetState()->project && GetState()->project->GetCurrentNode()) {
+		if (state->project && state->project->GetCurrentNode()) {
 			vector3df pos = vector3df(
-				GetState()->project->GetCurrentNode()->getPosition().X,
-				GetState()->project->GetCurrentNode()->getPosition().Y,
-				GetState()->project->GetCurrentNode()->getPosition().Z
+				state->project->GetCurrentNode()->position.X,
+				state->project->GetCurrentNode()->position.Y,
+				state->project->GetCurrentNode()->position.Z
 			);
 			target->setPosition(pos);
 
@@ -155,14 +167,14 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 
 		#ifdef _DEBUG
 		int fps = driver->getFPS();
-        if (lastFPS != fps) {
-            irr::core::stringw str = L"Nodebox Editor [FPS: ";
-            str += fps;
+		if (lastFPS != fps) {
+			irr::core::stringw str = L"Nodebox Editor [FPS: ";
+			str += fps;
 			str += "]";
 
-            GetDevice()->setWindowCaption(str.c_str());
-            lastFPS = fps;
-        }
+			device->setWindowCaption(str.c_str());
+			lastFPS = fps;
+		}
 		#endif
 
 		if (LastX != ResX || LastY != ResY) {
@@ -176,7 +188,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			orth_w = 3 * orth_w;
 			projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
 
-			for (int i=1;i<4;i++) {
+			for (int i = 1; i < 4; i++) {
 				if (camera[i]) {
 					camera[i]->remove();
 					camera[i] = NULL;
@@ -184,26 +196,27 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			}
 
 			// Remake cameras
-			camera[1]=smgr->addCameraSceneNode(target, vector3df(0,2,-0.01), vector3df(0,0,0));
+			camera[1] = smgr->addCameraSceneNode(target, vector3df(0, 2, -0.01), vector3df(0, 0, 0));
 			camera[1]->setProjectionMatrix(projMat, true);
 
-			camera[2]=smgr->addCameraSceneNode(target, vector3df(0,0,-5), vector3df(0,0,0));
+			camera[2] = smgr->addCameraSceneNode(target, vector3df(0, 0, -5), vector3df(0, 0, 0));
 			camera[2]->setProjectionMatrix(projMat, true);
 
-			camera[3]=smgr->addCameraSceneNode(target, vector3df(-5,0,0), vector3df(0,0,0));
+			camera[3] = smgr->addCameraSceneNode(target, vector3df(-5, 0, 0), vector3df(0, 0, 0));
 			camera[3]->setProjectionMatrix(projMat, true);
 		}
 
 		// Update
-		if (GetState()->Mode())
-			GetState()->Mode()->update(dtime);
+		if (state->Mode()) {
+			state->Mode()->update(dtime);
+		}
 
 		// Do sleep
 		unsigned int now = std::clock();
 		if (dosleep) {
 			u32 sleeptime = int(double(1000) / double(65)) - (now - last);
 			if (sleeptime > 0 && sleeptime < 200)
-				GetDevice()->sleep(sleeptime);
+				device->sleep(sleeptime);
 		}
 		dtime = double(now - last) / 1000;
 		last = now;		
@@ -215,48 +228,57 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 bool Editor::OnEvent(const SEvent& event)
 {
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-		event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP ) {
-		GetState()->mousedown = false;
-	}else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-		event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN ) {
-		GetState()->mousedown = true;
-	}else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-		event.MouseInput.Event == EMIE_MOUSE_MOVED ) {
-		GetState()->mouse_position.X = event.MouseInput.X;
-		GetState()->mouse_position.Y = event.MouseInput.Y;
+			event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
+		state->mousedown = false;
+	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
+		state->mousedown = true;
+	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+			event.MouseInput.Event == EMIE_MOUSE_MOVED) {
+		state->mouse_position.X = event.MouseInput.X;
+		state->mouse_position.Y = event.MouseInput.Y;
 	}
 
-	if (GetState()->Mode() && GetState()->Mode()->OnEvent(event))
-		return true;
+	if (state->Mode()){
+		if (state->Mode()->OnEvent(event)){
+			return true;
+		}
+	}
 
-	if (GetState()->Menu() && GetState()->Menu()->OnEvent(event))
-		return true;
+	if (state->Menu()){
+		if (state->Menu()->OnEvent(event)){
+			return true;
+		}
+	}
 
-	if (event.EventType == EET_KEY_INPUT_EVENT && event.KeyInput.Key < NUMBER_OF_KEYS) {
-		if (event.KeyInput.PressedDown)
-			GetState()->keys[event.KeyInput.Key] = EKS_DOWN;
-		else
-			GetState()->keys[event.KeyInput.Key] = EKS_UP;
-
-		if (
-			GetDevice()->getGUIEnvironment()->getFocus() &&
-			GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
-			)
-				return false;
-
-		if (event.KeyInput.Key == KEY_KEY_S)
-			pivot->setRotation(vector3df(pivot->getRotation().X-1, pivot->getRotation().Y, pivot->getRotation().Z));
-		else if (event.KeyInput.Key == KEY_KEY_W)
-			pivot->setRotation(vector3df(pivot->getRotation().X+1, pivot->getRotation().Y, pivot->getRotation().Z));
-		else if (event.KeyInput.Key == KEY_KEY_A)
-			pivot->setRotation(vector3df(pivot->getRotation().X, pivot->getRotation().Y+1, pivot->getRotation().Z));
-		else if (event.KeyInput.Key == KEY_KEY_D)
-			pivot->setRotation(vector3df(pivot->getRotation().X, pivot->getRotation().Y-1, pivot->getRotation().Z));
-		else if (event.KeyInput.Key == KEY_KEY_B && !event.KeyInput.PressedDown)
-			GetState()->SelectMode(0);
-		else if (event.KeyInput.Key == KEY_KEY_N && !event.KeyInput.PressedDown)
-			GetState()->SelectMode(1);
-		
+	if (event.EventType == EET_KEY_INPUT_EVENT && event.KeyInput.Key < NUMBER_OF_KEYS){
+		if (event.KeyInput.PressedDown) {
+			state->keys[event.KeyInput.Key] = EKS_DOWN;
+		} else {
+			state->keys[event.KeyInput.Key] = EKS_UP;
+		}
+		switch (event.KeyInput.Key) {
+		case KEY_KEY_S:
+			pivot->setRotation(vector3df(pivot->getRotation().X - 1,
+					pivot->getRotation().Y, pivot->getRotation().Z));
+		case KEY_KEY_W:
+			pivot->setRotation(vector3df(pivot->getRotation().X + 1,
+					pivot->getRotation().Y, pivot->getRotation().Z));
+		case KEY_KEY_A:
+			pivot->setRotation(vector3df(pivot->getRotation().X,
+					pivot->getRotation().Y + 1, pivot->getRotation().Z));
+		case KEY_KEY_D:
+			pivot->setRotation(vector3df(pivot->getRotation().X,
+					pivot->getRotation().Y - 1, pivot->getRotation().Z));
+		case KEY_KEY_B:
+			if (!event.KeyInput.PressedDown) {
+				state->SelectMode(0);
+			}
+		case KEY_KEY_N:
+			if (!event.KeyInput.PressedDown) {
+				state->SelectMode(1);
+			}
+		}
 	}
 	if (event.EventType == EET_GUI_EVENT) {
 		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
@@ -285,8 +307,8 @@ bool Editor::OnEvent(const SEvent& event)
 
 void Editor::LoadScene()
 {
-	IVideoDriver* driver = GetDevice()->getVideoDriver();
-	ISceneManager* smgr = GetDevice()->getSceneManager();
+	IVideoDriver *driver = device->getVideoDriver();
+	ISceneManager *smgr = device->getSceneManager();
 
 	// Calculate Projection Matrix
 	matrix4 projMat;
@@ -322,7 +344,9 @@ void Editor::LoadScene()
 	light->setRadius(2000);
 
 	// Add Plane
-	IMeshSceneNode* plane = smgr->addCubeSceneNode(1, 0, -1, vector3df(0.5, -5.5, 0.5), vector3df(0, 0, 0),vector3df(10, 10, 10));
+	IMeshSceneNode* plane = smgr->addCubeSceneNode(1, 0, -1,
+			vector3df(0.5, -5.5, 0.5), vector3df(0, 0, 0),
+			vector3df(10, 10, 10));
 	plane->setMaterialTexture(0, driver->getTexture("media/texture_terrain.png"));
 	plane->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	plane->getMaterial(0).getTextureMatrix(0).setTextureScale(10, 10);
@@ -333,6 +357,6 @@ void Editor::LoadScene()
 	skybox->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
 	skybox->setMaterialFlag(video::EMF_LIGHTING, false);
 	smgr->getMeshManipulator()->flipSurfaces(skybox->getMesh());
-	GetState()->plane_tri = smgr->createOctreeTriangleSelector(skybox->getMesh(), skybox);
+	state->plane_tri = smgr->createOctreeTriangleSelector(skybox->getMesh(), skybox);
 }
 

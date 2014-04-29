@@ -1,8 +1,9 @@
+#include "util/string.hpp"
 #include "Node.h"
 
-Node::Node(IrrlichtDevice* mdevice, EditorState* state, unsigned int id) :
-	_device(mdevice),
-	_state(state),
+Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
+	device(device),
+	state(state),
 	_selected(-1),
 	_nid(id)
 {
@@ -32,9 +33,7 @@ NodeBox* Node::GetNodeBox(int id) {
 // Operation functions
 NodeBox* Node::addNodeBox(){
 	// Name it
-	core::stringc name = "NodeBox";
-	// Append number
-	name += boxes.size() + 1;
+	std::string name = "NodeBox" + num_to_str(boxes.size() + 1);
 
 	// Set up structure
 	NodeBox* tmp = new NodeBox(name,
@@ -43,7 +42,7 @@ NodeBox* Node::addNodeBox(){
 
 	boxes.push_back(tmp);
 	select(boxes.size() - 1);
-	tmp->buildNode(getPosition(), _device);
+	tmp->buildNode(position, device);
 
 	return tmp;
 }
@@ -64,7 +63,7 @@ void Node::remesh() {
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
-		(*it)->buildNode(getPosition(), _device);
+		(*it)->buildNode(position, device);
 	}
 }
 

@@ -1,14 +1,19 @@
+#include "util/string.hpp"
 #include "MenuState.h"
-#include "FileParser.h"
+#include "FileFormat/FileFormat.hpp"
+#include "FileFormat/NBE.hpp"
 
-MenuState::MenuState(EditorState* state)
-:_state(state),_projectmb(NULL),menubar(NULL),mode_icons_open(false)
+MenuState::MenuState(EditorState* state) :
+	state(state),
+	_projectmb(NULL),
+	menubar(NULL),
+	mode_icons_open(false)
 {}
 
 
 void MenuState::init()
 {
-	IGUIEnvironment *guienv = GetState()->GetDevice()->getGUIEnvironment();
+	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 	guienv->clear();
 	guienv->getSkin()->setFont(guienv->getFont("media/fontlucida.png"));
 
@@ -40,12 +45,12 @@ void MenuState::init()
 	//submenu->addSeparator();
 	submenu->addItem(
 		L"Snapping", GUI_EDIT_SNAP, true, false,
-		GetState()->Settings()->getBool("snapping"),
+		state->settings->getBool("snapping"),
 		true
 	);
 	submenu->addItem(
 		L"Limiting", GUI_EDIT_LIMIT, true, false,
-		GetState()->Settings()->getBool("limiting"),
+		state->settings->getBool("limiting"),
 		true
 	);
 
@@ -69,39 +74,59 @@ void MenuState::init()
 	u32 top = menubar->getAbsoluteClippingRect().LowerRightCorner.Y;
 	_sidebar = guienv->addStaticText(L"Loading...",
 		rect<s32>(
-			GetState()->GetDevice()->getVideoDriver()->getScreenSize().Width - 246,
+			state->device->getVideoDriver()->getScreenSize().Width - 246,
 			top + 10,
-			GetState()->GetDevice()->getVideoDriver()->getScreenSize().Width,
-			GetState()->GetDevice()->getVideoDriver()->getScreenSize().Height
-		),false,true,0,GUI_SIDEBAR
+			state->device->getVideoDriver()->getScreenSize().Width,
+			state->device->getVideoDriver()->getScreenSize().Height
+		), false, true, 0, GUI_SIDEBAR
 	);
-	_sidebar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	_sidebar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 }
 
-bool MenuState::OnEvent(const SEvent& event)
+static bool get_parent_box_cb(EditorState *state,
+		const SEvent &event,
+		IGUIWindow **parent,
+		IGUIEditBox **box,
+		IGUIComboBox **cb)
 {
-	if (
-		event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-		event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN
-	) {
-		if (rect<s32>(10,32,42,64).isPointInside(GetState()->mouse_position)) {
-				mode_icons_open = !mode_icons_open;
-				return true;
+	*parent = static_cast<IGUIWindow *>(event.GUIEvent.Caller->getParent());
+	if (!(*parent)) {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+				L"Error trying to get the dialog.");
+		return false;
+	}
+	*box = static_cast<IGUIEditBox *>((*parent)->getElementFromId(GUI_FILEDIALOG_PATH));
+	*cb = static_cast<IGUIComboBox *>((*parent)->getElementFromId(GUI_FILEDIALOG_FORM));
+
+	if (!(*box) || !(*cb)) {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+				L"Error trying to get the dialog's contents.");
+		return false;
+	}
+	return true;
+}
+
+bool MenuState::OnEvent(const SEvent& event){
+	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
+		if (rect<s32>(10, 32, 42, 64).isPointInside(state->mouse_position)){
+			mode_icons_open = !mode_icons_open;
+			return true;
 		}
-		if (mode_icons_open){
-			if (!(rect<s32>(10,32,210,64).isPointInside(GetState()->mouse_position))) {
+		if (mode_icons_open) {
+			if (!(rect<s32>(10, 32, 210, 64).isPointInside(state->mouse_position))) {
 				mode_icons_open = false;
 				return true;
 			}
-			EditorMode *curs = GetState()->Mode();
+			EditorMode *curs = state->Mode();
 			int x = 0;
-			for (int i=0;i<5;i++) {
-				EditorMode *m = GetState()->Mode(i);
+			for (int i = 0; i < 5; i++){
+				EditorMode *m = state->Mode(i);
 
-				if (m && m!=curs) {
-					if (rect<s32>(47+37*x,32,79+37*x,64).isPointInside(GetState()->mouse_position)) {
-						// Run select
-						GetState()->SelectMode(i);
+				if (m && m != curs){
+					if (rect<s32>(47 + 37 * x, 32, 79 + 37 * x, 64)
+							.isPointInside(state->mouse_position)) {
+						state->SelectMode(i);
 						mode_icons_open = false;
 						return true;
 					}
@@ -110,184 +135,174 @@ bool MenuState::OnEvent(const SEvent& event)
 			}
 		}
 	}
-	if (event.EventType == EET_GUI_EVENT) {
-		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
-			IGUIContextMenu *menu = (IGUIContextMenu*)event.GUIEvent.Caller;
-			switch (menu->getItemCommandId(menu->getSelectedItem())) {
-				case GUI_FILE_OPEN_PROJECT:
-					{
-						addFileDialog(EFPT_LOAD_PROJ, GUI_FILE_OPEN_PROJECT, L"Open Project", L"Open");
-						return true;
+	if (event.EventType == EET_GUI_EVENT){
+		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED){
+			IGUIContextMenu *menu = (IGUIContextMenu *)event.GUIEvent.Caller;
+			switch (menu->getItemCommandId(menu->getSelectedItem())){
+			case GUI_FILE_OPEN_PROJECT:
+				addFileDialog(EFPT_LOAD_PROJ, GUI_FILE_OPEN_PROJECT,
+						L"Open Project", L"Open");
+				return true;
+				break;
+			case GUI_FILE_SAVE_PROJECT:
+				if (!state->project) {
+					state->device->getGUIEnvironment()->addMessageBox(
+							L"Unable to save",
+							L"You have not yet opened a project.");
+					return true;
+				}
+				addFileDialog(EFPT_SAVE_PROJ, GUI_FILE_SAVE_PROJECT,
+						L"Save Project", L"Save");
+				return true;
+				break;
+			case GUI_FILE_EXPORT:
+				if (!state->project) {
+					state->device->getGUIEnvironment()->addMessageBox(
+							L"Unable to save",
+							L"You have not yet opened a project.");
+					return true;
+				}
+				addFileDialog(EFPT_EXPORT, GUI_FILE_SAVE_PROJECT, L"Export", L"Export");
+				return true;
+				break;
+			case GUI_FILE_EXIT: {
+				IGUIEnvironment *guienv = state->device->getGUIEnvironment();
+				IGUIWindow *win = guienv->addWindow(rect<irr::s32>(100, 100, 356, 215),
+						true, L"Are you sure?");
+				guienv->addButton(rect<irr::s32>(128 - 40, 80, 128 + 40, 105),
+						win, GUI_FILE_EXIT, L"Close", L"Close the editor");
+				return true;
+				break;
+			}
+			case GUI_EDIT_SNAP:
+				if (menu->isItemChecked(menu->getSelectedItem())) {
+					state->settings->set("snapping", "true");
+				} else {
+					state->settings->set("snapping", "false");
+				}
+
+				menu->setItemChecked(menu->getSelectedItem(),
+						state->settings->getBool("snapping"));
+				break;
+			case GUI_EDIT_LIMIT:
+				if (menu->isItemChecked(menu->getSelectedItem())) {
+					state->settings->set("limiting", "true");
+				} else {
+					state->settings->set("limiting", "false");
+				}
+
+				menu->setItemChecked(menu->getSelectedItem(),
+						state->settings->getBool("limiting"));
+				break;
+			case GUI_HELP_ABOUT: {
+				core::stringw msg = L"The Nodebox Editor\n"
+					L"Version: ";
+
+				msg += EDITOR_TEXT_VERSION;
+				msg += L"\n\n"
+					L"This free nodebox editor was made by rubenwardy in C++ and Irrlicht.\n"
+					L"You can download newer versions from the Minetest forum.";
+
+				state->device->getGUIEnvironment()->addMessageBox(L"About", msg.c_str());
+				return true;
+				break;
+			}
+			}
+		} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
+			switch (event.GUIEvent.Caller->getID()) {
+			case GUI_FILE_EXIT:
+				if (state->project) {
+					NBEFileFormat writer(state);
+					writer.write(state->project, "exit.nbe");
+				}
+				state->CloseEditor();
+				return true;
+				break;
+			case GUI_FILE_SAVE_PROJECT: {
+				if (!state->project) {
+					state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+							L"You have not yet opened a project.");
+					return true;
+				}
+				IGUIWindow *parent = NULL;
+				IGUIEditBox *box = NULL;
+				IGUIComboBox *cb = NULL;
+				if (!get_parent_box_cb(state, event, &parent, &box, &cb)) {
+					return true;
+				}
+				FileFormat *writer = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
+				if (writer) {
+					irr::core::stringc t = box->getText();
+					std::string after(t.c_str(), t.size());
+
+					if (after.find('.') == std::string::npos) {
+						after += '.';
+						after += writer->getExtension();
 					}
-					break;
-				case GUI_FILE_SAVE_PROJECT:
-					{
-						if (!GetState()->project) {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"You have not yet opened a project.");
-							return true;
-						}
-						addFileDialog(EFPT_SAVE_PROJ, GUI_FILE_SAVE_PROJECT, L"Save Project", L"Save");
-						return true;
+
+					if (!writer->write(state->project, after)) {
+						state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+								L"File writer failed.");
 					}
-					break;
-				case GUI_FILE_EXPORT:
-					{
-						if (!GetState()->project) {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"You have not yet opened a project.");
-							return true;
-						}
-						addFileDialog(EFPT_EXPORT, GUI_FILE_SAVE_PROJECT, L"Export", L"Export");
-						return true;
-					}
-					break;
-				case GUI_FILE_EXIT:
-					{
-						IGUIEnvironment* guienv = GetState()->GetDevice()->getGUIEnvironment();
-						IGUIWindow* win = guienv->addWindow(rect<irr::s32>(100, 100, 356, 215), true, L"Are you sure?");
-						guienv->addButton(rect<irr::s32>(128-40, 80, 128+40, 105), win, GUI_FILE_EXIT, L"Close", L"Close the editor");
-						return true;
-					}
-					break;
-				case GUI_EDIT_SNAP:
-					{					
-						if (menu->isItemChecked(menu->getSelectedItem()))
-							GetState()->Settings()->set("snapping", "true");
-						else
-							GetState()->Settings()->set("snapping", "false");
+					delete writer;
+				} else {
+					state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+							L"File format does not exist.");
+					return true;
+				}
 
-						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getBool("snapping"));
-					}
-					break;
-				case GUI_EDIT_LIMIT:
-					{					
-						if (menu->isItemChecked(menu->getSelectedItem()))
-							GetState()->Settings()->set("limiting", "true");
-						else
-							GetState()->Settings()->set("limiting", "false");
+				parent->remove();
+				break;
+			}
+			case GUI_FILE_OPEN_PROJECT: {
+				IGUIWindow *parent = NULL;
+				IGUIEditBox *box = NULL;
+				IGUIComboBox *cb = NULL;
+				if (!get_parent_box_cb(state, event, &parent, &box, &cb)) {
+					return true;
+				}
 
-						menu->setItemChecked(menu->getSelectedItem(), GetState()->Settings()->getBool("limiting"));
-					}
-					break;
-				case GUI_HELP_ABOUT:
-					{
-						core::stringw msg = L"The Nodebox Editor\n"
-							L"Version: ";
+				FileFormat *parser = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
+				if (!parser) {
+					state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+							L"File format does not exist.");
+					return true;
+				}
+				irr::core::stringc t = box->getText();
+				std::string after(t.c_str(), t.size());
 
-						msg.append(EDITOR_TEXT_VERSION);
-						msg.append(
-							L"\n\n"
-							L"This free nodebox editor was made by rubenwardy in C++ and Irrlicht.\n"
-							L"You can download newer versions from the Minetest forum."
-						);
+				if (after.find('.') == std::string::npos) {
+					after += '.';
+					after += parser->getExtension();
+				}
 
-						GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"About", msg.c_str());
-						return true;
-					}
-					break;
-			}	
-		} else if(event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
-			switch (event.GUIEvent.Caller->getID()){
-				case GUI_FILE_EXIT:
-					{
-						if (GetState()->project) {
-							NBEFileParser parser(GetState());
-							parser.save(GetState()->project, "exit.nbe");
-						}
-						GetState()->CloseEditor();
-						return true;
-					}
-					break;
-				case GUI_FILE_SAVE_PROJECT:
-					{
-						if (!GetState()->project) {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"You have not yet opened a project.");
-							return true;
-						}
-						IGUIWindow* parent = static_cast<IGUIWindow*>(event.GUIEvent.Caller->getParent());
-						if (!parent) {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"Error trying to get the dialog.");
-							return true;
-						}
-						IGUIEditBox* box = static_cast<IGUIEditBox*>(parent->getElementFromId(GUI_FILEDIALOG_PATH));
-						IGUIComboBox* cb = static_cast<IGUIComboBox*>(parent->getElementFromId(GUI_FILEDIALOG_FORM));
+				Project *tmp = parser->read(after);
 
-						if (!box || !cb) {						
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"Error trying to get the dialog's contents.");
-							return true;
-						}
-
-						FileParser* parser = getFromType(cb->getItemData(cb->getSelected()),GetState());
-						if (parser) {
-							stringc after = box->getText();
-
-							if (after.findFirst('.') == -1)
-								after.append(parser->getEXT());
-
-							parser->save(GetState()->project,after);
-							delete parser;
-						} else {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"File format does not exist.");
-							return true;
-						}
-
-						// Remove
-						parent->remove();
-					}
-					break;
-				case GUI_FILE_OPEN_PROJECT:
-					{
-						IGUIWindow* parent = static_cast<IGUIWindow*>(event.GUIEvent.Caller->getParent());
-						if (!parent) {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open", L"Error trying to get the dialog.");
-							return true;
-						}
-						IGUIEditBox* box = static_cast<IGUIEditBox*>(parent->getElementFromId(GUI_FILEDIALOG_PATH));
-						IGUIComboBox* cb = static_cast<IGUIComboBox*>(parent->getElementFromId(GUI_FILEDIALOG_FORM));
-
-						if (!box || !cb){						
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open", L"Error trying to get the dialog's contents.");
-							return true;
-						}
-
-						FileParser* parser = getFromType(cb->getItemData(cb->getSelected()),GetState());
-						if (parser) {
-							stringc after = box->getText();
-
-							if (after.findFirst('.')==-1)
-								after.append(parser->getEXT());
-		
-							Project *tmp = parser->open(after);
-
-							if (tmp) {
-								delete GetState()->project;
-								GetState()->project = tmp;
-								GetState()->project->SelectNode(0);
-								GetState()->Mode()->unload();
-								init();
-								GetState()->Mode()->load();
-							} else {
-								GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open", L"Something went wrong.");
-							}
-							delete parser;
-							return true;
-						} else {
-							GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to open", L"File format does not exist.");
-							return true;
-						}
-
-						// Remove
-						parent->remove();
-					}
-					break;
+				if (!tmp) {
+					state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+							L"Reading file failed.");
+				}
+				delete state->project;
+				state->project = tmp;
+				state->project->SelectNode(0);
+				state->Mode()->unload();
+				init();
+				state->Mode()->load();
+				delete parser;
+				return true;
+				break;
+			}
 			}
 		}
-	} else if (event.EventType == EET_KEY_INPUT_EVENT) {
-		if (event.KeyInput.Control && event.KeyInput.Key == KEY_KEY_S && !event.KeyInput.PressedDown) {
-			if (!GetState()->project) {
-				GetState()->GetDevice()->getGUIEnvironment()->addMessageBox(L"Unable to save", L"You have not yet opened a project.");
+	} else if (event.EventType == EET_KEY_INPUT_EVENT){
+		if (event.KeyInput.Control && event.KeyInput.Key == KEY_KEY_S &&
+				!event.KeyInput.PressedDown) {
+			if (!state->project) {
+				state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+						L"You have not yet opened a project.");
 				return true;
 			}
-			addFileDialog(EFPT_SAVE_PROJ,GUI_FILE_SAVE_PROJECT, L"Save Project", L"Save");
+			addFileDialog(EFPT_SAVE_PROJ, GUI_FILE_SAVE_PROJECT, L"Save Project", L"Save");
 			return true;
 		}
 	}
@@ -295,15 +310,14 @@ bool MenuState::OnEvent(const SEvent& event)
 }
 
 void MenuState::draw(IVideoDriver* driver){
-	EditorState* state = GetState();
 	EditorMode* curs = state->Mode();
 
-	if (state->Settings()->getBool("hide_sidebar")) {
+	if (state->settings->getBool("hide_sidebar")) {
 		GetSideBar()->setVisible(false);
 	} else {
 		GetSideBar()->setVisible(true);
 		u32 top = menubar->getAbsoluteClippingRect().LowerRightCorner.Y;
-		state->GetDevice()->getGUIEnvironment()->getSkin()
+		state->device->getGUIEnvironment()->getSkin()
 			->draw3DWindowBackground(NULL, false, 0,
 				rect<s32>((driver->getScreenSize().Width - 256),
 					top,
@@ -337,32 +351,39 @@ void MenuState::draw(IVideoDriver* driver){
 }
 
 IGUIWindow *MenuState::addFileDialog(FileParserType type, int submit,
-			const wchar_t *title, const wchar_t *button)
+		const wchar_t *title, const wchar_t *button)
 {
-	IGUIEnvironment *guienv = GetState()->GetDevice()->getGUIEnvironment();
+	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 	IGUIWindow *win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 160), true, title);
 	guienv->addButton(rect<irr::s32>(250, 30, 320, 60), win, submit, button);
-	stringc path = GetState()->project->name.trim();
-	if (path == "")
+	std::string path = trim(state->project->name);
+	if (path.empty()) {
 		path = "test";
+	}
+	IGUIEditBox *box = guienv->addEditBox(narrow_to_wide(path).c_str(),
+			rect<irr::s32>(10, 30, 240, 60),
+			true, win, GUI_FILEDIALOG_PATH);
 
-	IGUIEditBox* box = guienv->addEditBox(convert(path.c_str()), rect<irr::s32>(10, 30, 240, 60), true, win, GUI_FILEDIALOG_PATH);
+	IGUIComboBox* cb = guienv->addComboBox(rect<irr::s32>(60, 70, 240, 100),
+			win, GUI_FILEDIALOG_FORM);
+	IGUIStaticText* txt = guienv->addStaticText(L"Format:",
+			rect<irr::s32>(10, 70, 60, 100), false,
+			true, win, -1, false);
 
-	IGUIComboBox* cb = guienv->addComboBox(rect<irr::s32>(60, 70, 240, 100), win, GUI_FILEDIALOG_FORM);
-	IGUIStaticText* txt = guienv->addStaticText(L"Format:", rect<irr::s32>(10, 70, 60, 100), false, true, win, -1, false);
-					
 	if (box)
 		txt->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_CENTER);
 
-	if (cb){
-		if (type == EFPT_SAVE_PROJ || type == EFPT_LOAD_PROJ)
-			cb->addItem(L"NodeBoxEditor file (*.nbe)", 0);
-
-		if (type == EFPT_EXPORT)
-			cb->addItem(L"Lua file (*.lua)", 1);
+	if (cb) {
+		if (type == EFPT_SAVE_PROJ || type == EFPT_LOAD_PROJ) {
+			cb->addItem(L"NodeBoxEditor file (*.nbe)", FILE_FORMAT_NBE);
+		}
+		if (type == EFPT_EXPORT) {
+			cb->addItem(L"Lua file (*.lua)", FILE_FORMAT_LUA);
+		}
 
 		if (cb->getItemCount() > 0)
 			cb->setSelected(0);
 	}
 	return win;
 }
+

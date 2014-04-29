@@ -19,11 +19,13 @@ set(NBGEN_SRC
 	src/Configuration.cpp
 	src/Editor.cpp
 	src/EditorState.cpp
-	src/LUAFileParser.cpp
 	src/MenuState.cpp
+	src/GUIHelpers.cpp
 	src/NBEditor.cpp
 	src/NodeEditor.cpp
-	src/NBEFileParser.cpp
+	src/FileFormat/FileFormat.cpp
+	src/FileFormat/NBE.cpp
+	src/FileFormat/Lua.cpp
 	src/Node.cpp
 	src/NodeBox.cpp
 	src/Project.cpp

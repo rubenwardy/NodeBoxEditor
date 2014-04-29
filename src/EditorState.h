@@ -11,20 +11,26 @@ enum KeyState{
 	EKS_DOWN = true
 };
 
+enum Viewport
+{
+	VIEW_PERS,
+	VIEW_XZ,
+	VIEW_XY,
+	VIEW_ZY
+};
+
+
 class Project;
 class EditorMode;
 class MenuState;
 class EditorState
 {
 public:
-	EditorState(irr::IrrlichtDevice* dev,Project* proj,Configuration* settings);
+	EditorState(irr::IrrlichtDevice* dev, Project* proj, Configuration* settings);
 
 	// Irrlicht
 	ITriangleSelector* plane_tri;
-	irr::IrrlichtDevice* GetDevice() const
-	{
-		return _device;
-	}	
+	IrrlichtDevice* device;
 
 	// Project
 	Project* project;
@@ -35,7 +41,7 @@ public:
 		if (id < 0 || id >= 5) {
 			return NULL;
 		}
-		return _modes[id];
+		return modes[id];
 	}
 	EditorMode* Mode() const
 	{
@@ -44,65 +50,40 @@ public:
 
 	void SelectMode(int id);
 	
-	void AddMode(EditorMode* value);
-
-	MenuState* Menu() const
-	{
-		return _menu;
-	}
-
-	void SetMenu(MenuState* stat)
-	{
-		_menu=stat;
-	}	
-
-	void CloseEditor()
-	{
-		close_requested = true;
-	}
-	bool NeedsClose() const
-	{
-		return close_requested;
-	}
+	void AddMode(EditorMode *value);	
+	MenuState* Menu() const { return menu; }
+	void SetMenu(MenuState* stat) { menu = stat; }	
+	void CloseEditor() { close_requested = true; }
+	bool NeedsClose() const { return close_requested; }
 
 	// Input
 	bool mousedown;
 	irr::core::vector2di mouse_position;
 	KeyState keys[NUMBER_OF_KEYS];
 	
-	// Settings
-	Configuration* Settings() const
-	{
-		return _settings;
-	}
+	Configuration* settings;
 private:
-	irr::IrrlichtDevice* _device;
 	int currentmode;
-	EditorMode* _modes[5];
-	int _modeCount;
-	Configuration* _settings;
-	MenuState* _menu;
+	EditorMode* modes[5];
+	int modeCount;
+	MenuState* menu;
 	bool close_requested;
 };
 
-class EditorMode:public irr::IEventReceiver
+class EditorMode : public irr::IEventReceiver
 {
 public:
-	EditorMode(EditorState* st):_state(st)
-	{}
-
+	EditorMode(EditorState* st) : state(st) {}
 	virtual void load() = 0;
 	virtual void unload() = 0;
 	virtual void update(double dtime) = 0;
 	virtual void draw(irr::video::IVideoDriver* driver) = 0;
-	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset) = 0;
+	virtual void viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset) = 0;
 	virtual bool OnEvent(const irr::SEvent &event) = 0;
 	virtual irr::video::ITexture* icon() = 0;
-	EditorState* GetState() const {return _state;}
-	int getId() const{return _id;}
-	void setId(int id){_id = id;}
-private:
-	EditorState* _state;
-	int _id;
+
+	int id;
+	EditorState* state;
 };
+
 #endif

@@ -1,38 +1,48 @@
 #include "EditorState.h"
 
-EditorState::EditorState(irr::IrrlichtDevice* dev,Project* proj,Configuration* settings) :
-	_device(dev),project(proj),currentmode(0),
-	plane_tri(NULL),mousedown(false), _settings(settings),
-	close_requested(false),_modeCount(0),_menu(NULL)
+EditorState::EditorState(irr::IrrlichtDevice* dev, Project* proj, Configuration* settings) :
+	device(dev),
+	project(proj),
+	currentmode(0),
+	plane_tri(NULL),
+	mousedown(false),
+	settings(settings),
+	close_requested(false),
+	modeCount(0),
+	menu(NULL)
 {
-	for (int i = 0; i<5; i++){
-		_modes[i] = NULL;
+	for (int i = 0; i < 5; i++) {
+		modes[i] = NULL;
 	}
 
-	for (int i = 0; i<NUMBER_OF_KEYS; i++){
+	for (int i = 0; i < NUMBER_OF_KEYS; i++) {
 		keys[i] = EKS_UP;
 	}
 }
 
 void EditorState::AddMode(EditorMode* value)
 {
-	_modes[_modeCount] = value;
-	value->setId(_modeCount);
-	_modeCount++;
+	modes[modeCount] = value;
+	value->id = modeCount;
+	modeCount++;
 }
 
 void EditorState::SelectMode(int id)
 {
-	if (!_modes[id])
+	if (!modes[id]) {
 		return;
+	}
 
-	if (Mode())
+	if (Mode()) {
 		Mode()->unload();
+	}
 
 	currentmode = id;
 
 	Menu()->init();
 
-	if (Mode())
+	if (Mode()) {
 		Mode()->load();
+	}
 }
+

@@ -1,38 +1,26 @@
-#ifndef _EDITOR_H_INCLUDED_
-#define _EDITOR_H_INCLUDED_
+#ifndef EDITOR_H_INCLUDED
+#define EDITOR_H_INCLUDED
+
 #include "common.h"
 #include "EditorState.h"
-#include "NBEditor.h"
 #include "NodeEditor.h"
 #include "Project.h"
-#include "FileParser.h"
 
-class Editor :public IEventReceiver
+class Editor : public IEventReceiver
 {
 public:
 	Editor();
-	bool run(IrrlichtDevice* irr_device,Configuration* conf);
-	virtual bool OnEvent(const SEvent& event);
+	bool run(IrrlichtDevice *irr_device, Configuration *conf);
+	virtual bool OnEvent(const SEvent &event);
 
-	EditorState* GetState()
-	{
-		return _state;
-	}
-
-	irr::IrrlichtDevice* GetDevice()const
-	{
-		return _device;
-	}
+	EditorState *state;
+	irr::IrrlichtDevice *device;
 private:
-	EditorState* _state;
-	irr::IrrlichtDevice* _device;
-
 	// Helper functions
-	//void LoadUI();
 	int currentWindow;
-	ISceneNode* target;
-	ISceneNode* pivot;
-	ICameraSceneNode* camera[4];
+	ISceneNode *target;
+	ISceneNode *pivot;
+	ICameraSceneNode *camera[4];
 	void LoadScene();
 };
 

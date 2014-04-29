@@ -1,23 +1,35 @@
-#ifndef _NBEDITOR_H_INCLUDED_
-#define _NBEDITOR_H_INCLUDED_
+#ifndef NBEDITOR_H_INCLUDED
+#define NBEDITOR_H_INCLUDED
 #include "common.h"
 #include "EditorState.h"
 
+enum CDRType
+{
+	CDR_X_P = 1, 
+	CDR_X_N,
+	CDR_Y_P,
+	CDR_Y_N,
+	CDR_Z_P,
+	CDR_Z_N,
+	CDR_XZ,
+	CDR_XY,
+	CDR_ZY
+};
+
 class NBEditor;
+
 class CDR
 {
 public:
-	CDR():visible(false)
-	{}
+	CDR() : visible(false) {}
+	CDR(Viewport win, CDRType typ) : window(win), type(typ), visible(false) {}
 
-	CDR(VIEWPORT win,CDR_TYPE typ):window(win),type(typ),visible(false)
-	{}
+	void update(NBEditor* editor, bool drag, rect<s32> offset);
 
-	VIEWPORT window;
-	CDR_TYPE type;
+	Viewport window;
+	CDRType type;
 	vector2d<irr::s32> position;
 	bool visible;
-	void update(NBEditor* editor,bool drag,rect<s32> offset);
 };
 
 class EditorMode;
@@ -31,20 +43,11 @@ public:
 	virtual void unload();
 	virtual void update(double dtime);
 	virtual void draw(irr::video::IVideoDriver* driver);
-	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
+	virtual void viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
+	virtual irr::video::ITexture* icon();
+	void triggerCDRmoved() { prop_needs_update = true; }
 
-	virtual irr::video::ITexture* icon()
-	{
-		static irr::video::ITexture* icon = GetState()->GetDevice()->
-			getVideoDriver()->getTexture("media/icon_mode_nodebox.png");
-		return icon;
-	}
-
-	void triggerCDRmoved()
-	{
-		prop_needs_update = true;
-	}	
 private:
 	bool wasmd;
 	int current;

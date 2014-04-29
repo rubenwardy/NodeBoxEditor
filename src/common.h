@@ -8,27 +8,6 @@ using namespace scene;
 using namespace gui;
 using namespace video;
 
-enum VIEWPORT
-{
-	EVIEW_PERS = 0,
-	EVIEW_XZ = 1,
-	EVIEW_XY = 2,
-	EVIEW_ZY = 3
-};
-
-enum CDR_TYPE 
-{
-	CDR_X_P = 1, 
-	CDR_X_N = 2,
-	CDR_Y_P = 3,
-	CDR_Y_N = 4,
-	CDR_Z_P = 5,
-	CDR_Z_N = 6,
-	CDR_XZ = 7,
-	CDR_XY = 8,
-	CDR_ZY = 9
-};
-
 // Enums
 enum BUILD_TYPE
 {
@@ -50,8 +29,6 @@ enum FileParserType
 #define EDITOR_TEXT_VERSION "0.6.3 - Stone"
 #define EDITOR_VERSION 1
 #define EDITOR_PARSER 1
-#define NODEB_MENU_START 250
 
-
-const wchar_t* convert(const char* input);
 #endif
+
