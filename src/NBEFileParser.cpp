@@ -58,7 +58,7 @@ void NBEFileParser::save(Project* project,irr::core::stringc file){
 				myfile << "\n";
 			}
 
-			myfile << "END NODE";
+			myfile << "END NODE\n\n";
 			a++;
 		}
 
