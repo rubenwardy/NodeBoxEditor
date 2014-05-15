@@ -245,6 +245,13 @@ bool Editor::OnEvent(const SEvent& event)
 		}else{
 			GetState()->keys[event.KeyInput.Key] = EKS_UP;
 		}
+
+		if (
+			GetDevice()->getGUIEnvironment()->getFocus() &&
+			GetDevice()->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			)
+				return false;
+
 		if (event.KeyInput.Key == KEY_KEY_S){
 			pivot->setRotation(vector3df(pivot->getRotation().X-1,pivot->getRotation().Y,pivot->getRotation().Z));
 		}else if (event.KeyInput.Key == KEY_KEY_W){
