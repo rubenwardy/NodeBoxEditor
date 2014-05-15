@@ -16,18 +16,39 @@ public:
 	~Node();
 
 	// Node box manager
-	int GetId()const{ return _selected;}
-	unsigned int NodeId()const{ return _nid; }
+	int GetId()const
+	{
+		return _selected;
+	}
+
+	unsigned int NodeId()const
+	{
+		return _nid;
+	}
+
 	NodeBox* GetCurrentNodeBox();
 	NodeBox* GetNodeBox(int id);
-	const std::vector<NodeBox*> & GetBoxes() { return boxes; }
+	const std::vector<NodeBox*> & GetBoxes()
+	{
+		return boxes;
+	}
+
 	NodeBox* addNodeBox();
 	void deleteNodebox(int id);
-	void select(int id){_selected = id;}
+	void select(int id)
+	{
+		_selected = id;
+	}
 
 	// Node properties	
-	vector3di getPosition() const{return nd_position;}
-	void setPosition(vector3di in){nd_position = in;}
+	vector3di getPosition() const
+	{
+		return nd_position;
+	}
+	void setPosition(vector3di in)
+	{
+		nd_position = in;
+	}
 	stringc name;
 
 	// Node bulk updaters

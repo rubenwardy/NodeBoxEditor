@@ -21,7 +21,9 @@ class EditorState;
 class NBEFileParser:public FileParser
 {
 public:
-	NBEFileParser(EditorState* sta):state(sta),proj(NULL),node(NULL),stage(NBEFileParser::ERS_ROOT){}
+	NBEFileParser(EditorState* sta):state(sta),proj(NULL),node(NULL),stage(NBEFileParser::ERS_ROOT)
+	{}
+
 	virtual void save(Project* project,irr::core::stringc file);
 	virtual Project* open(irr::core::stringc file);
 
@@ -31,7 +33,8 @@ public:
 		ERS_NODE = 2
 	};
 
-	const char* getEXT() const{
+	const char* getEXT() const
+	{
 		return ".nbe";
 	}
 private:
@@ -45,14 +48,19 @@ private:
 class LUAFileParser:public FileParser
 {
 public:
-	LUAFileParser(EditorState* sta):state(sta){}
+	LUAFileParser(EditorState* sta):state(sta)
+	{}
+
 	virtual void save(Project* project,irr::core::stringc file);
-	virtual Project* open(irr::core::stringc file){
+
+	virtual Project* open(irr::core::stringc file)
+	{
 		printf("[WARNING] The lua importer has not been written yet!\n");
 		return NULL;
 	}
 
-	const char* getEXT() const{
+	const char* getEXT() const
+	{
 		return ".lua";
 	}
 private:
@@ -60,8 +68,9 @@ private:
 };
 
 // Parser factory
-static FileParser* getFromType(unsigned int id,EditorState* sta){
-	switch (id){
+static FileParser* getFromType(unsigned int id,EditorState* sta)
+{
+	switch (id) {
 	case(0):
 		return new NBEFileParser(sta);
 	case(1):

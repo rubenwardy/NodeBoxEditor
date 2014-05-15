@@ -6,9 +6,9 @@ Project::Project()
 	nodes = new list<Node*>();
 }
 
-Project::~Project(){
-	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
-	{
+Project::~Project()
+{
+	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)	{
 		Node* n = *Iterator;
 		if (n)
 			delete n;
@@ -16,10 +16,10 @@ Project::~Project(){
 	delete nodes;
 }
 
-Node* Project::GetNode(int id) const{
+Node* Project::GetNode(int id) const
+{
 	int curid = 0;
-	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
-	{
+	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator) {
 		Node* n = *Iterator;
 		if (n && curid == id)
 			return n;
@@ -28,9 +28,9 @@ Node* Project::GetNode(int id) const{
 	return NULL;
 }
 
-Node* Project::GetNode(vector3di pos) const{
-	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
-	{
+Node* Project::GetNode(vector3di pos) const
+{
+	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)	{
 		Node* n = *Iterator;
 		if (n && n->getPosition() == pos)
 			return n;
@@ -38,14 +38,16 @@ Node* Project::GetNode(vector3di pos) const{
 	return NULL;
 }
 
-void Project::AddNode(EditorState* state,bool select){
+void Project::AddNode(EditorState* state,bool select)
+{
 	Node* node = new Node(state->GetDevice(), state, _node_count);
 	AddNode(node,select);
 }
 
-void Project::AddNode(Node* node,bool select){
+void Project::AddNode(Node* node,bool select)
+{
 	_node_count++;
-	if (node->name == ""){
+	if (node->name == "") {
 		core::stringc nd = "Node";
 		nd += _node_count;
 		node->name = nd;
@@ -56,15 +58,15 @@ void Project::AddNode(Node* node,bool select){
 		snode = _node_count - 1;
 }
 
-void Project::DeleteNode(int id){
+void Project::DeleteNode(int id)
+{
 	if (snode == id)
 		snode = -1;
 
 	int curid = 0;
-	for (list<Node*>::Iterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
-	{
+	for (list<Node*>::Iterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator) {
 		Node* n = *Iterator;
-		if (n && curid == id){
+		if (n && curid == id) {
 			nodes->erase(Iterator);
 			delete n;
 			return;

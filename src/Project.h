@@ -23,16 +23,29 @@ public:
 	void SelectNode(int id){snode = id;}
 	Node* GetNode(int id) const;
 	Node* GetNode(vector3di pos) const;	
-	Node* GetCurrentNode() const{
-		if (snode>-1){
+	Node* GetCurrentNode() const
+	{
+		if (snode>-1) {
 			return GetNode(snode);
-		}else{
+		} else {
 			return NULL;
 		}
 	};
-	list<Node*>* GetList() const{return nodes;}
-	int GetSelectedNodeId() const{return snode;}
-	unsigned int GetNodeCount() const{ return _node_count; }
+
+	list<Node*>* GetList() const
+	{
+		return nodes;
+	}
+
+	int GetSelectedNodeId() const
+	{
+		return snode;
+	}
+
+	unsigned int GetNodeCount() const
+	{
+		return _node_count;
+	}
 private:
 	int snode;
 	list<Node*>* nodes;

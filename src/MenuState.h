@@ -87,10 +87,25 @@ public:
 	void init();
 	void draw(IVideoDriver* driver);
 	bool OnEvent(const SEvent& event);
-	EditorState* GetState() const{return _state;}
-	IGUIContextMenu* GetMenu() const{return menubar;}
-	IGUIContextMenu* GetProjectMenu() const{return _projectmb;}
-	IGUIStaticText* GetSideBar() const{return _sidebar;}
+	EditorState* GetState() const
+	{
+		return _state;
+	}
+
+	IGUIContextMenu* GetMenu() const
+	{
+		return menubar;
+	}
+
+	IGUIContextMenu* GetProjectMenu() const
+	{
+		return _projectmb;
+	}
+
+	IGUIStaticText* GetSideBar() const
+	{
+		return _sidebar;
+	}
 private:
 	EditorState* _state;
 	IGUIContextMenu* menubar;

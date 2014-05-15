@@ -16,7 +16,9 @@ public:
 	virtual void draw(irr::video::IVideoDriver* driver);
 	virtual void viewportTick(VIEWPORT window,irr::video::IVideoDriver* driver,rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
-	virtual irr::video::ITexture* icon(){
+
+	virtual irr::video::ITexture* icon()
+	{
 		static irr::video::ITexture* icon = GetState()->GetDevice()->
 				getVideoDriver()->getTexture("media/icon_mode_node.png");
 		return icon;
@@ -25,7 +27,8 @@ public:
 	// The gui id numbers for this mode
 	// NOTE: the maximum that can be here is 20
 	//       see in MenuState.h to raise limit
-	enum ENG_GUI{
+	enum ENG_GUI
+	{
 		ENG_GUI_MAIN_LISTBOX = GUI_SIDEBAR + 1,
 		ENG_GUI_MAIN_ADD = GUI_SIDEBAR + 2,
 		ENG_GUI_MAIN_DEL = GUI_SIDEBAR + 3,

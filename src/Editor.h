@@ -13,8 +13,16 @@ public:
 	Editor();
 	bool run(IrrlichtDevice* irr_device,Configuration* conf);
 	virtual bool OnEvent(const SEvent& event);
-	EditorState* GetState(){return _state;}
-	irr::IrrlichtDevice* GetDevice()const{return _device;}
+
+	EditorState* GetState()
+	{
+		return _state;
+	}
+
+	irr::IrrlichtDevice* GetDevice()const
+	{
+		return _device;
+	}
 private:
 	EditorState* _state;
 	irr::IrrlichtDevice* _device;
