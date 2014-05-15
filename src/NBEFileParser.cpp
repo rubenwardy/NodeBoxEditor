@@ -19,7 +19,6 @@ void NBEFileParser::save(Project* project,irr::core::stringc file){
 		int a = 1;
 		list<Node*>* nodes = project->GetList();
 		for (irr::core::list<Node*>::Iterator it=nodes->begin();it!=nodes->end();it++){
-			printf("Looping...\n");
 			Node* node = *it;
 			myfile << "NODE ";
 			if (node->name == ""){
@@ -75,12 +74,8 @@ Project* NBEFileParser::open(irr::core::stringc file){
 		if (!std::getline (myfile,line) || !std::getline (myfile,line))
 			return NULL;
 		if (line!="PARSER 1"){
-			printf("Not parser 1!\n");
 			return NULL;
-		}else{
-			printf("Is currect parser version\n");
 		}
-
 		// Parse file
 		proj = new Project();
 		stage = ERS_ROOT;
@@ -135,13 +130,11 @@ void NBEFileParser::parseLine(stringc line){
 					nid = n.size();
 				}
 				if (i>=7){
-					printf("-- too many arguments to nodebox tag!\n%s\n",n.c_str());
+					printf("[NBE Format] Too many arguments to nodebox tag!\n%s\n",n.c_str());
 					break;
 				}
 				ls[i] = n.subString(0,nid).trim();
 				n = n.subString(nid,n.size()).trim();
-				printf(">> %i ",i);
-				printf(" is '%s'\n",ls[i].c_str());
 				i++;				
 			}
 			node->addNodeBox();
