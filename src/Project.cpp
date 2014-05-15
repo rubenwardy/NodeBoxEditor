@@ -17,11 +17,13 @@ Project::~Project(){
 }
 
 Node* Project::GetNode(int id) const{
+	int curid = 0;
 	for(list<Node*>::ConstIterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
 	{
 		Node* n = *Iterator;
-		if (n && n->NodeId() == id)
+		if (n && curid == id)
 			return n;
+		curid ++;
 	}
 	return NULL;
 }
@@ -58,13 +60,15 @@ void Project::DeleteNode(int id){
 	if (snode == id)
 		snode = -1;
 
+	int curid = 0;
 	for (list<Node*>::Iterator Iterator = nodes->begin(); Iterator != nodes->end(); ++Iterator)
 	{
 		Node* n = *Iterator;
-		if (n && n->NodeId() == id){
+		if (n && curid == id){
 			nodes->erase(Iterator);
 			delete n;
 			return;
 		}
+		curid ++;
 	}
 }
