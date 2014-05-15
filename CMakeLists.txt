@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(BZip2 REQUIRED)
 find_package(PNG REQUIRED)
+find_library(XXF86VM_LIBRARY Xxf86vm)
 
 # Source files
 set(NBGEN_SRC
@@ -50,6 +51,7 @@ target_link_libraries(
 	${JPEG_LIBRARIES}
 	${BZIP2_LIBRARIES}
 	${PNG_LIBRARIES}
+	${XXF86VM_LIBRARY}
 )
 
 set_target_properties(${PROJECT_NAME}
