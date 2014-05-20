@@ -1,5 +1,5 @@
-#ifndef _COMMON_H_INCLUDED_
-#define _COMMON_H_INCLUDED_
+#ifndef COMMON_HPP_INCLUDED
+#define COMMON_HPP_INCLUDED
 #include <irrlicht.h>
 #include <iostream>
 using namespace irr;

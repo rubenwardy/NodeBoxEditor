@@ -1,9 +1,9 @@
-#ifndef _PROJECT_H_INCLUDED_
-#define _PROJECT_H_INCLUDED_
+#ifndef PROJECT_HPP_INCLUDED
+#define PROJECT_HPP_INCLUDED
 
 #include <string>
 #include <list>
-#include "common.h"
+#include "common.hpp"
 
 class Node;
 class EditorState;

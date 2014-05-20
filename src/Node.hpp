@@ -1,10 +1,10 @@
-#ifndef _NODE_H_INCLUDED_
-#define _NODE_H_INCLUDED_
+#ifndef NODE_HPP_INCLUDED
+#define NODE_HPP_INCLUDED
 
 #include <vector>
-#include "common.h"
-#include "EditorState.h"
-#include "NodeBox.h"
+#include "common.hpp"
+#include "EditorState.hpp"
+#include "NodeBox.hpp"
 
 class EditorState;
 class NodeBox;

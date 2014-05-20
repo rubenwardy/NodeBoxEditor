@@ -1,7 +1,7 @@
-#ifndef NBEDITOR_H_INCLUDED
-#define NBEDITOR_H_INCLUDED
-#include "common.h"
-#include "EditorState.h"
+#ifndef NBEDITOR_HPP_INCLUDED
+#define NBEDITOR_HPP_INCLUDED
+#include "common.hpp"
+#include "EditorState.hpp"
 
 enum CDRType
 {

@@ -2,7 +2,7 @@
 #define NBEFILEFORMAT_HPP_INCLUDED
 
 #include "FileFormat.hpp"
-#include "../Node.h"
+#include "../Node.hpp"
 
 class NBEFileFormat : public FileFormat
 {

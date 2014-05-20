@@ -1,5 +1,5 @@
 #include "util/string.hpp"
-#include "MenuState.h"
+#include "MenuState.hpp"
 #include "FileFormat/FileFormat.hpp"
 #include "FileFormat/NBE.hpp"
 

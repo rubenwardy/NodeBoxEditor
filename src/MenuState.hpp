@@ -1,7 +1,7 @@
-#ifndef _MENUSTATE_H_INCLUDED_
-#define _MENUSTATE_H_INCLUDED_
-#include "common.h"
-#include "EditorState.h"
+#ifndef MENUSTATE_HPP_INCLUDED
+#define MENUSTATE_HPP_INCLUDED
+#include "common.hpp"
+#include "EditorState.hpp"
 
 
 // FILE

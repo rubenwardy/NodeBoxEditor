@@ -1,9 +1,9 @@
-#ifndef _EDITORSTATE_H_INCLUDE_
-#define _EDITORSTATE_H_INCLUDE_
-#include "common.h"
+#ifndef EDITORSTATE_HPP_INCLUDED
+#define EDITORSTATE_HPP_INCLUDED
+#include "common.hpp"
 #include "Configuration.hpp"
-#include "Project.h"
-#include "MenuState.h"
+#include "Project.hpp"
+#include "MenuState.hpp"
 
 #define NUMBER_OF_KEYS 252
 enum KeyState{

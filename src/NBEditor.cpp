@@ -1,8 +1,8 @@
 #include <vector>
 #include "util/string.hpp"
-#include "Node.h"
-#include "NodeBox.h"
-#include "NBEditor.h"
+#include "Node.hpp"
+#include "NodeBox.hpp"
+#include "NBEditor.hpp"
 #include "GUIHelpers.hpp"
 
 // The gui id numbers for this mode

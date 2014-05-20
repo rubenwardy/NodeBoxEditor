@@ -1,4 +1,4 @@
-#include "EditorState.h"
+#include "EditorState.hpp"
 
 EditorState::EditorState(irr::IrrlichtDevice* dev, Project* proj, Configuration* settings) :
 	device(dev),

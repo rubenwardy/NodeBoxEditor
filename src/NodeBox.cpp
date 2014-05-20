@@ -1,4 +1,4 @@
-#include "NodeBox.h"
+#include "NodeBox.hpp"
 
 void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df position, bool both){
 	switch(type) {

@@ -1,7 +1,7 @@
-#ifndef _NODEEDITOR_H_INCLUDED_
-#define _NODEEDITOR_H_INCLUDED_
-#include "common.h"
-#include "EditorState.h"
+#ifndef NODEEDITOR_HPP_INCLUDED
+#define NODEEDITOR_HPP_INCLUDED
+#include "common.hpp"
+#include "EditorState.hpp"
 
 class EditorMode;
 class NodeEditor :public EditorMode

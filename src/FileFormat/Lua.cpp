@@ -3,9 +3,9 @@
 #include <string>
 #include <list>
 #include <stdexcept>
-#include "../common.h"
-#include "../Project.h"
-#include "../Node.h"
+#include "../common.hpp"
+#include "../Project.hpp"
+#include "../Node.hpp"
 #include "Lua.hpp"
 
 bool LuaFileFormat::write(Project * project, const std::string & filename){

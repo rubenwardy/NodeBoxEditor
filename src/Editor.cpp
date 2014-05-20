@@ -1,6 +1,6 @@
-#include "Editor.h"
-#include "NBEditor.h"
-#include "Node.h"
+#include "Editor.hpp"
+#include "NBEditor.hpp"
+#include "Node.hpp"
 #include <ctime>
 #include <time.h>
 

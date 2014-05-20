@@ -1,10 +1,10 @@
-#ifndef _NODEBOX_H_INCLUDED_
-#define _NODEBOX_H_INCLUDED_
+#ifndef NODEBOX_HPP_INCLUDED
+#define NODEBOX_HPP_INCLUDED
 
 #include <string>
-#include "common.h"
-#include "EditorState.h"
-#include "NBEditor.h"
+#include "common.hpp"
+#include "EditorState.hpp"
+#include "NBEditor.hpp"
 
 class EditorState;
 class NodeBox

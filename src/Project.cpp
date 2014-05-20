@@ -1,5 +1,5 @@
-#include "Project.h"
-#include "Node.h"
+#include "Project.hpp"
+#include "Node.hpp"
 #include "util/string.hpp"
 
 Project::Project() :

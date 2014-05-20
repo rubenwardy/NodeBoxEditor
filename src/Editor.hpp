@@ -1,10 +1,10 @@
-#ifndef EDITOR_H_INCLUDED
-#define EDITOR_H_INCLUDED
+#ifndef EDITOR_HPP_INCLUDED
+#define EDITOR_HPP_INCLUDED
 
-#include "common.h"
-#include "EditorState.h"
-#include "NodeEditor.h"
-#include "Project.h"
+#include "common.hpp"
+#include "EditorState.hpp"
+#include "NodeEditor.hpp"
+#include "Project.hpp"
 
 class Editor : public IEventReceiver
 {

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <irrlicht.h>
 #include "util/string.hpp"
-#include "common.h"
-#include "Editor.h"
+#include "common.hpp"
+#include "Editor.hpp"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
