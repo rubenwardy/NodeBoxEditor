@@ -34,6 +34,7 @@ private:
 	// Data
 	int _selected;
 	unsigned int _nid; // the node's id.
+	int _box_count;
 
 	// Irrlicht
 	IrrlichtDevice* device;

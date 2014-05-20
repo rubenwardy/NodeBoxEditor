@@ -5,7 +5,8 @@ Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	device(device),
 	state(state),
 	_selected(-1),
-	_nid(id)
+	_nid(id),
+	_box_count(0)
 {
 }
 
@@ -32,12 +33,13 @@ NodeBox* Node::GetNodeBox(int id) {
 
 // Operation functions
 NodeBox* Node::addNodeBox(){
+	_box_count++;
 	// Name it
-	std::string name = "NodeBox" + num_to_str(boxes.size() + 1);
+	std::string name = "NodeBox" + _box_count;
 
 	// Set up structure
 	NodeBox* tmp = new NodeBox(name,
-		vector3df(0, -0.5, -0.5),
+		vector3df(-0.5, -0.5, -0.5),
 		vector3df(0.5, 0.5, 0.5));
 
 	boxes.push_back(tmp);
