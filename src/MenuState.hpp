@@ -87,15 +87,14 @@ public:
 	void init();
 	void draw(IVideoDriver* driver);
 	bool OnEvent(const SEvent& event);
-	IGUIContextMenu* GetMenu() const { return menubar; }
-	IGUIContextMenu* GetProjectMenu() const { return _projectmb; }
-	IGUIStaticText* GetSideBar() const { return _sidebar; }
-	EditorState* state;
+	EditorState *state;
+	IGUIStaticText *sidebar;
+
 private:
+	IGUIContextMenu *projectMenubar;
 	IGUIContextMenu* menubar;
-	IGUIContextMenu* _projectmb;
-	IGUIStaticText* _sidebar;
-	IGUIWindow* addFileDialog(FileParserType type, int submit, const wchar_t* title, const wchar_t* button);
+	IGUIWindow* addFileDialog(FileParserType type, int submit,
+			const wchar_t* title, const wchar_t* button);
 	bool mode_icons_open;
 };
 

@@ -5,7 +5,7 @@
 
 MenuState::MenuState(EditorState* state) :
 	state(state),
-	_projectmb(NULL),
+	projectMenubar(NULL),
 	menubar(NULL),
 	mode_icons_open(false)
 {}
@@ -18,19 +18,16 @@ void MenuState::init()
 	guienv->getSkin()->setFont(guienv->getFont("media/fontlucida.png"));
 
 	// Main menu bar
-	menubar=guienv->addMenu();
-	menubar->addItem(L"File",-1,true,true);
-	menubar->addItem(L"Edit",-1,true,true);
-	menubar->addItem(L"View",-1,true,true);
-	menubar->addItem(L"Project",-1,true,true);
-	menubar->addItem(L"Help",-1,true,true);
+	menubar = guienv->addMenu();
+	menubar->addItem(L"File", -1, true, true);
+	menubar->addItem(L"Edit", -1, true, true);
+	menubar->addItem(L"View", -1, true, true);
+	menubar->addItem(L"Project", -1, true, true);
+	menubar->addItem(L"Help", -1, true, true);
 	gui::IGUIContextMenu *submenu;
 
 	// File
 	submenu = menubar->getSubMenu(0);
-	//submenu->addItem(L"New Project",GUI_FILE_NEW_PROJECT,false);
-	//submenu->addItem(L"New Item",GUI_FILE_NEW_ITEM,false);
-	//submenu->addSeparator();
 	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
 	submenu->addSeparator();
 	submenu->addItem(L"Save Project", GUI_FILE_SAVE_PROJECT);
@@ -40,9 +37,6 @@ void MenuState::init()
 
 	// Edit
 	submenu = menubar->getSubMenu(1);
-	//submenu->addItem(L"Undo",GUI_EDIT_UNDO,false);
-	//submenu->addItem(L"Redo",GUI_EDIT_REDO,false);
-	//submenu->addSeparator();
 	submenu->addItem(
 		L"Snapping", GUI_EDIT_SNAP, true, false,
 		state->settings->getBool("snapping"),
@@ -56,23 +50,23 @@ void MenuState::init()
 
 	// View
 	submenu = menubar->getSubMenu(2);
-	submenu->addItem(L"Tiled View",GUI_VIEW_SP_ALL);
-	submenu->addItem(L"Perspective View",GUI_VIEW_SP_PER);
-	submenu->addItem(L"Top View",GUI_VIEW_SP_TOP);
-	submenu->addItem(L"Front View",GUI_VIEW_SP_FRT);
-	submenu->addItem(L"Side View",GUI_VIEW_SP_RHT);
+	submenu->addItem(L"Tiled View", GUI_VIEW_SP_ALL);
+	submenu->addItem(L"Perspective View", GUI_VIEW_SP_PER);
+	submenu->addItem(L"Top View", GUI_VIEW_SP_TOP);
+	submenu->addItem(L"Front View", GUI_VIEW_SP_FRT);
+	submenu->addItem(L"Side View", GUI_VIEW_SP_RHT);
 
 	// Project
-	_projectmb = menubar->getSubMenu(3);
+	projectMenubar = menubar->getSubMenu(3);
 
 	// Help
 	submenu = menubar->getSubMenu(4);
 	//submenu->addItem(L"Help",GUI_HELP_HELP,false);
-	submenu->addItem(L"About",GUI_HELP_ABOUT);
+	submenu->addItem(L"About", GUI_HELP_ABOUT);
 
 	// Sidebar root
 	u32 top = menubar->getAbsoluteClippingRect().LowerRightCorner.Y;
-	_sidebar = guienv->addStaticText(L"Loading...",
+	sidebar = guienv->addStaticText(L"Loading...",
 		rect<s32>(
 			state->device->getVideoDriver()->getScreenSize().Width - 246,
 			top + 10,
@@ -80,7 +74,7 @@ void MenuState::init()
 			state->device->getVideoDriver()->getScreenSize().Height
 		), false, true, 0, GUI_SIDEBAR
 	);
-	_sidebar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	sidebar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 }
 
 static bool get_parent_box_cb(EditorState *state,
@@ -313,9 +307,9 @@ void MenuState::draw(IVideoDriver* driver){
 	EditorMode* curs = state->Mode();
 
 	if (state->settings->getBool("hide_sidebar")) {
-		GetSideBar()->setVisible(false);
+		sidebar->setVisible(false);
 	} else {
-		GetSideBar()->setVisible(true);
+		sidebar->setVisible(true);
 		u32 top = menubar->getAbsoluteClippingRect().LowerRightCorner.Y;
 		state->device->getGUIEnvironment()->getSkin()
 			->draw3DWindowBackground(NULL, false, 0,

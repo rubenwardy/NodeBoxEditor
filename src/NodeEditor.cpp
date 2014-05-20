@@ -11,7 +11,7 @@ NodeEditor::NodeEditor(EditorState* st) :
 
 void NodeEditor::load()
 {
-	IGUIStaticText* sidebar = state->Menu()->GetSideBar();
+	IGUIStaticText* sidebar = state->menu->sidebar;
 	IGUIEnvironment* guienv = state->device->getGUIEnvironment();
 
 	if (!sidebar || !guienv)
@@ -62,7 +62,7 @@ void NodeEditor::load()
 }
 
 void NodeEditor::load_ui(){
-	IGUIStaticText* sidebar = state->Menu()->GetSideBar();
+	IGUIStaticText* sidebar = state->menu->sidebar;
 	IGUIEnvironment* guienv = state->device->getGUIEnvironment();
 
 	if (!sidebar || !guienv) {
@@ -89,7 +89,7 @@ void NodeEditor::load_ui(){
 }
 
 void NodeEditor::fillProperties(){
-	IGUIStaticText* sidebar = state->Menu()->GetSideBar();
+	IGUIStaticText* sidebar = state->menu->sidebar;
 
 	if (!sidebar) {
 		return;
@@ -166,7 +166,7 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 				break;
 			}
 		} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED) {
-			IGUIListBox* lb = (IGUIListBox*) state->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);	
+			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);	
 			if (lb && state->project->GetNode(lb->getSelected())){
 				state->project->SelectNode(lb->getSelected());
 				load_ui();
@@ -193,14 +193,14 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 		}else if (event.KeyInput.Key == KEY_RETURN){
 			updateProperties();
 		}else if (event.KeyInput.Key == KEY_DOWN){
-			IGUIListBox* lb = (IGUIListBox*) state->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);
+			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			int idx = state->project->GetSelectedNodeId();
 			if (lb && idx < state->project->GetNodeCount()-1){
 				state->project->SelectNode(idx + 1);
 				load_ui();
 			}
 		}else if (event.KeyInput.Key == KEY_UP){
-			IGUIListBox* lb = (IGUIListBox*) state->Menu()->GetSideBar()->getElementFromId(ENG_GUI_MAIN_LISTBOX);
+			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			int idx = state->project->GetSelectedNodeId();
 			if (lb && idx > 0){
 				state->project->SelectNode(idx - 1);
@@ -212,7 +212,7 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 }
 
 void NodeEditor::updateProperties() {
-	IGUIElement* prop = state->Menu()->GetSideBar()->getElementFromId(ENG_GUI_PROP);
+	IGUIElement* prop = state->menu->sidebar->getElementFromId(ENG_GUI_PROP);
 	Node* node = state->project->GetCurrentNode();
 	if (!prop || !node) {
 		return;

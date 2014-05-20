@@ -39,7 +39,7 @@ void EditorState::SelectMode(int id)
 
 	currentmode = id;
 
-	Menu()->init();
+	menu->init();
 
 	if (Mode()) {
 		Mode()->load();

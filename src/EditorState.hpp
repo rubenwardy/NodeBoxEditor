@@ -51,8 +51,6 @@ public:
 	void SelectMode(int id);
 	
 	void AddMode(EditorMode *value);	
-	MenuState* Menu() const { return menu; }
-	void SetMenu(MenuState* stat) { menu = stat; }	
 	void CloseEditor() { close_requested = true; }
 	bool NeedsClose() const { return close_requested; }
 
@@ -61,12 +59,13 @@ public:
 	irr::core::vector2di mouse_position;
 	KeyState keys[NUMBER_OF_KEYS];
 	
-	Configuration* settings;
+	Configuration *settings;
+	MenuState *menu;
+
 private:
 	int currentmode;
-	EditorMode* modes[5];
+	EditorMode *modes[5];
 	int modeCount;
-	MenuState* menu;
 	bool close_requested;
 };
 

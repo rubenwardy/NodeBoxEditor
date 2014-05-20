@@ -34,8 +34,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	state = new EditorState(device, proj, conf);
 
 	// Menu State
-	MenuState *ms = new MenuState(state);
-	state->SetMenu(ms);
+	state->menu = new MenuState(state);
 
 	// Add editor modes
 	state->AddMode(new NBEditor(state));
@@ -140,8 +139,8 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 		}
 
-		if (state->Menu()) {
-			state->Menu()->draw(driver);
+		if (state->menu) {
+			state->menu->draw(driver);
 		}
 		if (state->Mode()) {
 			state->Mode()->draw(driver);
@@ -245,8 +244,8 @@ bool Editor::OnEvent(const SEvent& event)
 		}
 	}
 
-	if (state->Menu()){
-		if (state->Menu()->OnEvent(event)){
+	if (state->menu){
+		if (state->menu->OnEvent(event)){
 			return true;
 		}
 	}
