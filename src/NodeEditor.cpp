@@ -173,13 +173,15 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 			}	
 		}
 	} else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown) {
+		if (event.KeyInput.Key == KEY_RETURN){
+			updateProperties();
+			return false;
+		}
+
 		irr::gui::IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 		if (guienv->getFocus() && guienv->getFocus()->getType() == EGUIET_EDIT_BOX) {
 			return false;
 		}
-
-		if (event.KeyInput.PressedDown)
-			return false;
 
 		if (event.KeyInput.Key == KEY_INSERT){
 			state->project->AddNode(state);
@@ -190,8 +192,6 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 				load_ui();
 				return true;
 			}
-		}else if (event.KeyInput.Key == KEY_RETURN){
-			updateProperties();
 		}else if (event.KeyInput.Key == KEY_DOWN){
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			int idx = state->project->GetSelectedNodeId();

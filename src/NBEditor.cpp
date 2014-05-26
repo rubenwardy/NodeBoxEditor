@@ -407,13 +407,14 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			}					
 		}
 	} else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown) {
-		if (
-				state->device->getGUIEnvironment()->getFocus() &&
-				state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX) {
+		if (event.KeyInput.Key == KEY_RETURN) {
+			updateProperties();
 			return false;
 		}
 
-		if (event.KeyInput.PressedDown) {
+		if (
+				state->device->getGUIEnvironment()->getFocus() &&
+				state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX) {
 			return false;
 		}
 
@@ -430,8 +431,6 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 				node->deleteNodebox(lb->getSelected());
 				load_ui();
 			}
-		} else if (event.KeyInput.Key == KEY_RETURN) {
-			updateProperties();
 		} else if (event.KeyInput.Key == KEY_DOWN) {
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 			Node* node = state->project->GetCurrentNode();

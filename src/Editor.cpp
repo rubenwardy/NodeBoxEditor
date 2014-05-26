@@ -256,27 +256,38 @@ bool Editor::OnEvent(const SEvent& event)
 		} else {
 			state->keys[event.KeyInput.Key] = EKS_UP;
 		}
+
+		if (
+			state->device->getGUIEnvironment()->getFocus() &&
+			state->device->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			)
+			return false;
+
 		switch (event.KeyInput.Key) {
 		case KEY_KEY_S:
 			pivot->setRotation(vector3df(pivot->getRotation().X - 1,
 					pivot->getRotation().Y, pivot->getRotation().Z));
+			break;
 		case KEY_KEY_W:
 			pivot->setRotation(vector3df(pivot->getRotation().X + 1,
 					pivot->getRotation().Y, pivot->getRotation().Z));
+			break;
 		case KEY_KEY_A:
 			pivot->setRotation(vector3df(pivot->getRotation().X,
 					pivot->getRotation().Y + 1, pivot->getRotation().Z));
+			break;
 		case KEY_KEY_D:
 			pivot->setRotation(vector3df(pivot->getRotation().X,
 					pivot->getRotation().Y - 1, pivot->getRotation().Z));
+			break;
 		case KEY_KEY_B:
-			if (!event.KeyInput.PressedDown) {
+			if (!event.KeyInput.PressedDown)
 				state->SelectMode(0);
-			}
+			break;
 		case KEY_KEY_N:
-			if (!event.KeyInput.PressedDown) {
+			if (!event.KeyInput.PressedDown)
 				state->SelectMode(1);
-			}
+			break;
 		}
 	}
 	if (event.EventType == EET_GUI_EVENT) {
