@@ -1,5 +1,6 @@
 #include "util/string.hpp"
 #include "Node.hpp"
+#include <sstream>
 
 Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	device(device),
@@ -35,8 +36,9 @@ NodeBox* Node::GetNodeBox(int id) {
 NodeBox* Node::addNodeBox(){
 	_box_count++;
 	// Name it
-	std::string name = "NodeBox";
-	name.append(std::to_string(_box_count));
+	std::ostringstream s;
+	s << "NodeBox" << _box_count;
+	std::string name(s.str());
 
 	// Set up structure
 	NodeBox* tmp = new NodeBox(name,
