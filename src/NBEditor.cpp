@@ -287,9 +287,9 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		wpos -= vector3df(node->position.X, node->position.Y, node->position.Z);
 
 		if (editor->state->settings->getBool("snapping")) {
-			wpos.X = round((wpos.X + 0.5) * 16) / 16 - 0.5;
-			wpos.Y = round((wpos.Y + 0.5) * 16) / 16 - 0.5;
-			wpos.Z = round((wpos.Z + 0.5) * 16) / 16 - 0.5;
+			wpos.X = floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
+			wpos.Y = floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
+			wpos.Z = floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
 		}
 
 		// Do node limiting
