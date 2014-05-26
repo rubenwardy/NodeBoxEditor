@@ -59,6 +59,7 @@ void Project::remesh()
 void Project::AddNode(EditorState* state, bool select)
 {
 	Node* node = new Node(state->device, state, _node_count);
+	node->addNodeBox();
 	AddNode(node, select);
 }
 
@@ -69,6 +70,7 @@ void Project::AddNode(Node* node, bool select)
 		node->name = "Node" + num_to_str(_node_count);
 	}
 	node->position = vector3di((_node_count - 1), 0, 0);
+	node->remesh();
 	nodes.push_back(node);
 	if (select) {
 		snode = _node_count - 1;
