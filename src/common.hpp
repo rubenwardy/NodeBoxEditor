@@ -26,7 +26,7 @@ enum FileParserType
 };
 
 // Defines
-#define EDITOR_TEXT_VERSION "0.6.3 - Stone"
+#define EDITOR_TEXT_VERSION "0.6.4 - Stone"
 #define EDITOR_VERSION 1
 #define EDITOR_PARSER 1
 
