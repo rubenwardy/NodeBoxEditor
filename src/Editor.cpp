@@ -259,7 +259,7 @@ bool Editor::OnEvent(const SEvent& event)
 
 		if (
 			state->device->getGUIEnvironment()->getFocus() &&
-			state->device->getGUIEnvironment()->getFocus()->getType() == EGUI_ELEMENT_TYPE::EGUIET_EDIT_BOX
+			state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
 			)
 			return false;
 
