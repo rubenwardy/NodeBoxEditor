@@ -41,8 +41,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	state->AddMode(new NodeEditor(state));
 
 	// Set up project
-	proj->AddNode(state);
-	proj->SelectNode(0);
+	proj->AddNode(state, true, false);
 
 	// Load user interface
 	LoadScene();	

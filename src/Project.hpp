@@ -19,7 +19,7 @@ public:
 	std::string file;
 
 	// Nodes
-	void AddNode(EditorState* state, bool select=true);
+	void AddNode(EditorState* state, bool select = true, bool add_initial_box = true);
 	void AddNode(Node* node, bool select = true);
 	void DeleteNode(int id);
 	void SelectNode(int id) { snode = id; }

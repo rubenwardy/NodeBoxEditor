@@ -56,10 +56,11 @@ void Project::remesh()
 	}
 }
 
-void Project::AddNode(EditorState* state, bool select)
+void Project::AddNode(EditorState* state, bool select, bool add_initial_box)
 {
 	Node* node = new Node(state->device, state, _node_count);
-	node->addNodeBox();
+	if (add_initial_box)
+		node->addNodeBox();
 	AddNode(node, select);
 }
 
