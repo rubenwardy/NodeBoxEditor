@@ -262,8 +262,6 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 	if (drag) {
 		// get mouse position
 		position2di target = editor->state->mouse_position;
-		target.X -= 5;
-		target.Y -= 5;
 		target -= offset.UpperLeftCorner;
 
 		// Get the ray
