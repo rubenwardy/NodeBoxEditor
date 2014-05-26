@@ -278,6 +278,7 @@ bool MenuState::OnEvent(const SEvent& event){
 				}
 				delete state->project;
 				state->project = tmp;
+				state->project->remesh();
 				state->project->SelectNode(0);
 				state->Mode()->unload();
 				init();

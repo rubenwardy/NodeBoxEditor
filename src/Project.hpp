@@ -23,6 +23,7 @@ public:
 	void AddNode(Node* node, bool select = true);
 	void DeleteNode(int id);
 	void SelectNode(int id) { snode = id; }
+	void remesh();
 	Node* GetNode(int id) const;
 	Node* GetNode(vector3di pos) const;	
 	Node* GetCurrentNode() const;

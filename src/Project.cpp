@@ -45,6 +45,17 @@ Node* Project::GetNode(vector3di pos) const
 	return NULL;
 }
 
+void Project::remesh()
+{
+	for (std::list<Node*>::const_iterator it = nodes.begin();
+			it != nodes.end();
+			++it) {
+		if (*it) {
+			(*it)->remesh();
+		}
+	}
+}
+
 void Project::AddNode(EditorState* state, bool select)
 {
 	Node* node = new Node(state->device, state, _node_count);
