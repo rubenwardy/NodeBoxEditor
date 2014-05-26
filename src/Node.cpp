@@ -35,7 +35,8 @@ NodeBox* Node::GetNodeBox(int id) {
 NodeBox* Node::addNodeBox(){
 	_box_count++;
 	// Name it
-	std::string name = "NodeBox" + _box_count;
+	std::string name = "NodeBox";
+	name.append(std::to_string(_box_count));
 
 	// Set up structure
 	NodeBox* tmp = new NodeBox(name,
