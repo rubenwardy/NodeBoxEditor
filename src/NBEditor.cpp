@@ -164,7 +164,7 @@ void NBEditor::fillProperties()
 	if (element) {
 		IGUIEditBox* editbox = static_cast<IGUIEditBox*>(element);
 
-		std::wstring wide = narrow_to_wide(node->name);
+		std::wstring wide = narrow_to_wide(nb->name);
 		editbox->setText(wide.c_str());
 	}
 }
@@ -471,7 +471,7 @@ void NBEditor::updateProperties()
 
 	try {
 		irr::core::stringc name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
-		node->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
+		nb->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
 		nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL);
 		nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL);
 		nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(), NULL);
