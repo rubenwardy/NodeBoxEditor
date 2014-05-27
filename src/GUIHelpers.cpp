@@ -14,6 +14,20 @@ void fillTB(IGUIElement* sidebar, int parentId, int id, int value){
 	}
 }
 
+void fillTB(IGUIElement* sidebar, int parentId, int id, float value){
+	IGUIElement* element = sidebar->getElementFromId(parentId)->getElementFromId(id);
+
+	if (element) {
+		IGUIEditBox* editbox = static_cast<IGUIEditBox*>(element);
+
+		if (!editbox) {
+			return;
+		}
+
+		editbox->setText(stringw(value).c_str());
+	}
+}
+
 
 void addBox(IGUIElement* parent, IGUIEnvironment* guienv, vector2di pos, int index, const wchar_t* label){
 	guienv->addStaticText(label,
