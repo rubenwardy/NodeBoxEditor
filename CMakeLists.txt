@@ -57,6 +57,8 @@ target_link_libraries(
 	${XXF86VM_LIBRARY}
 )
 
+file(MAKE_DIRECTORY "bin")
+
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
     OUTPUT_NAME bin/nodeboxeditor
