@@ -405,8 +405,8 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
 			if (node && lb && node->GetNodeBox(lb->getSelected())){
 				node->select(lb->getSelected());
-				load_ui();
-			}					
+			}
+			load_ui();
 		}
 	} else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown) {
 		if (event.KeyInput.Key == KEY_RETURN) {
@@ -431,8 +431,8 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 			if (node && node->GetNodeBox(lb->getSelected())) {
 				node->deleteNodebox(lb->getSelected());
-				load_ui();
 			}
+			load_ui();
 		} else if (event.KeyInput.Key == KEY_DOWN) {
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 			Node* node = state->project->GetCurrentNode();
@@ -440,9 +440,9 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 				int idx = node->GetId();
 				if (lb && idx < node->boxes.size() - 1){
 					node->select(idx + 1);
-					load_ui();
 				}
 			}
+			load_ui();
 		} else if (event.KeyInput.Key == KEY_UP) {
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 			Node* node = state->project->GetCurrentNode();
@@ -450,9 +450,9 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 				int idx = node->GetId();
 				if (lb && idx > 0) {
 					node->select(idx - 1);
-					load_ui();
 				}
 			}
+			load_ui();
 		}
 	}
 	return false;
