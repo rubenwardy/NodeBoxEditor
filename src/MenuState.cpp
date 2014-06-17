@@ -374,6 +374,7 @@ IGUIWindow *MenuState::addFileDialog(FileParserType type, int submit,
 		}
 		if (type == EFPT_EXPORT) {
 			cb->addItem(L"Lua file (*.lua)", FILE_FORMAT_LUA);
+			cb->addItem(L"Minetest Classic (*.cpp)", FILE_FORMAT_MTC);
 		}
 
 		if (cb->getItemCount() > 0)

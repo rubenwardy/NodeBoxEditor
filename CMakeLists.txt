@@ -25,7 +25,8 @@ set(NBGEN_SRC
 	src/NodeEditor.cpp
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
-	src/FileFormat/Lua.cpp
+	src/FileFormat/Lua.cpp	
+	src/FileFormat/MTC.cpp
 	src/Node.cpp
 	src/NodeBox.cpp
 	src/Project.cpp

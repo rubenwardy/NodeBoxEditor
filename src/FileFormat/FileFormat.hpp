@@ -20,7 +20,8 @@ public:
 
 enum FileFormatType {
 	FILE_FORMAT_NBE,
-	FILE_FORMAT_LUA
+	FILE_FORMAT_LUA,
+	FILE_FORMAT_MTC
 };
 
 // FileFormat factory
