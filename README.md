@@ -34,7 +34,7 @@ Building
     
     # to run
     ./bin/nodeboxeditor
-    # or double click the run_script.sh file
+    # or double click the run_editor.sh file
 
 Using the editor
 ================
