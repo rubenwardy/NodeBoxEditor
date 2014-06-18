@@ -8,6 +8,8 @@ Makefile
 
 # Configuration/generated
 editor.conf
+common.hpp
+install_manifest.txt
 
 #################
 ## Eclipse

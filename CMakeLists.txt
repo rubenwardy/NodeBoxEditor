@@ -1,7 +1,24 @@
 # Set up project
 cmake_minimum_required(VERSION 2.6)
-project(NodeBoxGenerator)
+project(NodeBoxEditor)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+# Configuration
+option (RUN_IN_PLACE
+	"Whether editor should run in place (see readme.md)" ON) 
+IF (RUN_IN_PLACE)
+	set (BOOL_RUN_IN_PLACE true)
+ELSE (RUN_IN_PLACE)	
+	set (BOOL_RUN_IN_PLACE false)
+ENDIF (RUN_IN_PLACE)
+set(NBE_MAJOR_VERSION 0)
+set(NBE_MINOR_VERSION 6)
+set(NBE_PATCH_VERSION 4)
+set(NBE_DESCR_VERSION "\"0.6.4 - Stone\"")
+configure_file (
+	src/common.hpp.in
+	src/common.hpp
+)
 
 # Dependancies
 find_package(Irrlicht REQUIRED)
@@ -66,9 +83,22 @@ set_target_properties(${PROJECT_NAME}
 )
 
 # Install DLLs
+if (NOT RUN_IN_PLACE)
+	install (FILES media/fontlucida.png DESTINATION nbe/media)
+	install (FILES media/gui_scale.png DESTINATION nbe/media)
+	install (FILES media/icon_mode_node.png DESTINATION nbe/media)
+	install (FILES media/icon_mode_nodebox.png DESTINATION nbe/media)
+	install (FILES media/sky.jpg DESTINATION nbe/media)
+	install (FILES media/texture_box.png DESTINATION nbe/media)
+	install (FILES media/texture_terrain.png DESTINATION nbe/media)
+	install (FILES editor.conf.example DESTINATION nbe)
+	install (FILES README.md DESTINATION nbe)
+	install (TARGETS ${PROJECT_NAME} DESTINATION bin)
+endif (NOT RUN_IN_PLACE)
+
 if(WIN32)
 	if(DEFINED IRRLICHT_DLL)
 		message(Installing irrlicht dll)
-		install(FILES ${IRRLICHT_DLL})
+		install(FILES ${IRRLICHT_DLL} DESTINATION bin)
 	endif()
 endif()

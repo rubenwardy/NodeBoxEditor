@@ -27,6 +27,10 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
+#if !RUN_IN_PLACE
+	system("cd ../nbe");
+#endif
+
 	// Init Settings
 	conf->set("snapping", "true");
 	conf->set("limiting", "true");
