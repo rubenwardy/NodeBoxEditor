@@ -24,6 +24,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	ISceneManager *smgr = device->getSceneManager();
 	IGUIEnvironment *guienv = device->getGUIEnvironment();	
 	device->setEventReceiver(this);
+	device->setWindowCaption(L"Node Box Editor");
 
 	if (!conf->getBool("fullscreen")) {
 		device->setResizable(true);
@@ -166,7 +167,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		#ifdef _DEBUG
 		int fps = driver->getFPS();
 		if (lastFPS != fps) {
-			irr::core::stringw str = L"Nodebox Editor [FPS: ";
+			irr::core::stringw str = L"Node Box Editor [FPS: ";
 			str += fps;
 			str += "]";
 
