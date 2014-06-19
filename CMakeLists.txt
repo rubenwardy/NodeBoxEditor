@@ -84,6 +84,8 @@ set_target_properties(${PROJECT_NAME}
 
 # Install DLLs
 if (NOT RUN_IN_PLACE)
+	message ("WARNING: An install build is being created.")
+	message ("Use cmake . -DRUN_IN_PLACE=1 to make a portable build")
 	install (FILES media/fontlucida.png DESTINATION nbe/media)
 	install (FILES media/gui_scale.png DESTINATION nbe/media)
 	install (FILES media/icon_mode_node.png DESTINATION nbe/media)
@@ -94,6 +96,9 @@ if (NOT RUN_IN_PLACE)
 	install (FILES editor.conf.example DESTINATION nbe)
 	install (FILES README.md DESTINATION nbe)
 	install (TARGETS ${PROJECT_NAME} DESTINATION bin)
+else (NOT RUN_IN_PLACE)
+	message ("WARNING: A portable build is being created. sudo make install will not work")
+	message ("Use cmake . -DRUN_IN_PLACE=1 to make an install build")
 endif (NOT RUN_IN_PLACE)
 
 if(WIN32)
