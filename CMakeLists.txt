@@ -98,7 +98,7 @@ if (NOT RUN_IN_PLACE)
 	install (TARGETS ${PROJECT_NAME} DESTINATION bin)
 else (NOT RUN_IN_PLACE)
 	message ("WARNING: A portable build is being created. sudo make install will not work")
-	message ("Use cmake . -DRUN_IN_PLACE=1 to make an install build")
+	message ("Use cmake . -DRUN_IN_PLACE=0 to make an install build")
 endif (NOT RUN_IN_PLACE)
 
 if(WIN32)
