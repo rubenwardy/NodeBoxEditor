@@ -34,10 +34,12 @@ Linux
 -----
 
 **Install Dependencies**
+
     # download source and go to the root folder
     $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
 **Portable build**
+
     $ cmake . -DRUN_IN_PLACE=1
     $ make -j2
     # replace 2 with the number of cores you have + 1
@@ -46,6 +48,7 @@ Linux
     # or double click the run_editor.sh file
 
 **Installation Build**
+
     $ cmake . -DRUN_IN_PLACE=0
     $ make -j2
     # replace 2 with the number of cores you have + 1
