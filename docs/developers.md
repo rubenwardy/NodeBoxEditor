@@ -33,36 +33,38 @@ Building and Installation
 Linux
 -----
 
-** Install Dependencies **
-	# download source and go to the root folder
-	$ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
+**Install Dependencies**
+    # download source and go to the root folder
+    $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
-** Portable build **
-	$ cmake . -DRUN_IN_PLACE=1
-	$ make -j2          # replace 2 with the number of cores you have + 1
-	 # Run the editor
-	$ ./bin/nodeboxeditor
-	# or double click the run_editor.sh file
+**Portable build**
+    $ cmake . -DRUN_IN_PLACE=1
+    $ make -j2
+    # replace 2 with the number of cores you have + 1
+    # Run the editor
+    $ ./bin/nodeboxeditor
+    # or double click the run_editor.sh file
 
-** Installation Build **
-	$ cmake . -DRUN_IN_PLACE=0
-	$ make -j2          # replace 2 with the number of cores you have + 1
-	$ sudo make install
-	# Run the editor
-	$ nodeboxeditor
+**Installation Build**
+    $ cmake . -DRUN_IN_PLACE=0
+    $ make -j2
+    # replace 2 with the number of cores you have + 1
+    $ sudo make install
+    # Run the editor
+    $ nodeboxeditor
 	
 Microsoft Visual Studio
 -----------------------
 
 Express edition makes no difference to the process.
 
-** Prerequisites **
+**Prerequisites**
 
 * Download Irrlicht. 1.8 is prefered, but 1.7.x will also work.
 * Download the source code for NBE
 * You will need to download Visual Studio, of course.
 
-**  Step One: Set up a project **
+**Step One: Set up a project**
 
 * Copy the common.hpp.in to common.hpp file where you downloaded the source
 * Open up common.hpp, and edit the defines where there is @NBE_A_SETTING@
@@ -73,7 +75,7 @@ Express edition makes no difference to the process.
 * Create a C++ project in Visual Studio
 * Add the source code using right click > Add > Existing file. Make sure to include src/FileFormat and src/util as well.
 
-** Step Two: Adding Irrlicht **
+**Step Two: Adding Irrlicht**
 See [Irrlicht's tutorial](http://irrlicht.sourceforge.net/docu/example001.html) on setting up Visual Studio if you have problems.
 * Right click on the name of the project on the Solution Explorer
 * Click properties
