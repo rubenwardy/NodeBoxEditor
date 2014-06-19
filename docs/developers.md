@@ -79,6 +79,7 @@ Express edition makes no difference to the process.
 * Add the source code using right click > Add > Existing file. Make sure to include src/FileFormat and src/util as well.
 
 **Step Two: Adding Irrlicht**
+
 See [Irrlicht's tutorial](http://irrlicht.sourceforge.net/docu/example001.html) on setting up Visual Studio if you have problems.
 * Right click on the name of the project on the Solution Explorer
 * Click properties
