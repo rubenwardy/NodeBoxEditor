@@ -77,6 +77,9 @@ target_link_libraries(
 
 file(MAKE_DIRECTORY "bin")
 
+SET(CMAKE_CXX_FLAGS 
+	"${CMAKE_CXX_FLAGS} -pthread")
+
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
     OUTPUT_NAME bin/nodeboxeditor

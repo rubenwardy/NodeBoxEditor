@@ -86,3 +86,9 @@ int main(int argc, char *argv[]) {
 	return 1;
 }
 
+// Fix for Inconsistency detected by ld.so
+#include <pthread.h>
+void junk() {
+	int i;
+	i = pthread_getconcurrency();
+};
