@@ -39,17 +39,24 @@ int main(int argc, char *argv[]) {
 		"| |\\  | (_) | (_| |  __/ | |_) | (_) >  <  | |__| (_| | | || (_) | |   \n"
 		"|_| \\_|\\___/ \\__,_|\\___| |____/ \\___/_/\\_\\ |_____\\__,_|_|\\__\\___/|_|   \n\n"
 		<< std::endl;
-
+	
 	// Find the working directory
+	bool editor_is_installed = false;
 	std::cerr << "Looking for the working directory..." << std::endl;
 	if (!PathExists("media/sky.jpg")) {
 		chdir("../");
 		if (!PathExists("media/sky.jpg")) {
 			chdir("share/nodeboxeditor");
 			if (!PathExists("media/sky.jpg")) {
-				std::cerr << "Can't find the working directory!" << std::endl;
+				chdir("/usr/local/share/nodeboxeditor");
+				if (!PathExists("media/sky.jpg")) {
+					std::cerr << "Can't find the working directory!" << std::endl;
+				} else {
+					std::cerr << "Is installed!";
+					editor_is_installed = true;
+				}
 			} else {
-				std::cerr << "Setting" << std::endl;
+				std::cerr << "Is installed!";
 				editor_is_installed = true;
 			}
 		}
@@ -60,8 +67,6 @@ int main(int argc, char *argv[]) {
 	if (conf == NULL) {
 		return EXIT_FAILURE;
 	}
-
-	// Init Settings
 	conf->set("snapping", "true");
 	conf->set("limiting", "true");
 	conf->set("driver", "opengl");
@@ -77,7 +82,9 @@ int main(int argc, char *argv[]) {
 		conf->load("editor.conf");
 	else
 		conf->load("~/.config/nodeboxeditor.conf");
+	conf->set("installed", editor_is_installed?"true":"false");
 
+	// Set up irrlicht device
 	E_DRIVER_TYPE driv = irr::video::EDT_OPENGL;
 
 	const std::string confDriver = str_to_lower(conf->get("driver"));
@@ -92,7 +99,6 @@ int main(int argc, char *argv[]) {
 	// Start Irrlicht
 	int w = conf->getInt("width");
 	int h = conf->getInt("height");
-
 	if (w < 1) w = 896;
 	if (h < 1) h = 520;
 
@@ -115,7 +121,7 @@ int main(int argc, char *argv[]) {
 	Editor* editor = new Editor();
 	editor->run(device, conf);
 
-	if (editor_is_installed)
+	if (!editor_is_installed)
 		conf->load("editor.conf");
 	else
 		conf->load("~/.config/nodeboxeditor.conf");

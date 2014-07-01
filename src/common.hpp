@@ -25,10 +25,6 @@ enum FileParserType
 	EFPT_IMPORT = 4
 };
 
-// Whether the editor has been installed or not
-// See main.cpp
-static bool editor_is_installed = false;
-
 // Defines
 #include "conf_cmake.hpp"
 #define EDITOR_VERSION 1

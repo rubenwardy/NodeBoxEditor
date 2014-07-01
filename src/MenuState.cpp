@@ -207,7 +207,25 @@ bool MenuState::OnEvent(const SEvent& event){
 			case GUI_FILE_EXIT:
 				if (state->project) {
 					NBEFileFormat writer(state);
-					writer.write(state->project, "exit.nbe");
+					std::string dir = state->settings->get("save_directory");
+					bool editor_is_installed = state->settings->getBool("installed");
+					#ifndef _WIN32
+					std::cerr << "Checking string... " << (editor_is_installed?"installed":"portable") << std::endl;
+					if (dir == "" && editor_is_installed) {
+						std::cerr << "Setting..." << std::endl;
+						dir = "~/";
+					}
+					#endif
+
+					if (dir.length() != 0) {
+						size_t pos = dir.find_last_of("/");
+						if(pos != dir.length() - 1) {
+							dir += "/";
+						}
+					}
+					std::cerr << "Saving to directory '" << dir + "exit.nbe" << "'" << std::endl;
+					if (!writer.write(state->project, dir + "exit.nbe"))
+						std::cerr << "Failed to save file for unknown reason." << std::endl;
 				}
 				state->CloseEditor();
 				return true;
