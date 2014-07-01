@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 	conf->set("fullscreen", "false");
 	conf->set("width", "896");
 	conf->set("height", "520");
-	if (editor_is_installed)
+	if (!editor_is_installed)
 		conf->load("editor.conf");
 	else
 		conf->load("~/.config/nodeboxeditor.conf");
