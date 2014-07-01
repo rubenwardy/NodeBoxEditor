@@ -4,20 +4,13 @@ project(NodeBoxEditor)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 # Configuration
-option (RUN_IN_PLACE
-	"Whether editor should run in place (see readme.md)" ON) 
-IF (RUN_IN_PLACE)
-	set (BOOL_RUN_IN_PLACE true)
-ELSE (RUN_IN_PLACE)	
-	set (BOOL_RUN_IN_PLACE false)
-ENDIF (RUN_IN_PLACE)
 set(NBE_MAJOR_VERSION 0)
 set(NBE_MINOR_VERSION 6)
 set(NBE_PATCH_VERSION 4)
 set(NBE_DESCR_VERSION "\"0.6.4 - Stone\"")
 configure_file (
-	src/common.hpp.in
-	src/common.hpp
+	src/conf_cmake.hpp.in
+	src/conf_cmake.hpp
 )
 
 # Dependancies
@@ -86,27 +79,19 @@ set_target_properties(${PROJECT_NAME}
 )
 
 # Install DLLs
-if (NOT RUN_IN_PLACE)
-	message ("WARNING: An install build is being created.")
-	message ("Use cmake . -DRUN_IN_PLACE=1 to make a portable build")
-	install (FILES media/fontlucida.png DESTINATION nbe/media)
-	install (FILES media/gui_scale.png DESTINATION nbe/media)
-	install (FILES media/icon_mode_node.png DESTINATION nbe/media)
-	install (FILES media/icon_mode_nodebox.png DESTINATION nbe/media)
-	install (FILES media/sky.jpg DESTINATION nbe/media)
-	install (FILES media/texture_box.png DESTINATION nbe/media)
-	install (FILES media/texture_terrain.png DESTINATION nbe/media)
-	install (FILES editor.conf.example DESTINATION nbe)
-	install (FILES README.md DESTINATION nbe)
-	install (TARGETS ${PROJECT_NAME} DESTINATION bin)
-else (NOT RUN_IN_PLACE)
-	message ("WARNING: A portable build is being created. sudo make install will not work")
-	message ("Use cmake . -DRUN_IN_PLACE=0 to make an install build")
-endif (NOT RUN_IN_PLACE)
+install (FILES media/fontlucida.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/gui_scale.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/icon_mode_node.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/icon_mode_nodebox.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/sky.jpg DESTINATION share/nodeboxeditor/media)
+install (FILES media/texture_box.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/texture_terrain.png DESTINATION share/nodeboxeditor/media)
+install (FILES editor.conf.example DESTINATION share/nodeboxeditor)
+install (FILES README.md DESTINATION share/nodeboxeditor)
+install (TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 if(WIN32)
 	if(DEFINED IRRLICHT_DLL)
-		message(Installing irrlicht dll)
 		install(FILES ${IRRLICHT_DLL} DESTINATION bin)
 	endif()
 endif()

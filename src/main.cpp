@@ -12,6 +12,25 @@
 #endif
 #endif
 
+#ifdef _WIN32
+#include <windows.h>
+
+bool PathExists(const char* path)
+{
+	return (GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES);
+}
+
+#else
+#include <sys/stat.h>
+
+bool PathExists(const char* path)
+{
+	struct stat st;
+	return (stat(path, &st) == 0);
+}
+
+#endif
+
 int main(int argc, char *argv[]) {
 	std::cerr <<
 		" _   _           _        ____              _____    _ _ _             \n"
@@ -21,28 +40,43 @@ int main(int argc, char *argv[]) {
 		"|_| \\_|\\___/ \\__,_|\\___| |____/ \\___/_/\\_\\ |_____\\__,_|_|\\__\\___/|_|   \n\n"
 		<< std::endl;
 
+	// Find the working directory
+	std::cerr << "Looking for the working directory..." << std::endl;
+	if (!PathExists("media/sky.jpg")) {
+		chdir("../");
+		if (!PathExists("media/sky.jpg")) {
+			chdir("share/nodeboxeditor");
+			if (!PathExists("media/sky.jpg")) {
+				std::cerr << "Can't find the working directory!" << std::endl;
+			} else {
+				std::cerr << "Setting" << std::endl;
+				editor_is_installed = true;
+			}
+		}
+	}
+
 	// Settings
 	Configuration* conf = new Configuration();
 	if (conf == NULL) {
 		return EXIT_FAILURE;
 	}
 
-#if !RUN_IN_PLACE
-	system("cd ../nbe");
-#endif
-
 	// Init Settings
 	conf->set("snapping", "true");
 	conf->set("limiting", "true");
 	conf->set("driver", "opengl");
 	conf->set("hide_sidebar", "false");
+	conf->set("save_directory", "");
 	conf->set("always_show_position_handle", "false");
 	conf->set("vsync", "true");
 	conf->set("use_sleep", "false");
 	conf->set("fullscreen", "false");
 	conf->set("width", "896");
 	conf->set("height", "520");
-	conf->load("editor.conf");
+	if (editor_is_installed)
+		conf->load("editor.conf");
+	else
+		conf->load("~/.config/nodeboxeditor.conf");
 
 	E_DRIVER_TYPE driv = irr::video::EDT_OPENGL;
 
@@ -81,7 +115,10 @@ int main(int argc, char *argv[]) {
 	Editor* editor = new Editor();
 	editor->run(device, conf);
 
-	conf->save("editor.conf");
+	if (editor_is_installed)
+		conf->load("editor.conf");
+	else
+		conf->load("~/.config/nodeboxeditor.conf");
 
 	return 1;
 }

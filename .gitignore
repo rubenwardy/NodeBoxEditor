@@ -8,7 +8,7 @@ Makefile
 
 # Configuration/generated
 editor.conf
-common.hpp
+conf_cmake.hpp
 install_manifest.txt
 
 #################
