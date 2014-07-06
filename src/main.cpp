@@ -63,7 +63,8 @@ int main(int argc, char *argv[]) {
 	if (!editor_is_installed)
 		conf->load("editor.conf");
 	else
-		conf->load("~/.config/nodeboxeditor.conf");
+		if (!conf->load(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))			
+			conf->load("editor.conf");
 	conf->set("installed", editor_is_installed?"true":"false");
 
 	// Set up irrlicht device
@@ -104,9 +105,10 @@ int main(int argc, char *argv[]) {
 	editor->run(device, conf);
 
 	if (!editor_is_installed)
-		conf->load("editor.conf");
+		conf->save("editor.conf");
 	else
-		conf->load("~/.config/nodeboxeditor.conf");
+		if (!conf->save(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))			
+			conf->save("editor.conf");
 
 	return 1;
 }
