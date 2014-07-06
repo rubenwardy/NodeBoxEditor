@@ -1,4 +1,5 @@
 #include "util/string.hpp"
+#include "util/filesys.hpp"
 #include "MenuState.hpp"
 #include "FileFormat/FileFormat.hpp"
 #include "FileFormat/NBE.hpp"
@@ -207,22 +208,10 @@ bool MenuState::OnEvent(const SEvent& event){
 			case GUI_FILE_EXIT:
 				if (state->project) {
 					NBEFileFormat writer(state);
-					std::string dir = state->settings->get("save_directory");
-					bool editor_is_installed = state->settings->getBool("installed");
-					#ifndef _WIN32
-					std::cerr << "Checking string... " << (editor_is_installed?"installed":"portable") << std::endl;
-					if (dir == "" && editor_is_installed) {
-						std::cerr << "Setting..." << std::endl;
-						dir = "~/";
-					}
-					#endif
 
-					if (dir.length() != 0) {
-						size_t pos = dir.find_last_of("/");
-						if(pos != dir.length() - 1) {
-							dir += "/";
-						}
-					}
+					// Get directory to save to
+					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
+					
 					std::cerr << "Saving to directory '" << dir + "exit.nbe" << "'" << std::endl;
 					if (!writer.write(state->project, dir + "exit.nbe"))
 						std::cerr << "Failed to save file for unknown reason." << std::endl;
@@ -252,7 +241,11 @@ bool MenuState::OnEvent(const SEvent& event){
 						after += writer->getExtension();
 					}
 
-					if (!writer->write(state->project, after)) {
+					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
+					
+					std::cerr << "Saving to directory '" << dir + after << "'" << std::endl;
+
+					if (!writer->write(state->project, dir + after)) {
 						state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
 								L"File writer failed.");
 					}

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <irrlicht.h>
 #include "util/string.hpp"
+#include "util/filesys.hpp"
 #include "common.hpp"
 #include "Editor.hpp"
 
@@ -10,25 +11,6 @@
 #ifndef _DEBUG
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
-#endif
-
-#ifdef _WIN32
-#include <windows.h>
-
-bool PathExists(const char* path)
-{
-	return (GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES);
-}
-
-#else
-#include <sys/stat.h>
-
-bool PathExists(const char* path)
-{
-	struct stat st;
-	return (stat(path, &st) == 0);
-}
-
 #endif
 
 int main(int argc, char *argv[]) {

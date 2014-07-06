@@ -41,6 +41,7 @@ set(NBGEN_SRC
 	src/NodeBox.cpp
 	src/Project.cpp
 	src/util/string.cpp
+	src/util/filesys.cpp
 )
 
 # Include Directories
