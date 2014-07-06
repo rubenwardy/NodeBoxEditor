@@ -38,23 +38,22 @@ Linux
     # download source and go to the root folder
     $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
-**Portable build**
+**Compiling**
 
-    $ cmake . -DRUN_IN_PLACE=1
+    # Compile the editor
+    $ cmake .
     $ make -j2
-    # replace 2 with the number of cores you have + 1
-    # Run the editor
+
+**Running**
+
     $ ./bin/nodeboxeditor
-    # or double click the run_editor.sh file
+    # You could also double click the executable file in bin
 
-**Installation Build**
+**Installing**
 
-    $ cmake . -DRUN_IN_PLACE=0
-    $ make -j2
-    # replace 2 with the number of cores you have + 1
     $ sudo make install
-    # Run the editor
     $ nodeboxeditor
+    # See make_install.md
 	
 Microsoft Visual Studio
 -----------------------

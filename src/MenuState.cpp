@@ -242,9 +242,6 @@ bool MenuState::OnEvent(const SEvent& event){
 					}
 
 					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
-					
-					std::cerr << "Saving to directory '" << dir + after << "'" << std::endl;
-
 					if (!writer->write(state->project, dir + after)) {
 						state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
 								L"File writer failed.");
@@ -267,36 +264,43 @@ bool MenuState::OnEvent(const SEvent& event){
 					return true;
 				}
 
+				// Get file parser
 				FileFormat *parser = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
 				if (!parser) {
 					state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 							L"File format does not exist.");
 					return true;
 				}
+
+				// Get file name
 				irr::core::stringc t = box->getText();
 				std::string after(t.c_str(), t.size());
-
 				if (after.find('.') == std::string::npos) {
 					after += '.';
 					after += parser->getExtension();
 				}
 
-				Project *tmp = parser->read(after);
+				// Get directory, and load
+				std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
+				std::cerr << "reading from: " << dir << std::endl;				
+				Project *tmp = parser->read(dir + after);
 
-				if (!tmp) {
+				if (tmp) {
+					delete state->project;
+					state->project = tmp;
+					state->project->remesh();
+					state->project->SelectNode(0);
+					state->Mode()->unload();
+					init();
+					state->Mode()->load();
+					delete parser;
+					return true;
+				} else {
 					state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-							L"Reading file failed.");
+							L"Reading file failed.");					
+					delete parser;
+					break;			
 				}
-				delete state->project;
-				state->project = tmp;
-				state->project->remesh();
-				state->project->SelectNode(0);
-				state->Mode()->unload();
-				init();
-				state->Mode()->load();
-				delete parser;
-				return true;
-				break;
 			}
 			}
 		}

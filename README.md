@@ -26,6 +26,11 @@ Contributors:
 Building
 --------
 
+You can build on Linux systems using the following shell commands.
+Non-debian systems will use a different first command.
+To compile on other systems, see docs/developers.md
+If you get stuck, tell me about the problem in the NBE forum topic, IRC or GitHub issues.
+
     # download source and go to the root folder
     $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
     $ cmake .
@@ -33,8 +38,13 @@ Building
     $ make -j2
     
     # to run
-    ./bin/nodeboxeditor
-    # or double click the run_editor.sh file
+    $ ./bin/nodeboxeditor
+    # or double click the executable in bin/
+
+    # To install
+    $ sudo make install
+    $ nodeboxeditor
+    # Please read docs/make_install.md for stuff you need to know.
 
 Using the editor
 ================
