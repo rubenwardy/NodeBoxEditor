@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=Node Box Editor
 GenericName=Minetest Node Box Editor
-Comment=Edit and create node boxes for minetest
+Comment=Edit and create node boxes for Minetest
 Exec=nodeboxeditor
-Icon=nodeboxeditor
+Icon=/usr/local/share/nodeboxeditor/media/icon.png
 Terminal=false
 Type=Application
 Categories=Development;

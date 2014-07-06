@@ -87,7 +87,9 @@ install (FILES media/icon_mode_nodebox.png DESTINATION share/nodeboxeditor/media
 install (FILES media/sky.jpg DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_box.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_terrain.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/icon.png DESTINATION share/nodeboxeditor/media)
 install (FILES editor.conf.example DESTINATION share/nodeboxeditor)
+install (FILES nodeboxeditor.desktop DESTINATION ~/.local/share/applications)
 install (FILES README.md DESTINATION share/nodeboxeditor)
 install (TARGETS ${PROJECT_NAME} DESTINATION bin)
 
