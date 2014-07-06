@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Node Box Editor
+GenericName=Minetest Node Box Editor
+Comment=Edit and create node boxes for minetest
+Exec=nodeboxeditor
+Icon=nodeboxeditor
+Terminal=false
+Type=Application
+Categories=Development;
+StartupNotify=false
