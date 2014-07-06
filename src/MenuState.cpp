@@ -210,9 +210,9 @@ bool MenuState::OnEvent(const SEvent& event){
 					NBEFileFormat writer(state);
 
 					// Get directory to save to
-					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
+					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
 					
-					std::cerr << "Saving to directory '" << dir + "exit.nbe" << "'" << std::endl;
+					std::cerr << "Saving to " << dir + "exit.nbe" << std::endl;
 					if (!writer.write(state->project, dir + "exit.nbe"))
 						std::cerr << "Failed to save file for unknown reason." << std::endl;
 				}
@@ -241,8 +241,10 @@ bool MenuState::OnEvent(const SEvent& event){
 						after += writer->getExtension();
 					}
 
-					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
+					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+					std::cerr << "Saving to " << dir + after << std::endl;
 					if (!writer->write(state->project, dir + after)) {
+						std::cerr << "Failed to save file for unknown reason." << std::endl;
 						state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
 								L"File writer failed.");
 					}
@@ -281,8 +283,8 @@ bool MenuState::OnEvent(const SEvent& event){
 				}
 
 				// Get directory, and load
-				std::string dir = getSaveLoadDirectory(state->settings->get("save_directory").c_str(), state->settings->getBool("installed"));
-				std::cerr << "reading from: " << dir << std::endl;				
+				std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+				std::cerr << "Reading from " << dir + after << std::endl;
 				Project *tmp = parser->read(dir + after);
 
 				if (tmp) {

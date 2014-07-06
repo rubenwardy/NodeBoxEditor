@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
 	
 	// Find the working directory
 	bool editor_is_installed = false;
+#ifndef _WIN32
 	std::cerr << "Looking for the working directory..." << std::endl;
 	if (!PathExists("media/sky.jpg")) {
 		chdir("../");
@@ -43,6 +44,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
+#endif
 
 	// Settings
 	Configuration* conf = new Configuration();
@@ -55,8 +57,13 @@ int main(int argc, char *argv[]) {
 	conf->set("hide_sidebar", "false");
 	conf->set("save_directory", "");
 	conf->set("always_show_position_handle", "false");
+#ifdef _WIN32
+	conf->set("vsync", "false");
+	conf->set("use_sleep", "true");
+#else
 	conf->set("vsync", "true");
 	conf->set("use_sleep", "false");
+#endif
 	conf->set("fullscreen", "false");
 	conf->set("width", "896");
 	conf->set("height", "520");
@@ -113,9 +120,12 @@ int main(int argc, char *argv[]) {
 	return 1;
 }
 
+#ifndef _WIN32
 // Fix for Inconsistency detected by ld.so
 #include <pthread.h>
 void junk() {
 	int i;
 	i = pthread_getconcurrency();
 };
+#endif
+

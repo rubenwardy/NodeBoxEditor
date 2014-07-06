@@ -3,9 +3,9 @@
 #include "string.hpp"
 #include <stdlib.h>
 
-const char* getSaveLoadDirectory(const char* save_dir_setting, bool editor_is_installed)
+std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_installed)
 {
-	std::string dir(save_dir_setting);
+	std::string dir = save_dir_setting;
 
 #ifndef _WIN32
 	if (dir == "" && editor_is_installed) {
@@ -19,7 +19,8 @@ const char* getSaveLoadDirectory(const char* save_dir_setting, bool editor_is_in
 			dir += "/";
 		}
 	}
-	return dir.c_str();
+	std::cerr << "Returning " << dir.c_str() << std::endl;
+	return dir;
 }
 
 // This code was nicked from Minetest, subject to LGPLv2
