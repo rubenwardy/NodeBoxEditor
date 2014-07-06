@@ -13,6 +13,11 @@
 #endif
 #endif
 
+#ifndef _WIN32
+#include <stdlib.h>
+#include <unistd.h>
+#endif
+
 int main(int argc, char *argv[]) {
 	std::cerr <<
 		" _   _           _        ____              _____    _ _ _             \n"
