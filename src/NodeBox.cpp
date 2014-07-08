@@ -178,8 +178,6 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
 
 void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 {
-	
-	std::cerr << "start" << std::endl;
 	video::IVideoDriver* driver = device->getVideoDriver();
 	ISceneManager* smgr = device->getSceneManager();
 	if (model) {
