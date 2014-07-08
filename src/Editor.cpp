@@ -16,6 +16,27 @@ Editor::Editor() :
 	}
 }
 
+void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned int y, const wchar_t* xlabel, const wchar_t* ylabel)
+{
+	static ITexture *axes = driver->getTexture("media/coordinates.png");
+	driver->draw2DImage(
+			axes,
+			position2d<s32>(x, y),
+			rect<s32>(0, 0, 32, 32),
+			NULL, SColor(255, 255, 255, 255), true
+		);
+	font->draw(
+			ylabel,
+			core::rect<s32>(x - 2, y - 20, 300, 50),
+			video::SColor(255, 255, 255, 255)
+		);
+	font->draw(
+			xlabel,
+			core::rect<s32>(x + 40, y + 22, 300, 50),
+			video::SColor(255, 255, 255, 255)
+		);
+}
+
 bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 {
 	// Do Irrlicht Stuff
@@ -126,6 +147,9 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2-1), vector2d<irr::s32>(ResX, ResY/2-1), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
+			drawCoord(guienv->getSkin()->getFont(), driver, ResX/2 + 10, ResY/2 - 42, L"X", L"Z");
+			drawCoord(guienv->getSkin()->getFont(), driver, 10, ResY - 42, L"X", L"Y");			
+			drawCoord(guienv->getSkin()->getFont(), driver, ResX/2 + 10, ResY - 42, L"Z", L"Y");
 		} else if (camera[currentWindow]) {
 			smgr->setActiveCamera(camera[currentWindow]);
 			driver->setViewPort(rect<s32>(0, 0, ResX, ResY));
