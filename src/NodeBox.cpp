@@ -155,35 +155,142 @@ void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
 void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	video::IVideoDriver* driver = device->getVideoDriver();
 	ISceneManager* smgr = device->getSceneManager();
-
 	if (model) {
 		model->remove();
 		model = NULL;
 	}
-
 	vector3df position = vector3df(
 			nd_position.X + one.X + ((two.X - one.X) / 2),
 			nd_position.Y + one.Y + ((two.Y - one.Y) / 2),
 			nd_position.Z + one.Z + ((two.Z - one.Z) / 2)
 		);
-
 	vector3df size = vector3df(
 			two.X - one.X,
 			two.Y - one.Y,
 			two.Z - one.Z
 		);
+	static video::ITexture *texture1 = driver->getTexture("media/texture_box.png");
+	static video::ITexture *texture2 = driver->getTexture("media/texture_terrain.png");
 
-	// Create the scene node
-	model = smgr->addCubeSceneNode(1, 0, -1, position);
+	// init variables
+	f32 cubeSize = 1.f;
+	video::SColor cubeColour(255, 255, 255, 255);
 
-	if (!model) {
-		return;
+	// Initialise buffers
+	SMeshBuffer *buffer = new SMeshBuffer();
+	SMeshBuffer *buffer2 = new SMeshBuffer();	
+	SMeshBuffer *buffer3 = new SMeshBuffer();
+	SMeshBuffer *buffer4 = new SMeshBuffer();
+	SMeshBuffer *buffer5 = new SMeshBuffer();
+	SMeshBuffer *buffer6 = new SMeshBuffer();
+	buffer->Indices.set_used(6);
+	buffer2->Indices.set_used(6);
+	buffer3->Indices.set_used(6);
+	buffer4->Indices.set_used(6);
+	buffer5->Indices.set_used(6);
+	buffer6->Indices.set_used(6);
+	u16 u[6] = {0,2,1, 0,3,2};
+	for (s32 i=0; i<6; ++i) {
+		buffer->Indices[i] = u[i];
+		buffer2->Indices[i] = u[i];
+		buffer3->Indices[i] = u[i];
+		buffer4->Indices[i] = u[i];
+		buffer5->Indices[i] = u[i];
+		buffer6->Indices[i] = u[i];
 	}
 
-	static video::ITexture * texture = driver->getTexture("media/texture_box.png");
-	model->setMaterialTexture(0, texture);
-	model->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
-	model->setName(name.c_str());
+	// Init mesh
+	SMesh * cubeMesh = new SMesh();
+
+#define x0 -0.5
+#define x1 0.5
+
+	// Front face
+	std::cerr << "Front face - buffer 1" << std::endl;
+	buffer->Vertices.reallocate(4);
+	buffer->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 0, 1);
+	buffer->Vertices[1] = video::S3DVertex(x1,x0,x0, 1,-1,-1, cubeColour, 1, 1);
+	buffer->Vertices[2] = video::S3DVertex(x1,x1,x0, 1, 1,-1, cubeColour, 1, 0);
+	buffer->Vertices[3] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 0, 0);
+	buffer->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer);
+	buffer->drop();
+
+	// Back face
+	std::cerr << "Back face  - buffer 2" << std::endl;
+	buffer2->Vertices.reallocate(4);
+	buffer2->Vertices[0] = video::S3DVertex(x1,x0,x1, 1, -1, 1, cubeColour, 0, 1);
+	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 1, 1);	
+	buffer2->Vertices[2] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 1, 0);
+	buffer2->Vertices[3] = video::S3DVertex(x1,x1,x1, 1, 1, 1, cubeColour, 0, 0);
+	buffer2->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer2);
+	buffer2->drop();
+
+
+	// Left face
+	std::cerr << "Left face - buffer 3" << std::endl;
+	buffer3->Vertices.reallocate(4);
+	buffer3->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 0, 1);
+	buffer3->Vertices[1] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 1, 1);
+	buffer3->Vertices[2] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 1, 0);
+	buffer3->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 0, 0);
+	buffer3->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer3);
+	buffer3->drop();
+
+
+	// Right face
+	std::cerr << "Right face - buffer 4" << std::endl;
+	buffer4->Vertices.reallocate(4);
+	// anti-clockwise
+	buffer4->Vertices[0] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, 0, 1);
+	buffer4->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, 1, 1);
+	buffer4->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, 1, 0);
+	buffer4->Vertices[3] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, 0, 0);
+	buffer4->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer4);
+	buffer4->drop();
+
+	// Top face
+	std::cerr << "Top face - buffer 5" << std::endl;
+	buffer5->Vertices.reallocate(4);
+	// anti-clockwise
+	buffer5->Vertices[0] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 0, 1);
+	buffer5->Vertices[1] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, 1, 1);
+	buffer5->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, 1, 0);
+	buffer5->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 0, 0);
+	buffer5->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer5);
+	buffer5->drop();
+
+	// Bottom face
+	std::cerr << "Bottom face - buffer 6" << std::endl;
+	buffer6->Vertices.reallocate(4);
+	// clockwise	
+	buffer6->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 0, 0);
+	buffer6->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 0, 1);
+	buffer6->Vertices[2] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, 1, 1);
+	buffer6->Vertices[3] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, 1, 0);
+	buffer6->BoundingBox.reset(0,0,0);
+	cubeMesh->addMeshBuffer(buffer6);
+	buffer6->drop();
+
+	// Create scene node from mesh
+	model = smgr->addMeshSceneNode(cubeMesh);
+	cubeMesh->drop();
+	model->setPosition(position);
 	model->setScale(size);
+	model->getMaterial(0).setTexture(0, texture1);
+	model->getMaterial(1).setTexture(0, texture1);
+	model->getMaterial(2).setTexture(0, texture1);
+	model->getMaterial(3).setTexture(0, texture1);
+	model->getMaterial(4).setTexture(0, texture1);
+	model->getMaterial(5).setTexture(0, texture1);
+	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
+	model->setMaterialFlag(EMF_BACK_FACE_CULLING, false);
+	//model->setMaterialFlag(EMF_WIREFRAME, true);
+	std::cerr << "mc: " << model->getMaterialCount() << std::endl;
+	model->setMaterialFlag(EMF_LIGHTING, false);
 }
 
