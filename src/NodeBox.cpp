@@ -207,72 +207,90 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 
 	// Front face
 	std::cerr << "Front face - buffer 1" << std::endl;
-	buffer->Vertices.reallocate(4);
+	buffer->Vertices.set_used(4);
 	buffer->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 0, 1);
 	buffer->Vertices[1] = video::S3DVertex(x1,x0,x0, 1,-1,-1, cubeColour, 1, 1);
 	buffer->Vertices[2] = video::S3DVertex(x1,x1,x0, 1, 1,-1, cubeColour, 1, 0);
 	buffer->Vertices[3] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 0, 0);
 	buffer->BoundingBox.reset(0,0,0);
+	SMaterial mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer->Material = mat;
 	cubeMesh->addMeshBuffer(buffer);
 	buffer->drop();
 
 	// Back face
 	std::cerr << "Back face  - buffer 2" << std::endl;
-	buffer2->Vertices.reallocate(4);
+	buffer2->Vertices.set_used(4);
 	buffer2->Vertices[0] = video::S3DVertex(x1,x0,x1, 1, -1, 1, cubeColour, 0, 1);
 	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 1, 1);	
 	buffer2->Vertices[2] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 1, 0);
 	buffer2->Vertices[3] = video::S3DVertex(x1,x1,x1, 1, 1, 1, cubeColour, 0, 0);
 	buffer2->BoundingBox.reset(0,0,0);
+	mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer2->Material = mat;
 	cubeMesh->addMeshBuffer(buffer2);
 	buffer2->drop();
 
 
 	// Left face
 	std::cerr << "Left face - buffer 3" << std::endl;
-	buffer3->Vertices.reallocate(4);
+	buffer3->Vertices.set_used(4);
 	buffer3->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 0, 1);
 	buffer3->Vertices[1] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 1, 1);
 	buffer3->Vertices[2] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 1, 0);
 	buffer3->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 0, 0);
 	buffer3->BoundingBox.reset(0,0,0);
+	mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer3->Material = mat;
 	cubeMesh->addMeshBuffer(buffer3);
 	buffer3->drop();
 
 
 	// Right face
 	std::cerr << "Right face - buffer 4" << std::endl;
-	buffer4->Vertices.reallocate(4);
+	buffer4->Vertices.set_used(4);
 	// anti-clockwise
 	buffer4->Vertices[0] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, 0, 1);
 	buffer4->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, 1, 1);
 	buffer4->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, 1, 0);
 	buffer4->Vertices[3] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, 0, 0);
 	buffer4->BoundingBox.reset(0,0,0);
+	mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer4->Material = mat;
 	cubeMesh->addMeshBuffer(buffer4);
 	buffer4->drop();
 
 	// Top face
 	std::cerr << "Top face - buffer 5" << std::endl;
-	buffer5->Vertices.reallocate(4);
+	buffer5->Vertices.set_used(4);
 	// anti-clockwise
 	buffer5->Vertices[0] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, 0, 1);
 	buffer5->Vertices[1] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, 1, 1);
 	buffer5->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, 1, 0);
 	buffer5->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, 0, 0);
 	buffer5->BoundingBox.reset(0,0,0);
+	mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer5->Material = mat;
 	cubeMesh->addMeshBuffer(buffer5);
 	buffer5->drop();
 
 	// Bottom face
 	std::cerr << "Bottom face - buffer 6" << std::endl;
-	buffer6->Vertices.reallocate(4);
+	buffer6->Vertices.set_used(4);
 	// clockwise	
 	buffer6->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, 0, 0);
 	buffer6->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, 0, 1);
 	buffer6->Vertices[2] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, 1, 1);
 	buffer6->Vertices[3] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, 1, 0);
 	buffer6->BoundingBox.reset(0,0,0);
+	mat = SMaterial();
+	mat.setTexture(0, texture1);
+	buffer6->Material = mat;
 	cubeMesh->addMeshBuffer(buffer6);
 	buffer6->drop();
 
@@ -281,12 +299,6 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	cubeMesh->drop();
 	model->setPosition(position);
 	model->setScale(size);
-	model->getMaterial(0).setTexture(0, texture1);
-	model->getMaterial(1).setTexture(0, texture1);
-	model->getMaterial(2).setTexture(0, texture1);
-	model->getMaterial(3).setTexture(0, texture1);
-	model->getMaterial(4).setTexture(0, texture1);
-	model->getMaterial(5).setTexture(0, texture1);
 	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
 	model->setMaterialFlag(EMF_BACK_FACE_CULLING, false);
 	//model->setMaterialFlag(EMF_WIREFRAME, true);
