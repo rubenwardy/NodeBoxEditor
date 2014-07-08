@@ -205,7 +205,6 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 #define x1 0.5
 
 	// Front face
-	std::cerr << "Front face - buffer 1" << std::endl;
 	vector2df topl((one.X+0.5), (two.Y+0.5));	
 	vector2df btmr((two.X+0.5), (one.Y+0.5));
 	buffer->Vertices.set_used(4);
@@ -221,7 +220,6 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	buffer->drop();
 
 	// Back face
-	std::cerr << "Back face  - buffer 2" << std::endl;
 	topl = vector2df((two.X + 0.5), (two.Y + 0.5));	
 	btmr = vector2df((one.X + 0.5), (one.Y + 0.5));
 	buffer2->Vertices.set_used(4);
@@ -238,7 +236,6 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 
 
 	// Left face
-	std::cerr << "Left face - buffer 3" << std::endl;
 	topl = vector2df((two.Z + 0.5), (two.Y + 0.5));	
 	btmr = vector2df((one.Z + 0.5), (one.Y + 0.5));
 	buffer3->Vertices.set_used(4);
@@ -255,7 +252,6 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 
 
 	// Right face
-	std::cerr << "Right face - buffer 4" << std::endl;
 	topl = vector2df((one.Z + 0.5), (two.Y + 0.5));	
 	btmr = vector2df((two.Z + 0.5), (one.Y + 0.5));
 	buffer4->Vertices.set_used(4);
@@ -270,8 +266,7 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	cubeMesh->addMeshBuffer(buffer4);
 	buffer4->drop();
 
-	// Top face
-	std::cerr << "Top face - buffer 5" << std::endl;	
+	// Top face	
 	topl = vector2df((one.X + 0.5), (two.Z + 0.5));	
 	btmr = vector2df((two.X + 0.5), (one.Z + 0.5));
 	buffer5->Vertices.set_used(4);
@@ -286,8 +281,7 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	cubeMesh->addMeshBuffer(buffer5);
 	buffer5->drop();
 
-	// Bottom face
-	std::cerr << "Bottom face - buffer 6" << std::endl;		
+	// Bottom face	
 	topl = vector2df((one.X + 0.5), (one.Z + 0.5));	
 	btmr = vector2df((two.X + 0.5), (two.Z + 0.5));
 	buffer6->Vertices.set_used(4);
@@ -308,6 +302,5 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device) {
 	model->setPosition(position);
 	model->setScale(size);
 	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
-	model->setMaterialFlag(EMF_LIGHTING, false);
 }
 
