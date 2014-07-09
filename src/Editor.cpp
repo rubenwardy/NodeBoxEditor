@@ -97,6 +97,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 
 		if (currentWindow == -1) {
 			// Draw Camera 0
+			// Draw Camera 0
 			if (camera[0]) {
 				smgr->setActiveCamera(camera[0]);
 				rect<s32> offset = rect<s32>(0, 0, ResX/2, ResY/2);
@@ -104,7 +105,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				smgr->drawAll();
 
 				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_PERS, driver, offset);
+					state->Mode()->viewportTick(VIEW_TL, driver, offset);
 			}
 
 			// Draw Camera 1
@@ -115,7 +116,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				smgr->drawAll();
 
 				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_XZ, driver, offset);
+					state->Mode()->viewportTick(VIEW_TR, driver, offset);
 			}
 
 			// Draw Camera 2
@@ -126,7 +127,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				smgr->drawAll();
 
 				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_XY, driver, offset);
+					state->Mode()->viewportTick(VIEW_BL, driver, offset);
 
 			}
 
@@ -138,7 +139,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				smgr->drawAll();
 
 				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_ZY, driver, offset);
+					state->Mode()->viewportTick(VIEW_BR, driver, offset);
 			}
 
 			// Draw GUI

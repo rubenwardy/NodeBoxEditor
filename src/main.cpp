@@ -69,6 +69,10 @@ int main(int argc, char *argv[]) {
 	conf->set("vsync", "true");
 	conf->set("use_sleep", "false");
 #endif
+	conf->set("viewport_top_left", "pers");
+	conf->set("viewport_top_right", "top");
+	conf->set("viewport_bottom_left", "front");
+	conf->set("viewport_bottom_right", "right");
 	conf->set("fullscreen", "false");
 	conf->set("width", "896");
 	conf->set("height", "520");

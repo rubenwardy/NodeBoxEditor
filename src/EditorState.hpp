@@ -13,11 +13,23 @@ enum KeyState{
 
 enum Viewport
 {
-	VIEW_PERS,
-	VIEW_XZ,
-	VIEW_XY,
-	VIEW_ZY
+	VIEW_TL,
+	VIEW_TR,
+	VIEW_BL,
+	VIEW_BR
 };
+
+enum ViewportType
+{
+	VIEWT_PERS,
+	VIEWT_FRONT,
+	VIEWT_BACK,
+	VIEWT_LEFT,
+	VIEWT_RIGHT,
+	VIEWT_TOP,
+	VIEWT_BOTTOM
+};
+
 
 
 class Project;
@@ -62,6 +74,7 @@ public:
 	Configuration *settings;
 	MenuState *menu;
 
+	ViewportType getViewportType(Viewport id);
 private:
 	int currentmode;
 	EditorMode *modes[5];

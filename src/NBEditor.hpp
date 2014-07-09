@@ -2,10 +2,18 @@
 #define NBEDITOR_HPP_INCLUDED
 #include "common.hpp"
 #include "EditorState.hpp"
-
+enum CDR_TYPE
+{
+	CDR_L,
+	CDR_R,
+	CDR_U,
+	CDR_D,
+	CDR_M
+};
 enum CDRType
 {
-	CDR_X_P = 1, 
+	CDR_NONE,
+	CDR_X_P, 
 	CDR_X_N,
 	CDR_Y_P,
 	CDR_Y_N,
@@ -22,12 +30,13 @@ class CDR
 {
 public:
 	CDR() : visible(false) {}
-	CDR(Viewport win, CDRType typ) : window(win), type(typ), visible(false) {}
+	CDR(Viewport win, CDR_TYPE typ) : window(win), type(typ), visible(false) {}
 
 	void update(NBEditor* editor, bool drag, rect<s32> offset);
+	CDRType getActualType(EditorState* state);
 
 	Viewport window;
-	CDRType type;
+	CDR_TYPE type;
 	vector2d<irr::s32> position;
 	bool visible;
 };
@@ -51,7 +60,7 @@ public:
 private:
 	bool wasmd;
 	int current;
-	CDR cdrs[15];
+	CDR cdrs[20];
 	void load_ui();
 	void fillProperties();
 	void updateProperties();
@@ -59,3 +68,4 @@ private:
 };
 
 #endif
+

@@ -46,3 +46,37 @@ void EditorState::SelectMode(int id)
 	}
 }
 
+ViewportType stringToType(std::string input, ViewportType def)
+{
+	if (input == "pers")
+		return VIEWT_PERS;
+	else if (input == "front")
+		return VIEWT_FRONT;
+	else if (input == "back")
+		return VIEWT_BACK;
+	else if (input == "left")
+		return VIEWT_LEFT;
+	else if (input == "right")
+		return VIEWT_RIGHT;
+	else if (input == "top")
+		return VIEWT_TOP;
+	else if (input == "bottom")
+		return VIEWT_BOTTOM;
+	else
+		return def;
+}
+
+ViewportType EditorState::getViewportType(Viewport id)
+{
+	switch (id) {
+	case VIEW_TL:
+		return stringToType(settings->get("viewport_top_left"), VIEWT_PERS);
+	case VIEW_TR:
+		return stringToType(settings->get("viewport_top_right"), VIEWT_TOP);
+	case VIEW_BL:
+		return stringToType(settings->get("viewport_bottom_left"), VIEWT_FRONT);
+	case VIEW_BR:
+		return stringToType(settings->get("viewport_bottom_right"), VIEWT_PERS);
+	}
+}
+

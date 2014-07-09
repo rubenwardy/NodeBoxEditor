@@ -28,26 +28,13 @@ NBEditor::NBEditor(EditorState* st) :
 	current(-1),
 	prop_needs_update(false)
 {
-	// Top Window
-	cdrs[0] = CDR(VIEW_XZ, CDR_X_P);
-	cdrs[1] = CDR(VIEW_XZ, CDR_X_N);
-	cdrs[2] = CDR(VIEW_XZ, CDR_Z_P);
-	cdrs[3] = CDR(VIEW_XZ, CDR_Z_N);
-	cdrs[4] = CDR(VIEW_XZ, CDR_XZ);
-
-	// Front window
-	cdrs[5] = CDR(VIEW_XY, CDR_X_P);
-	cdrs[6] = CDR(VIEW_XY, CDR_X_N);
-	cdrs[7] = CDR(VIEW_XY, CDR_Y_P);
-	cdrs[8] = CDR(VIEW_XY, CDR_Y_N);
-	cdrs[9] = CDR(VIEW_XY, CDR_XY);
-
-	// Side window
-	cdrs[10] = CDR(VIEW_ZY, CDR_Y_P);
-	cdrs[11] = CDR(VIEW_ZY, CDR_Y_N);
-	cdrs[12] = CDR(VIEW_ZY, CDR_Z_P);
-	cdrs[13] = CDR(VIEW_ZY, CDR_Z_N);
-	cdrs[14] = CDR(VIEW_ZY, CDR_ZY);
+	for (int i = 0; i < 4; i++) {
+		cdrs[i*5]	= CDR((Viewport)i, CDR_L);
+		cdrs[i*5 + 1]	= CDR((Viewport)i, CDR_R);
+		cdrs[i*5 + 2]	= CDR((Viewport)i, CDR_U);
+		cdrs[i*5 + 3]	= CDR((Viewport)i, CDR_D);
+		cdrs[i*5 + 4]	= CDR((Viewport)i, CDR_M);
+	}
 }
 
 
@@ -232,6 +219,15 @@ void NBEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, r
 	}
 }
 
+CDRType CDR::getActualType(EditorState* state)
+{
+	ViewportType vpt = state->getViewportType(window);
+
+	if (vpt == VIEWT_PERS)
+		return CDR_NONE;
+	else
+		return (CDRType)(((int)vpt - 1) * 5 + type);
+}
 
 void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 {
@@ -239,11 +235,17 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		return;
 	}
 
+	CDRType actualType = getActualType(editor->state);
+	if (actualType == CDR_NONE)
+		return;
+
 	if (!editor->state->settings->getBool("always_show_position_handle") &&
 			(editor->state->keys[KEY_LSHIFT] == EKS_UP) ==
-			(type == CDR_XY || type == CDR_XZ || type == CDR_ZY)) {
+			(actualType == CDR_XY || actualType == CDR_XZ || actualType == CDR_ZY)) {
 		return;
 	}
+
+	
 
 	Node* node = editor->state->project->GetCurrentNode();
 
@@ -285,7 +287,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 		// Snapping
 		wpos -= vector3df(node->position.X, node->position.Y, node->position.Z);
-		if (window == VIEW_XZ)
+		if (window == VIEW_TR)
 			wpos.Z -= 0.1;
 
 		if (editor->state->settings->getBool("snapping")) {
@@ -319,11 +321,11 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		}
 
 		// Call required function
-		if (type < CDR_XZ) {
-			box->resizeNodeBoxFace(editor->state, type, wpos,
+		if (actualType < CDR_XZ) {
+			box->resizeNodeBoxFace(editor->state, actualType, wpos,
 				editor->state->keys[KEY_LCONTROL] == EKS_DOWN);
 		} else {
-			box->moveNodeBox(editor->state, type, wpos);
+			box->moveNodeBox(editor->state, actualType, wpos);
 		}
 		node->remesh();
 
@@ -332,7 +334,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 	vector3df pos = box->GetCenter();
 
-	switch (type) {
+	switch (actualType) {
 	case CDR_X_P:
 		pos.X = box->two.X;
 		break;
@@ -494,4 +496,5 @@ irr::video::ITexture* NBEditor::icon()
 			->getTexture("media/icon_mode_nodebox.png");
 	return icon;
 }
+
 
