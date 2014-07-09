@@ -30,6 +30,7 @@ set(NBGEN_SRC
 	src/Editor.cpp
 	src/EditorState.cpp
 	src/MenuState.cpp
+	src/FileDialog.cpp
 	src/GUIHelpers.cpp
 	src/NBEditor.cpp
 	src/NodeEditor.cpp

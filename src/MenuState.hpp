@@ -2,6 +2,7 @@
 #define MENUSTATE_HPP_INCLUDED
 #include "common.hpp"
 #include "EditorState.hpp"
+#include "Dialog.hpp"
 
 
 // FILE
@@ -77,10 +78,12 @@ enum GUI_ID
 
 	// File Dialog
 	GUI_FILEDIALOG_PATH = 220 + SIDEBAR_MAX_IDS,
-	GUI_FILEDIALOG_FORM = 221 + SIDEBAR_MAX_IDS
+	GUI_FILEDIALOG_FORM = 221 + SIDEBAR_MAX_IDS,
+	GUI_DIALOG_SUBMIT = 222 + SIDEBAR_MAX_IDS
 };
 
 class EditorState;
+class Dialog;
 class MenuState{
 public:
 	MenuState(EditorState* state);
@@ -89,11 +92,11 @@ public:
 	bool OnEvent(const SEvent& event);
 	EditorState *state;
 	IGUIStaticText *sidebar;
-
+	Dialog *dialog;
 private:
 	IGUIContextMenu *projectMenubar;
 	IGUIContextMenu* menubar;
-	IGUIWindow* addFileDialog(FileParserType type, int submit,
+	void addFileDialog(FileParserType type,
 			const wchar_t* title, const wchar_t* button);
 	bool mode_icons_open;
 };
