@@ -344,9 +344,16 @@ void Editor::LoadScene()
 	IVideoDriver *driver = device->getVideoDriver();
 	ISceneManager *smgr = device->getSceneManager();
 
+	// Scene sizes
+	int ResX = driver->getScreenSize().Width;
+	if (!state->settings->getBool("hide_sidebar"))
+		ResX -= 256;
+	
+	int ResY = driver->getScreenSize().Height;
+
 	// Calculate Projection Matrix
 	matrix4 projMat;
-	irr::f32 orth_w = (float)(driver->getScreenSize().Width - 256) / (float)driver->getScreenSize().Height;
+	irr::f32 orth_w = (float)ResX / (float)ResY;
 	orth_w = 3 * orth_w;
 	projMat.buildProjectionMatrixOrthoLH(orth_w, 3, 1, 100);
 
@@ -358,6 +365,7 @@ void Editor::LoadScene()
 	pivot = smgr->addEmptySceneNode(target, 199);
 	camera[0] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
 	camera[0]->setParent(pivot);
+	camera[0]->setAspectRatio((float)ResX / (float)ResY);
 	pivot->setRotation(vector3df(25, -45, 0));
 
 	// Add Topdown camera
