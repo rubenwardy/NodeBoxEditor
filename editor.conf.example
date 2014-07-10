@@ -5,6 +5,17 @@ snapping = true
 # limiting stops node boxes going out of node bounds
 limiting = true
 
+# Directory to save projects and export to.
+# Should be absolute path.
+save_directory =
+
+# The view of each viewport
+# can be: pers, front, back, top, bottom, left, right
+viewport_top_left = pers
+viewport_top_right = top
+viewport_bottom_left = front
+viewport_bottom_right = right
+
 # Driver used to render
 driver = opengl
 
