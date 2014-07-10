@@ -96,61 +96,17 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		int ResY = driver->getScreenSize().Height;
 
 		if (currentWindow == -1) {
-			// Draw Camera 0
-			// Draw Camera 0
-			if (camera[0]) {
-				smgr->setActiveCamera(camera[0]);
-				rect<s32> offset = rect<s32>(0, 0, ResX/2, ResY/2);
-				driver->setViewPort(offset);
-				smgr->drawAll();
+			viewportTick(VIEW_TL, rect<s32>(0,	0,	ResX/2,	ResY/2	));
+			viewportTick(VIEW_TR, rect<s32>(ResX/2,	0,	ResX,	ResY/2	));
+			viewportTick(VIEW_BL, rect<s32>(0,	ResY/2,	ResX/2,	ResY	));
+			viewportTick(VIEW_BR, rect<s32>(ResX/2,	ResY/2,	ResX,	ResY	));
 
-				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_TL, driver, offset);
-			}
-
-			// Draw Camera 1
-			if (camera[1]) {
-				smgr->setActiveCamera(camera[1]);
-				rect<s32> offset = rect<s32>(ResX/2, 0, ResX, ResY/2);
-				driver->setViewPort(offset);
-				smgr->drawAll();
-
-				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_TR, driver, offset);
-			}
-
-			// Draw Camera 2
-			if (camera[2]) {
-				smgr->setActiveCamera(camera[2]);
-				rect<s32> offset = rect<s32>(0, ResY/2, ResX/2, ResY);
-				driver->setViewPort(offset);
-				smgr->drawAll();
-
-				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_BL, driver, offset);
-
-			}
-
-			// Draw Camera 3
-			if (camera[3]) {
-				smgr->setActiveCamera(camera[3]);
-				rect<s32> offset = rect<s32>(ResX/2, ResY/2, ResX, ResY);
-				driver->setViewPort(offset);
-				smgr->drawAll();
-
-				if (state->Mode())
-					state->Mode()->viewportTick(VIEW_BR, driver, offset);
-			}
-
-			// Draw GUI
+			// Draw separating lines
 			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2), vector2d<irr::s32>(ResX, ResY/2), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2-1), vector2d<irr::s32>(ResX, ResY/2-1), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
-			drawCoord(guienv->getSkin()->getFont(), driver, ResX/2 + 10, ResY/2 - 42, L"X", L"Z");
-			drawCoord(guienv->getSkin()->getFont(), driver, 10, ResY - 42, L"X", L"Y");			
-			drawCoord(guienv->getSkin()->getFont(), driver, ResX/2 + 10, ResY - 42, L"Z", L"Y");
 		} else if (camera[currentWindow]) {
 			smgr->setActiveCamera(camera[currentWindow]);
 			driver->setViewPort(rect<s32>(0, 0, ResX, ResY));
@@ -365,37 +321,138 @@ void Editor::recreateCameras()
 		ResX -= 256;	
 	int ResY = driver->getScreenSize().Height;
 
-	// Delete old cameras
-	for (int i = 0; i < 4; i++) {
-		if (camera[i]) {
-			camera[i]->remove();
-			camera[i] = NULL;
-		}
-	}
-
-	// Recreate perspective cameras
-	vector3df oldrot = pivot->getRotation();
-	pivot->setRotation(vector3df(0, 0, 0));
-	camera[0] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
-	camera[0]->setParent(pivot);
-	camera[0]->setAspectRatio((float)ResX / (float)ResY);
-	camera[0]->setAspectRatio((float)ResX / (float)ResY);
-	pivot->setRotation(oldrot);
-
 	// reset matrix
 	matrix4 projMat;
 	irr::f32 orth_w = (float)ResX / (float)ResY;
 	orth_w = 3 * orth_w;
 	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
 
-	// Remake cameras
-	camera[1] = smgr->addCameraSceneNode(target, vector3df(0, 2, -0.01), vector3df(0, 0, 0));
-	camera[1]->setProjectionMatrix(projMat, true);
+	// Loop through cameras
+	for (int i = 0; i < 4; i++) {
+		// Delete old camera
+		if (camera[i]) {
+			camera[i]->remove();
+			camera[i] = NULL;
+		}
 
-	camera[2] = smgr->addCameraSceneNode(target, vector3df(0, 0, -5), vector3df(0, 0, 0));
-	camera[2]->setProjectionMatrix(projMat, true);
+		ViewportType type = state->getViewportType((Viewport)i);
+		std::cerr << "Creating camera " << i << " of type " << (int)type << std::endl;
+		if (type == VIEWT_PERS) {
+			vector3df oldrot = pivot->getRotation();
+			pivot->setRotation(vector3df(0, 0, 0));
+			camera[i] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
+			camera[i]->setParent(pivot);
+			camera[i]->setAspectRatio((float)ResX / (float)ResY);
+			pivot->setRotation(oldrot);
+		} else {			
+			camera[i] = smgr->addCameraSceneNode(target);
+			switch(type) {
+			case VIEWT_TOP:
+				camera[i]->setPosition(vector3df(0, 2, -0.01));
+				break;
+			case VIEWT_BOTTOM:
+				camera[i]->setPosition(vector3df(0, -2, -0.01));
+				break;
+			case VIEWT_LEFT:
+				camera[i]->setPosition(vector3df(-5, 0, 0));	
+				break;		
+			case VIEWT_RIGHT:
+				camera[i]->setPosition(vector3df(5, 0, 0));
+				break;
+			case VIEWT_FRONT:
+				camera[i]->setPosition(vector3df(0, 0, -5));
+				break;
+			case VIEWT_BACK:
+				camera[i]->setPosition(vector3df(0, 0, 5));
+				break;
+			}
+			camera[i]->setProjectionMatrix(projMat, true);
+		}
+	}
+}
 
-	camera[3] = smgr->addCameraSceneNode(target, vector3df(-5, 0, 0), vector3df(0, 0, 0));
-	camera[3]->setProjectionMatrix(projMat, true);
+typedef rect<s32> rects32;
+void Editor::viewportTick(Viewport viewport, rect<s32> rect)
+{
+	// Init
+	IVideoDriver *driver = device->getVideoDriver();
+	ISceneManager *smgr = device->getSceneManager();
+	IGUIEnvironment *guienv = device->getGUIEnvironment();
+	ViewportType type = state->getViewportType(viewport);
+
+	// Draw camera
+	smgr->setActiveCamera(camera[(int)viewport]);
+	driver->setViewPort(rect);
+	smgr->drawAll();
+	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
+
+	// Callbacks
+	if (state->Mode())
+		state->Mode()->viewportTick(viewport, driver, rect);
+
+	// Draw text
+	{
+		const wchar_t* label = L"";
+		switch(type) {
+		case VIEWT_PERS:
+			label = L"Perspective";
+			break;
+		case VIEWT_TOP:
+			label = L"Top";
+			break;
+		case VIEWT_BOTTOM:
+			label = L"Bottom";
+			break;
+		case VIEWT_LEFT:
+			label = L"Left";
+			break;		
+		case VIEWT_RIGHT:
+			label = L"Right";
+			break;
+		case VIEWT_FRONT:
+			label = L"Front";
+			break;
+		case VIEWT_BACK:
+			label = L"Back";
+			break;
+		}
+		guienv->getSkin()->getFont()->draw(
+				label,
+				core::rect<s32>(rect.UpperLeftCorner.X + 10,
+					rect.UpperLeftCorner.Y + ((viewport==VIEW_TL || viewport==VIEW_TR)?25:5),
+					200, 50),
+				video::SColor(255, 255, 255, 255)
+			);
+	}
+
+	// Draw coordinate arrows
+	if (type != VIEWT_PERS) {
+		switch(type) {
+		case VIEWT_TOP:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"X", L"Z");
+			break;
+		case VIEWT_BOTTOM:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"X", L"-Z");
+			break;
+		case VIEWT_LEFT:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"-Z", L"Y");
+			break;		
+		case VIEWT_RIGHT:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"Z", L"Y");
+			break;
+		case VIEWT_FRONT:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"X", L"Y");
+			break;
+		case VIEWT_BACK:
+			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
+					rect.LowerRightCorner.Y - 42, L"-X", L"Y");
+			break;
+		}		
+	}
 }
 

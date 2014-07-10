@@ -24,6 +24,7 @@ private:
 	ISceneNode *pivot;
 	ICameraSceneNode *camera[4];
 	void LoadScene();
+	void viewportTick(Viewport vp, rect<s32> rect);
 };
 
 #endif
