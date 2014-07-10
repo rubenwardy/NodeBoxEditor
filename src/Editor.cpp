@@ -108,16 +108,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
 		} else if (camera[currentWindow]) {
-			smgr->setActiveCamera(camera[currentWindow]);
-			driver->setViewPort(rect<s32>(0, 0, ResX, ResY));
-			smgr->drawAll();
-
-			if (state->Mode()) {
-				state->Mode()->viewportTick((Viewport) currentWindow,
-						driver, rect<s32>(0, 0, ResX, ResY));
-			}
-
-			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
+			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY));
 		}
 
 		if (state->menu) {
@@ -424,8 +415,8 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect)
 		}
 		guienv->getSkin()->getFont()->draw(
 				label,
-				core::rect<s32>(rect.UpperLeftCorner.X + 10,
-					rect.UpperLeftCorner.Y + ((viewport==VIEW_TL || viewport==VIEW_TR)?25:5),
+				core::rect<s32>(rect.LowerRightCorner.X - wcslen(label) * 6 - 20,
+					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?30:10),
 					200, 50),
 				video::SColor(255, 255, 255, 255)
 			);

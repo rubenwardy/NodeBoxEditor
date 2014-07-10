@@ -54,10 +54,11 @@ void MenuState::init()
 	// View
 	submenu = menubar->getSubMenu(2);
 	submenu->addItem(L"Tiled View", GUI_VIEW_SP_ALL);
-	submenu->addItem(L"Perspective View", GUI_VIEW_SP_PER);
-	submenu->addItem(L"Top View", GUI_VIEW_SP_TOP);
-	submenu->addItem(L"Front View", GUI_VIEW_SP_FRT);
-	submenu->addItem(L"Side View", GUI_VIEW_SP_RHT);
+	submenu->addSeparator();
+	submenu->addItem(L"Top Left", GUI_VIEW_SP_PER);
+	submenu->addItem(L"Top Right", GUI_VIEW_SP_TOP);
+	submenu->addItem(L"Bottom Left", GUI_VIEW_SP_FRT);
+	submenu->addItem(L"Bottom Right", GUI_VIEW_SP_RHT);
 
 	// Project
 	projectMenubar = menubar->getSubMenu(3);
