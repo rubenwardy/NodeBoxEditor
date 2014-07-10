@@ -173,7 +173,7 @@ void NBEditor::draw(irr::video::IVideoDriver* driver)
 
 	static irr::video::ITexture *scale = driver->getTexture("media/gui_scale.png");
 
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 20; i++) {
 		if (cdrs[i].visible) {
 			rect<s32> drawarea = rect<s32>(
 					cdrs[i].position.X - 5,
@@ -212,7 +212,7 @@ void NBEditor::draw(irr::video::IVideoDriver* driver)
 
 void NBEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
 {
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 20; i++) {
 		if (cdrs[i].window == window) {
 			cdrs[i].update(this, (current == i), offset);
 		}
@@ -223,10 +223,16 @@ CDRType CDR::getActualType(EditorState* state)
 {
 	ViewportType vpt = state->getViewportType(window);
 
+	static CDRType crosstable[15] = {
+		CDR_X_N, CDR_X_P, CDR_Y_P, CDR_Y_N, CDR_XY,	// front / back
+		CDR_Z_N, CDR_Z_P, CDR_Y_P, CDR_Y_N, CDR_ZY,	// left / right
+		CDR_X_N, CDR_X_P, CDR_Z_P, CDR_Z_N, CDR_XZ	// top / bottom
+	};
+
 	if (vpt == VIEWT_PERS)
 		return CDR_NONE;
 	else
-		return (CDRType)(((int)vpt - 1) * 5 + type);
+		return crosstable[(CDRType)( ( ((int)vpt - 1) % 3) * 5 + type)];
 }
 
 void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
@@ -244,8 +250,6 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 			(actualType == CDR_XY || actualType == CDR_XZ || actualType == CDR_ZY)) {
 		return;
 	}
-
-	
 
 	Node* node = editor->state->project->GetCurrentNode();
 
@@ -354,6 +358,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		pos.Z = box->one.Z;
 		break;
 	default:
+		std::cerr << "Unknown CDR type! " << (int)actualType << std::endl;
 		break;
 	}
 

@@ -15,6 +15,8 @@ public:
 
 	EditorState *state;
 	irr::IrrlichtDevice *device;
+
+	void recreateCameras();
 private:
 	// Helper functions
 	int currentWindow;

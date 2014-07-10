@@ -204,30 +204,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		if (LastX != ResX || LastY != ResY) {
 			LastX = ResX;
 			LastY = ResY;
-			camera[0]->setAspectRatio((float)ResX / (float)ResY);
-
-			// reset matrix
-			matrix4 projMat;
-			irr::f32 orth_w = (float)ResX / (float)ResY;
-			orth_w = 3 * orth_w;
-			projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
-
-			for (int i = 1; i < 4; i++) {
-				if (camera[i]) {
-					camera[i]->remove();
-					camera[i] = NULL;
-				}
-			}
-
-			// Remake cameras
-			camera[1] = smgr->addCameraSceneNode(target, vector3df(0, 2, -0.01), vector3df(0, 0, 0));
-			camera[1]->setProjectionMatrix(projMat, true);
-
-			camera[2] = smgr->addCameraSceneNode(target, vector3df(0, 0, -5), vector3df(0, 0, 0));
-			camera[2]->setProjectionMatrix(projMat, true);
-
-			camera[3] = smgr->addCameraSceneNode(target, vector3df(-5, 0, 0), vector3df(0, 0, 0));
-			camera[3]->setProjectionMatrix(projMat, true);
+			recreateCameras();
 		}
 
 		// Update
@@ -345,41 +322,14 @@ void Editor::LoadScene()
 	IVideoDriver *driver = device->getVideoDriver();
 	ISceneManager *smgr = device->getSceneManager();
 
-	// Scene sizes
-	int ResX = driver->getScreenSize().Width;
-	if (!state->settings->getBool("hide_sidebar"))
-		ResX -= 256;
-	
-	int ResY = driver->getScreenSize().Height;
-
-	// Calculate Projection Matrix
-	matrix4 projMat;
-	irr::f32 orth_w = (float)ResX / (float)ResY;
-	orth_w = 3 * orth_w;
-	projMat.buildProjectionMatrixOrthoLH(orth_w, 3, 1, 100);
-
 	// Create target
 	target = smgr->addEmptySceneNode(0, 200);
 	target->setPosition(vector3df(0, 0, 0));
 
-	// Add rotational camera
-	pivot = smgr->addEmptySceneNode(target, 199);
-	camera[0] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
-	camera[0]->setParent(pivot);
-	camera[0]->setAspectRatio((float)ResX / (float)ResY);
+	// Create cameras
+	pivot = smgr->addEmptySceneNode(target, 199);	
 	pivot->setRotation(vector3df(25, -45, 0));
-
-	// Add Topdown camera
-	camera[1] = smgr->addCameraSceneNode(target, vector3df(0, 2, -0.01), vector3df(0, 0, 0));
-	camera[1]->setProjectionMatrix(projMat, true);
-
-	// Add front camera
-	camera[2] = smgr->addCameraSceneNode(target, vector3df(0, 0, -5), vector3df(0, 0, 0));
-	camera[2]->setProjectionMatrix(projMat, true);
-
-	// Add side camera
-	camera[3] = smgr->addCameraSceneNode(target, vector3df(5, 0, 0), vector3df(0, 0, 0));
-	camera[3]->setProjectionMatrix(projMat, true);
+	recreateCameras();
 
 	// Add Light
 	ILightSceneNode* light = smgr->addLightSceneNode(target, vector3df(25, 50, 0));
@@ -401,5 +351,51 @@ void Editor::LoadScene()
 	skybox->setMaterialFlag(video::EMF_LIGHTING, false);
 	smgr->getMeshManipulator()->flipSurfaces(skybox->getMesh());
 	state->plane_tri = smgr->createOctreeTriangleSelector(skybox->getMesh(), skybox);
+}
+
+void Editor::recreateCameras()
+{
+	// Irrlicht
+	IVideoDriver *driver = device->getVideoDriver();
+	ISceneManager *smgr = device->getSceneManager();
+
+	// Get screen sizes
+	int ResX = driver->getScreenSize().Width;
+	if (!state->settings->getBool("hide_sidebar"))
+		ResX -= 256;	
+	int ResY = driver->getScreenSize().Height;
+
+	// Delete old cameras
+	for (int i = 0; i < 4; i++) {
+		if (camera[i]) {
+			camera[i]->remove();
+			camera[i] = NULL;
+		}
+	}
+
+	// Recreate perspective cameras
+	vector3df oldrot = pivot->getRotation();
+	pivot->setRotation(vector3df(0, 0, 0));
+	camera[0] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
+	camera[0]->setParent(pivot);
+	camera[0]->setAspectRatio((float)ResX / (float)ResY);
+	camera[0]->setAspectRatio((float)ResX / (float)ResY);
+	pivot->setRotation(oldrot);
+
+	// reset matrix
+	matrix4 projMat;
+	irr::f32 orth_w = (float)ResX / (float)ResY;
+	orth_w = 3 * orth_w;
+	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
+
+	// Remake cameras
+	camera[1] = smgr->addCameraSceneNode(target, vector3df(0, 2, -0.01), vector3df(0, 0, 0));
+	camera[1]->setProjectionMatrix(projMat, true);
+
+	camera[2] = smgr->addCameraSceneNode(target, vector3df(0, 0, -5), vector3df(0, 0, 0));
+	camera[2]->setProjectionMatrix(projMat, true);
+
+	camera[3] = smgr->addCameraSceneNode(target, vector3df(-5, 0, 0), vector3df(0, 0, 0));
+	camera[3]->setProjectionMatrix(projMat, true);
 }
 

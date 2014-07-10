@@ -13,7 +13,7 @@ enum KeyState{
 
 enum Viewport
 {
-	VIEW_TL,
+	VIEW_TL = 0,
 	VIEW_TR,
 	VIEW_BL,
 	VIEW_BR
@@ -21,12 +21,12 @@ enum Viewport
 
 enum ViewportType
 {
-	VIEWT_PERS,
+	VIEWT_PERS = 0,
 	VIEWT_FRONT,
-	VIEWT_BACK,
 	VIEWT_LEFT,
-	VIEWT_RIGHT,
 	VIEWT_TOP,
+	VIEWT_BACK,
+	VIEWT_RIGHT,
 	VIEWT_BOTTOM
 };
 

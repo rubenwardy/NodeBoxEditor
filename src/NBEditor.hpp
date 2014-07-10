@@ -4,7 +4,7 @@
 #include "EditorState.hpp"
 enum CDR_TYPE
 {
-	CDR_L,
+	CDR_L = 0,
 	CDR_R,
 	CDR_U,
 	CDR_D,
@@ -12,7 +12,7 @@ enum CDR_TYPE
 };
 enum CDRType
 {
-	CDR_NONE,
+	CDR_NONE = 0,
 	CDR_X_P, 
 	CDR_X_N,
 	CDR_Y_P,
