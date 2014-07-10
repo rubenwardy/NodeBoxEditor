@@ -16,6 +16,12 @@ viewport_top_right = top
 viewport_bottom_left = front
 viewport_bottom_right = right
 
+# Lighting
+# 0: no lighting / shadows
+# 1: Depth lighting (things further away from camera are darker)
+# 2: Normal lighting (like in Minetest)
+lighting = 2
+
 # Driver used to render
 driver = opengl
 

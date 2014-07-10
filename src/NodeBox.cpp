@@ -176,7 +176,7 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
 	return retval;
 }
 
-void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
+void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device)
 {
 	video::IVideoDriver* driver = device->getVideoDriver();
 	ISceneManager* smgr = device->getSceneManager();
@@ -229,6 +229,8 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 #define x0 -0.5
 #define x1 0.5
 
+	std::string lighting = editor->settings->get("lighting");
+
 	// Front face
 	vector2df topl((one.X+0.5), (two.Y+0.5));	
 	vector2df btmr((two.X+0.5), (one.Y+0.5));
@@ -238,7 +240,13 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer->Vertices[2] = video::S3DVertex(x1,x1,x0, 1, 1,-1, cubeColour, btmr.X, topl.Y);
 	buffer->Vertices[3] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, topl.X, topl.Y);
 	buffer->BoundingBox.reset(0,0,0);
-	ITexture *texture = darken(driver, image, 0.7);
+	ITexture *texture = NULL;
+	if (lighting == "2")
+		texture = darken(driver, image, 0.7);
+	else if (lighting == "1")		
+		texture = darken(driver, image, 0.7);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	SMaterial mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer->Material = mat;
@@ -254,8 +262,14 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, btmr.X, btmr.Y);
 	buffer2->Vertices[2] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, btmr.X, topl.Y);
 	buffer2->Vertices[3] = video::S3DVertex(x1,x1,x1, 1, 1, 1, cubeColour, topl.X, topl.Y);
-	buffer2->BoundingBox.reset(0,0,0);
-	texture = darken(driver, image, 0.7);
+	buffer2->BoundingBox.reset(0,0,0);	
+	texture = NULL;
+	if (lighting == "2")
+		texture = darken(driver, image, 0.7);
+	else if (lighting == "1")		
+		texture = darken(driver, image, 0.7);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer2->Material = mat;
@@ -272,7 +286,13 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer3->Vertices[2] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, btmr.X, topl.Y);
 	buffer3->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, topl.X, topl.Y);
 	buffer3->BoundingBox.reset(0,0,0);
-	texture = darken(driver, image, 0.5);
+	texture = NULL;
+	if (lighting == "2")
+		texture = darken(driver, image, 0.5);
+	else if (lighting == "1")		
+		texture = darken(driver, image, 0.5);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer3->Material = mat;
@@ -289,7 +309,13 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer4->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, btmr.X, topl.Y);
 	buffer4->Vertices[3] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, topl.X, topl.Y);
 	buffer4->BoundingBox.reset(0,0,0);
-	texture = darken(driver, image, 0.5);
+	texture = NULL;
+	if (lighting == "2")
+		texture = darken(driver, image, 0.5);
+	else if (lighting == "1")		
+		texture = darken(driver, image, 0.5);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer4->Material = mat;
@@ -306,8 +332,13 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer5->Vertices[2] = video::S3DVertex(x1,x1,x1,  1, 1, 1, cubeColour, btmr.X, topl.Y);
 	buffer5->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, topl.X, topl.Y);
 	buffer5->BoundingBox.reset(0,0,0);
+	texture = NULL;
+	if (lighting == "1")		
+		texture = darken(driver, image, 0.7);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	mat = SMaterial();
-	mat.setTexture(0, driver->addTexture("media/texture_box.png", image));
+	mat.setTexture(0, texture);
 	buffer5->Material = mat;
 	cubeMesh->addMeshBuffer(buffer5);
 	buffer5->drop();
@@ -322,7 +353,12 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer6->Vertices[2] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, btmr.X, topl.Y);
 	buffer6->Vertices[3] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, topl.Y);
 	buffer6->BoundingBox.reset(0,0,0);
-	texture = darken(driver, image, 0.4);
+	if (lighting == "2")
+		texture = darken(driver, image, 0.4);
+	else if (lighting == "1")		
+		texture = darken(driver, image, 0.4);
+	else
+		texture = driver->addTexture("media/texture_box.png", image);
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer6->Material = mat;

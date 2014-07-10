@@ -44,7 +44,7 @@ NodeBox* Node::addNodeBox(){
 
 	boxes.push_back(tmp);
 	select(boxes.size() - 1);
-	tmp->buildNode(position, device);
+	tmp->buildNode(state, position, device);
 
 	return tmp;
 }
@@ -65,7 +65,7 @@ void Node::remesh() {
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
-		(*it)->buildNode(position, device);
+		(*it)->buildNode(state, position, device);
 	}
 }
 
