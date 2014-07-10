@@ -293,11 +293,13 @@ void Editor::LoadScene()
 	light->setRadius(2000);
 
 	// Add Plane
-	IMeshSceneNode* plane = smgr->addCubeSceneNode(1, 0, -1,
+	plane = smgr->addCubeSceneNode(1, 0, -1,
 			vector3df(0.5, -5.5, 0.5), vector3df(0, 0, 0),
 			vector3df(10, 10, 10));
 	plane->setMaterialTexture(0, driver->getTexture("media/texture_terrain.png"));
 	plane->setMaterialFlag(video::EMF_BILINEAR_FILTER, false);
+	plane->setMaterialFlag(video::EMF_LIGHTING, false);
+	plane->setMaterialFlag(video::EMF_BACK_FACE_CULLING, true);
 	plane->getMaterial(0).getTextureMatrix(0).setTextureScale(10, 10);
 
 	// Add sky box
@@ -383,14 +385,18 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect)
 	// Draw camera
 	smgr->setActiveCamera(camera[(int)viewport]);
 	driver->setViewPort(rect);
+	if (type == VIEWT_BOTTOM)
+		plane->setVisible(false);
 	smgr->drawAll();
-	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
+	if (type == VIEWT_BOTTOM)
+		plane->setVisible(true);
 
 	// Callbacks
 	if (state->Mode())
 		state->Mode()->viewportTick(viewport, driver, rect);
 
-	// Draw text
+	// Draw text	
+	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 	{
 		const wchar_t* label = L"";
 		switch(type) {

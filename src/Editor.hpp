@@ -23,6 +23,7 @@ private:
 	ISceneNode *target;
 	ISceneNode *pivot;
 	ICameraSceneNode *camera[4];
+	IMeshSceneNode *plane;
 	void LoadScene();
 	void viewportTick(Viewport vp, rect<s32> rect);
 };
