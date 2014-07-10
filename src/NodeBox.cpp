@@ -322,7 +322,7 @@ void NodeBox::buildNode(vector3di nd_position, IrrlichtDevice* device)
 	buffer6->Vertices[2] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, btmr.X, topl.Y);
 	buffer6->Vertices[3] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, topl.Y);
 	buffer6->BoundingBox.reset(0,0,0);
-	texture = darken(driver, image, 0.25);
+	texture = darken(driver, image, 0.4);
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer6->Material = mat;
