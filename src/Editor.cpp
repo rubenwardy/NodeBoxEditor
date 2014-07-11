@@ -9,7 +9,9 @@ Editor::Editor() :
 	device(NULL),
 	target(NULL),
 	pivot(NULL),
-	currentWindow(-1)
+	currentWindow(-1),
+	viewport_contextmenu(-1),
+	click_handled(false)
 {
 	for (int i = 0; i < 4; i++) {
 		camera[i] = NULL;
@@ -96,10 +98,11 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		int ResY = driver->getScreenSize().Height;
 
 		if (currentWindow == -1) {
-			viewportTick(VIEW_TL, rect<s32>(0,	0,	ResX/2,	ResY/2	));
-			viewportTick(VIEW_TR, rect<s32>(ResX/2,	0,	ResX,	ResY/2	));
-			viewportTick(VIEW_BL, rect<s32>(0,	ResY/2,	ResX/2,	ResY	));
-			viewportTick(VIEW_BR, rect<s32>(ResX/2,	ResY/2,	ResX,	ResY	));
+			bool newmoused = (state->mousedown && !click_handled);
+			viewportTick(VIEW_TL, rect<s32>(0,	0,	ResX/2,	ResY/2	), newmoused);
+			viewportTick(VIEW_TR, rect<s32>(ResX/2,	0,	ResX,	ResY/2	), newmoused);
+			viewportTick(VIEW_BL, rect<s32>(0,	ResY/2,	ResX/2,	ResY	), newmoused);
+			viewportTick(VIEW_BR, rect<s32>(ResX/2,	ResY/2,	ResX,	ResY	), newmoused);
 
 			// Draw separating lines
 			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
@@ -108,7 +111,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
 		} else if (camera[currentWindow]) {
-			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY));
+			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY), (state->mousedown && !click_handled));
 		}
 
 		if (state->menu) {
@@ -167,7 +170,9 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 				device->sleep(sleeptime);
 		}
 		dtime = double(now - last) / 1000;
-		last = now;		
+		last = now;
+
+		click_handled = true;		
 	}
 
 	return true;
@@ -178,9 +183,11 @@ bool Editor::OnEvent(const SEvent& event)
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
 		state->mousedown = false;
+		click_handled = false;
 	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
 		state->mousedown = true;
+		click_handled = false;
 	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_MOUSE_MOVED) {
 		state->mouse_position.X = event.MouseInput.X;
@@ -329,7 +336,6 @@ void Editor::recreateCameras()
 		}
 
 		ViewportType type = state->getViewportType((Viewport)i);
-		std::cerr << "Creating camera " << i << " of type " << (int)type << std::endl;
 		if (type == VIEWT_PERS) {
 			vector3df oldrot = pivot->getRotation();
 			pivot->setRotation(vector3df(0, 0, 0));
@@ -364,8 +370,39 @@ void Editor::recreateCameras()
 	}
 }
 
+const char* viewportToSetting(Viewport port) {
+	switch (port) {
+	case VIEW_TL:
+		return "viewport_top_left";
+	case VIEW_TR:
+		return "viewport_top_right";
+	case VIEW_BL:
+		return "viewport_bottom_left";
+	case VIEW_BR:
+		return "viewport_bottom_right";
+	}
+}
+const char* viewportTypeToSetting(ViewportType type) {
+	switch (type) {
+	case VIEWT_PERS:
+		return "pers";
+	case VIEWT_FRONT:
+		return "front";
+	case VIEWT_RIGHT:
+		return "right";
+	case VIEWT_TOP:
+		return "top";
+	case VIEWT_BACK:
+		return "back";
+	case VIEWT_LEFT:
+		return "left";
+	case VIEWT_BOTTOM:
+		return "bottom";
+	}
+}
+
 typedef rect<s32> rects32;
-void Editor::viewportTick(Viewport viewport, rect<s32> rect)
+void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 {
 	// Init
 	IVideoDriver *driver = device->getVideoDriver();
@@ -389,37 +426,76 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect)
 	// Draw text	
 	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 	{
-		const wchar_t* label = L"";
-		switch(type) {
-		case VIEWT_PERS:
-			label = L"Perspective";
-			break;
-		case VIEWT_TOP:
-			label = L"Top";
-			break;
-		case VIEWT_BOTTOM:
-			label = L"Bottom";
-			break;
-		case VIEWT_LEFT:
-			label = L"Left";
-			break;		
-		case VIEWT_RIGHT:
-			label = L"Right";
-			break;
-		case VIEWT_FRONT:
-			label = L"Front";
-			break;
-		case VIEWT_BACK:
-			label = L"Back";
-			break;
+		static const wchar_t* labels[7] = {L"Perspective", L"Front", L"Left", L"Top", L"Back", L"Right", L"Bottom"};
+
+		// Handle clicking
+		position2d<s32> labelpos(rect.LowerRightCorner.X - 86,
+				rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?30:10));
+		rects32 backgroundrect(rect.LowerRightCorner.X - 96,
+					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?25:5),
+					rect.LowerRightCorner.X - 5,
+					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?185:165));
+		bool context_is_open = (viewport_contextmenu == (int)viewport);
+		if (mousehit) {
+			if ((rects32(labelpos.X, labelpos.Y, labelpos.X + 90,
+					labelpos.Y + 25)).isPointInside(state->mouse_position)) {
+				viewport_contextmenu = (int)viewport;
+			} else if (context_is_open) {
+				context_is_open = false;
+				viewport_contextmenu = -1;
+				if (backgroundrect.isPointInside(state->mouse_position)) {
+					int y = 0;
+					for (int i = 0; i < 7; i++) {
+						if (i != (int)type) {
+							int ty = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?56:36)
+									+ y * 20;
+							rects32 trect(rect.LowerRightCorner.X - 96,
+									ty,
+									rect.LowerRightCorner.X - 5, ty + 20);
+							y++;
+							if (trect.isPointInside(state->mouse_position)) {
+								state->settings->set(viewportToSetting(viewport),
+									viewportTypeToSetting((ViewportType)i));
+								recreateCameras();
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
-		guienv->getSkin()->getFont()->draw(
-				label,
-				core::rect<s32>(rect.LowerRightCorner.X - wcslen(label) * 6 - 20,
-					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?30:10),
-					200, 50),
-				video::SColor(255, 255, 255, 255)
-			);
+
+		// Context menu background
+		if (context_is_open) {			
+			driver->draw2DRectangle(SColor(100, 32, 32, 32), backgroundrect);
+			s32 y = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?52:32);
+			driver->draw2DLine(position2d<s32>(rect.LowerRightCorner.X - 96, y),
+					position2d<s32>(rect.LowerRightCorner.X - 5, y),
+					SColor(100, 255, 255, 255));
+		}
+
+		// Draw label
+		guienv->getSkin()->getFont()->draw(labels[(int)type],
+				core::rect<s32>(labelpos.X, labelpos.Y, 200, 50),
+				video::SColor(255, 255, 255, 255));
+
+		
+		// Draw context menu text
+		if (context_is_open) {
+			int y = 0;
+			for (int i = 0; i < 7; i++) {
+				if (i != (int)type) {
+					guienv->getSkin()->getFont()->draw(
+						labels[i],
+						core::rect<s32>(rect.LowerRightCorner.X - 86,
+							rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?59:39) + y * 20,
+							200, 50),
+						video::SColor(255, 255, 255, 255)
+					);
+					y++;
+				}
+			}
+		}
 	}
 
 	// Draw coordinate arrows

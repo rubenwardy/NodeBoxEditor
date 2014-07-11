@@ -25,7 +25,9 @@ private:
 	ICameraSceneNode *camera[4];
 	IMeshSceneNode *plane;
 	void LoadScene();
-	void viewportTick(Viewport vp, rect<s32> rect);
+	void viewportTick(Viewport vp, rect<s32> rect, bool mousehit);
+	int viewport_contextmenu;
+	bool click_handled;
 };
 
 #endif
