@@ -465,23 +465,18 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 			}
 		}
 
-		// Context menu background
-		if (context_is_open) {			
+		// Context menu
+		if (context_is_open) {		
+			// Context menu background
 			driver->draw2DRectangle(SColor(100, 32, 32, 32), backgroundrect);
-			s32 y = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?52:32);
-			driver->draw2DLine(position2d<s32>(rect.LowerRightCorner.X - 96, y),
-					position2d<s32>(rect.LowerRightCorner.X - 5, y),
+			s32 y2 = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?52:32);
+			driver->draw2DLine(position2d<s32>(rect.LowerRightCorner.X - 96, y2),
+					position2d<s32>(rect.LowerRightCorner.X - 5, y2),
 					SColor(100, 255, 255, 255));
-		}
-
-		// Draw label
-		guienv->getSkin()->getFont()->draw(labels[(int)type],
-				core::rect<s32>(labelpos.X, labelpos.Y, 200, 50),
-				video::SColor(255, 255, 255, 255));
-
-		
-		// Draw context menu text
-		if (context_is_open) {
+			// Draw options
+			guienv->getSkin()->getFont()->draw(labels[(int)type],
+					core::rect<s32>(labelpos.X, labelpos.Y, 200, 50),
+					video::SColor(255, 255, 255, 255));
 			int y = 0;
 			for (int i = 0; i < 7; i++) {
 				if (i != (int)type) {
@@ -495,6 +490,11 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 					y++;
 				}
 			}
+		} else {
+			// Draw label
+			guienv->getSkin()->getFont()->draw(labels[(int)type],
+					core::rect<s32>(rect.LowerRightCorner.X - wcslen(labels[(int)type]) * 6 - 20, labelpos.Y, 200, 50),
+					video::SColor(255, 255, 255, 255));
 		}
 	}
 
