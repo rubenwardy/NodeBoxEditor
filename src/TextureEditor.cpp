@@ -69,7 +69,7 @@ bool TextureEditor::OnEvent(const irr::SEvent &event)
 irr::video::ITexture* TextureEditor::icon()
 {
 	static irr::video::ITexture* icon = state->device->
-			getVideoDriver()->getTexture("media/icon_mode_node.png");
+			getVideoDriver()->getTexture("media/icon_mode_texture.png");
 	return icon;
 }
 

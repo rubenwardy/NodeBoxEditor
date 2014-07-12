@@ -85,8 +85,10 @@ set_target_properties(${PROJECT_NAME}
 # Install DLLs
 install (FILES media/fontlucida.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/gui_scale.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/coordinates.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/icon_mode_node.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/icon_mode_nodebox.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/icon_mode_texture.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/sky.jpg DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_box.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_terrain.png DESTINATION share/nodeboxeditor/media)
