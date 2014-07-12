@@ -3,7 +3,7 @@
 Media::~Media()
 {
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
-			it != settings.end();
+			it != images.end();
 			++it) {
 		delete it->second;
 	}
