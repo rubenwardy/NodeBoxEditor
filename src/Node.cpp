@@ -8,9 +8,16 @@ Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	_nid(id),
 	_box_count(0)
 {
+	for (int i = 0; i < 6; i++) {
+		images[i] = state->project->media.get("default");
+	}
 }
 
 Node::~Node() {
+	for (int i = 0; i < 6; i++) {
+		images[i]->drop();
+		images[i] = NULL;
+	}
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
@@ -44,7 +51,7 @@ NodeBox* Node::addNodeBox(){
 
 	boxes.push_back(tmp);
 	select(boxes.size() - 1);
-	tmp->buildNode(state, position, device);
+	tmp->buildNode(state, position, device, images);
 
 	return tmp;
 }
@@ -65,7 +72,7 @@ void Node::remesh() {
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
-		(*it)->buildNode(state, position, device);
+		(*it)->buildNode(state, position, device, images);
 	}
 }
 

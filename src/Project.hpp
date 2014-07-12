@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include "common.hpp"
+#include "MediaManager.hpp"
 
 class Node;
 class EditorState;
@@ -17,6 +18,9 @@ public:
 	// Properties
 	std::string name;
 	std::string file;
+
+	// Media
+	Media media;
 
 	// Nodes
 	void AddNode(EditorState* state, bool select = true, bool add_initial_box = true);

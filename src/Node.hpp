@@ -5,6 +5,7 @@
 #include "common.hpp"
 #include "EditorState.hpp"
 #include "NodeBox.hpp"
+#include "MediaManager.hpp"
 
 class EditorState;
 class NodeBox;
@@ -26,6 +27,9 @@ public:
 
 	// Node bulk updaters
 	void remesh(); // creates the node mesh
+
+	// Textures
+	Media::Image *images[6];
 
 	vector3di position;
 	std::string name;
