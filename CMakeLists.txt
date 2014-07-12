@@ -41,6 +41,7 @@ set(NBGEN_SRC
 	src/Node.cpp
 	src/NodeBox.cpp
 	src/Project.cpp
+	src/MediaManager.cpp
 	src/util/string.cpp
 	src/util/filesys.cpp
 )

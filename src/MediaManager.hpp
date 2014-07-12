@@ -7,7 +7,6 @@
 class Media
 {
 public:
-	
 	class Image
 	{
 	public:
@@ -29,37 +28,11 @@ public:
 		unsigned int holders;
 	};
 
-	bool import(const char *file, IVideoDriver* driver)
-	{		
-		return add(file, driver->createImageFromFile(file));
-	}
-
-	bool add(const char *file, IImage *image)
-	{
-		if (!image)
-			return false;
-	
-		images[file] = new Media::Image(image);
-		return true;
-	}
-
-	Media::Image *get(const char* name)
-	{
-		if (!images[name]) {
-			return NULL;
-		}
-		images[name]->grab();
-		return images[name];
-	}
-
-	void clearGrabs()
-	{
-		for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
-				it != images.end();
-				++it) {
-			it->second->dropAll();
-		}
-	}
+	~Media();
+	bool import(const char *file, IVideoDriver* driver);
+	bool add(const char *file, IImage *image);
+	Media::Image *get(const char* name);
+	void clearGrabs();
 private:
 	std::map<std::string, Media::Image*> images;
 };
