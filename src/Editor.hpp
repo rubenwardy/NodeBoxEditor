@@ -3,6 +3,7 @@
 
 #include "common.hpp"
 #include "EditorState.hpp"
+#include "NodeEditor.hpp"
 #include "Project.hpp"
 
 class Editor : public IEventReceiver

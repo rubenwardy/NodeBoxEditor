@@ -46,6 +46,29 @@ enum ViewportType
 	VIEWT_BOTTOM
 };
 
+enum CDR_TYPE
+{
+	CDR_L = 0,
+	CDR_R,
+	CDR_U,
+	CDR_D,
+	CDR_M
+};
+
+enum CDRType
+{
+	CDR_NONE = 0,
+	CDR_X_P, 
+	CDR_X_N,
+	CDR_Y_P,
+	CDR_Y_N,
+	CDR_Z_P,
+	CDR_Z_N,
+	CDR_XZ,
+	CDR_XY,
+	CDR_ZY
+};
+
 // Defines
 #include "conf_cmake.hpp"
 #define EDITOR_VERSION 1

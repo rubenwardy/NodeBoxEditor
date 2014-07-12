@@ -4,7 +4,6 @@
 #include <string>
 #include "common.hpp"
 #include "EditorState.hpp"
-#include "NBEditor.hpp"
 #include "MediaManager.hpp"
 
 class EditorState;

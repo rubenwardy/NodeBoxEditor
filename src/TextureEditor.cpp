@@ -24,10 +24,11 @@ void TextureEditor::unload()
 void TextureEditor::update(double dtime)
 {}
 
-void drawImageAt(IVideoDriver* driver, ITexture* texture, int x, int y)
+void drawIconAt(const wchar_t* label, int x, int y, ITexture *texture, IVideoDriver *driver, IGUIFont *font)
 {	
 	driver->draw2DImage(texture, rect<s32>(x, y, x + 64, y + 64),
 			rect<s32>(0, 0, texture->getSize().Width, texture->getSize().Height));
+	font->draw(label, rect<s32>(x + 10, y + 68, 64, 25), SColor(255, 255, 255, 255));
 }
 
 void TextureEditor::draw(irr::video::IVideoDriver* driver)
@@ -41,7 +42,18 @@ void TextureEditor::draw(irr::video::IVideoDriver* driver)
 		return;
 
 	unsigned int start_x = driver->getScreenSize().Width - 256;
-	drawImageAt(driver, driver->addTexture("media/texture_box.png", node->getTexture(ECS_TOP)->get()), start_x + 50, 100);
+	drawIconAt(L"Left", start_x + 96, 70, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_LEFT)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
+	drawIconAt(L"Top", start_x + 16, 170, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_TOP)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
+	drawIconAt(L"Front", start_x + 96, 170, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_FRONT)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
+	drawIconAt(L"Bottom", start_x + 180, 170, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_BOTTOM)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
+	drawIconAt(L"Right", start_x + 96, 270, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_RIGHT)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
+	drawIconAt(L"Back", start_x + 96, 370, driver->addTexture("media/texture_box.png",
+			node->getTexture(ECS_BACK)->get()), driver, state->device->getGUIEnvironment()->getSkin()->getFont());
 }
 
 

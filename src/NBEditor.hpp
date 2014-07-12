@@ -2,27 +2,7 @@
 #define NBEDITOR_HPP_INCLUDED
 #include "common.hpp"
 #include "EditorState.hpp"
-enum CDR_TYPE
-{
-	CDR_L = 0,
-	CDR_R,
-	CDR_U,
-	CDR_D,
-	CDR_M
-};
-enum CDRType
-{
-	CDR_NONE = 0,
-	CDR_X_P, 
-	CDR_X_N,
-	CDR_Y_P,
-	CDR_Y_N,
-	CDR_Z_P,
-	CDR_Z_N,
-	CDR_XZ,
-	CDR_XY,
-	CDR_ZY
-};
+
 class EditorState;
 class NBEditor;
 
