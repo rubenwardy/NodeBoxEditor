@@ -241,11 +241,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer->BoundingBox.reset(0,0,0);
 	ITexture *texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, images[5]->get(), 0.7);
+		texture = darken(driver, images[ECS_FRONT]->get(), 0.7);
 	else if (lighting == "1")		
-		texture = darken(driver, images[5]->get(), 0.7);
+		texture = darken(driver, images[ECS_FRONT]->get(), 0.7);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[5]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_FRONT]->get());
 	SMaterial mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer->Material = mat;
@@ -264,11 +264,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer2->BoundingBox.reset(0,0,0);	
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, images[4]->get(), 0.7);
+		texture = darken(driver, images[ECS_BACK]->get(), 0.7);
 	else if (lighting == "1")		
-		texture = darken(driver, images[4]->get(), 0.7);
+		texture = darken(driver, images[ECS_BACK]->get(), 0.7);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[4]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_BACK]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer2->Material = mat;
@@ -287,11 +287,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer3->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, images[3]->get(), 0.5);
+		texture = darken(driver, images[ECS_LEFT]->get(), 0.5);
 	else if (lighting == "1")		
-		texture = darken(driver, images[3]->get(), 0.5);
+		texture = darken(driver, images[ECS_LEFT]->get(), 0.5);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[3]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_LEFT]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer3->Material = mat;
@@ -310,11 +310,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, images[2]->get(), 0.5);
+		texture = darken(driver, images[ECS_RIGHT]->get(), 0.5);
 	else if (lighting == "1")		
-		texture = darken(driver, images[2]->get(), 0.5);
+		texture = darken(driver, images[ECS_RIGHT]->get(), 0.5);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[2]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_RIGHT]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer4->Material = mat;
@@ -333,9 +333,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer5->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "1")		
-		texture = darken(driver, images[0]->get(), 0.7);
+		texture = darken(driver, images[ECS_TOP]->get(), 0.7);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[0]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_TOP]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer5->Material = mat;
@@ -353,11 +353,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer6->Vertices[3] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, topl.Y);
 	buffer6->BoundingBox.reset(0,0,0);
 	if (lighting == "2")
-		texture = darken(driver, images[1]->get(), 0.4);
+		texture = darken(driver, images[ECS_BOTTOM]->get(), 0.4);
 	else if (lighting == "1")		
-		texture = darken(driver, images[1]->get(), 0.4);
+		texture = darken(driver, images[ECS_BOTTOM]->get(), 0.4);
 	else
-		texture = driver->addTexture("media/texture_box.png", images[1]->get());
+		texture = driver->addTexture("media/texture_box.png", images[ECS_BOTTOM]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer6->Material = mat;

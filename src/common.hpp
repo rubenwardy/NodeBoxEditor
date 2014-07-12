@@ -9,20 +9,41 @@ using namespace gui;
 using namespace video;
 
 // Enums
-enum BUILD_TYPE
-{
-	NBT_NB = 1, // Just the node box table
-	NBT_NBS = 2, // The node box table with draw type and parent holder (nodebox={})
-	NBT_FULL = 3 // Whole node definition
-};
-
-
 enum FileParserType
 {
 	EFPT_SAVE_PROJ = 1,
 	EFPT_LOAD_PROJ = 2,
 	EFPT_EXPORT = 3,
 	EFPT_IMPORT = 4
+};
+
+enum CubeSide
+{
+	ECS_TOP = 0,
+	ECS_BOTTOM,
+	ECS_RIGHT,
+	ECS_LEFT,
+	ECS_BACK,
+	ECS_FRONT
+};
+
+enum Viewport
+{
+	VIEW_TL = 0,
+	VIEW_TR,
+	VIEW_BL,
+	VIEW_BR
+};
+
+enum ViewportType
+{
+	VIEWT_PERS = 0,
+	VIEWT_FRONT,
+	VIEWT_LEFT,
+	VIEWT_TOP,
+	VIEWT_BACK,
+	VIEWT_RIGHT,
+	VIEWT_BOTTOM
 };
 
 // Defines
