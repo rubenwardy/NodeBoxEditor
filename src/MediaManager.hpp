@@ -10,19 +10,24 @@ public:
 	class Image
 	{
 	public:
-		Image(IImage *the_data):
-			data(the_data)
+		Image(const char *the_name, IImage *the_data):
+			name(the_name),
+			data(the_data),
+			holders(0)
 		{}
 		
 		Image():
 			data(NULL)
 		{}
 
+		const char *name;
+
 		IImage *get() const { return data; }
 		void grab() { holders++; }
 		void drop() { assert(holders > 0); holders--; }
 		void dropAll() { holders = 0; }
 		void deleteImage() { data->drop(); }
+		unsigned int getHolders() const { return holders; }
 	private:
 		IImage *data;
 		unsigned int holders;
@@ -33,6 +38,7 @@ public:
 	bool add(const char *file, IImage *image);
 	Media::Image *get(const char* name);
 	void clearGrabs();
+	void debug();
 private:
 	std::map<std::string, Media::Image*> images;
 };

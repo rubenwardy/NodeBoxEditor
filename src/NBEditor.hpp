@@ -23,7 +23,7 @@ enum CDRType
 	CDR_XY,
 	CDR_ZY
 };
-
+class EditorState;
 class NBEditor;
 
 class CDR

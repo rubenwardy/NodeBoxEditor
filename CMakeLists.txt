@@ -34,6 +34,7 @@ set(NBGEN_SRC
 	src/GUIHelpers.cpp
 	src/NBEditor.cpp
 	src/NodeEditor.cpp
+	src/TextureEditor.cpp
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp	

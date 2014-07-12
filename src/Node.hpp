@@ -28,8 +28,8 @@ public:
 	// Node bulk updaters
 	void remesh(); // creates the node mesh
 
-	// Textures
-	Media::Image *images[6];
+	void setTexture(CubeSide face, Media::Image *image);
+	Media::Image *getTexture(CubeSide face) { return images[face]; }
 
 	vector3di position;
 	std::string name;
@@ -43,6 +43,7 @@ private:
 	// Irrlicht
 	IrrlichtDevice* device;
 	EditorState* state;
+	Media::Image *images[6];
 };
 
 #endif

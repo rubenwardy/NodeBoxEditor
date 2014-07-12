@@ -1,5 +1,7 @@
 #include "Editor.hpp"
 #include "NBEditor.hpp"
+#include "NodeEditor.hpp"
+#include "TextureEditor.hpp"
 #include "Node.hpp"
 #include <ctime>
 #include <time.h>
@@ -65,9 +67,12 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	// Add editor modes
 	state->AddMode(new NBEditor(state));
 	state->AddMode(new NodeEditor(state));
+	state->AddMode(new TextureEditor(state));
 
 	// Set up project
 	proj->AddNode(state, true, false);
+
+	proj->media.debug();
 
 	// Load user interface
 	LoadScene();	

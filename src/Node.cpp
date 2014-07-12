@@ -8,8 +8,10 @@ Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	_nid(id),
 	_box_count(0)
 {
+	Media::Image *image = state->project->media.get("default");
 	for (int i = 0; i < 6; i++) {
-		images[i] = state->project->media.get("default");
+		image->grab();
+		images[i] = image;
 	}
 }
 
@@ -65,6 +67,15 @@ void Node::deleteNodebox(int id){
 	boxes.erase(boxes.begin() + id);
 	if (GetId() >= boxes.size())
 		_selected = boxes.size() - 1;
+}
+
+void Node::setTexture(CubeSide face, Media::Image *image)
+{
+	if (image) {
+		images[face]->drop();
+		image->grab();
+		images[face] = image;
+	}
 }
 
 // Build node models

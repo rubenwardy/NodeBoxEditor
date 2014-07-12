@@ -4,7 +4,9 @@
 #include <string>
 #include <list>
 #include "common.hpp"
+#include "EditorState.hpp"
 #include "MediaManager.hpp"
+#include "Node.hpp"
 
 class Node;
 class EditorState;
