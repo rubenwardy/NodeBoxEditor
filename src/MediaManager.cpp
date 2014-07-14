@@ -37,7 +37,7 @@ void Media::debug()
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 			it != images.end();
 			++it) {
-		std::cerr << it->second->name << " (" << it->second->getHolders() << ")" << std::endl;
+		std::cerr << it->second->name.c_str() << " (" << it->second->getHolders() << ")" << std::endl;
 	}
 }
 

@@ -20,7 +20,7 @@ public:
 			data(NULL)
 		{}
 
-		const char *name;
+		std::string name;
 
 		IImage *get() const { return data; }
 		void grab() { holders++; }
