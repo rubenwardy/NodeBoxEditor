@@ -143,6 +143,9 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 
 		guienv->drawAll();
 
+		if (state->menu->dialog)
+			state->menu->dialog->draw(driver);
+
 		driver->endScene();
 
 		#ifdef _DEBUG
@@ -218,7 +221,7 @@ bool Editor::OnEvent(const SEvent& event)
 		} else {
 			state->keys[event.KeyInput.Key] = EKS_UP;
 		}
-
+	
 		if (
 			state->device->getGUIEnvironment()->getFocus() &&
 			state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
@@ -256,21 +259,21 @@ bool Editor::OnEvent(const SEvent& event)
 		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
 			IGUIContextMenu* menu = (IGUIContextMenu*)event.GUIEvent.Caller;
 			switch (menu->getItemCommandId(menu->getSelectedItem())) {
-				case GUI_VIEW_SP_ALL:
-					currentWindow = -1;
-					break;
-				case GUI_VIEW_SP_PER:
-					currentWindow = 0;
-					break;
-				case GUI_VIEW_SP_TOP:
-					currentWindow = 1;
-					break;
-				case GUI_VIEW_SP_FRT:
-					currentWindow = 2;
-					break;
-				case GUI_VIEW_SP_RHT:
-					currentWindow = 3;
-					break;
+			case GUI_VIEW_SP_ALL:
+				currentWindow = -1;
+				break;
+			case GUI_VIEW_SP_PER:
+				currentWindow = 0;
+				break;
+			case GUI_VIEW_SP_TOP:
+				currentWindow = 1;
+				break;
+			case GUI_VIEW_SP_FRT:
+				currentWindow = 2;
+				break;
+			case GUI_VIEW_SP_RHT:
+				currentWindow = 3;
+				break;
 			}
 		}
 	}
@@ -442,7 +445,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 					rect.LowerRightCorner.X - 5,
 					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?185:165));
 		bool context_is_open = (viewport_contextmenu == (int)viewport);
-		if (mousehit) {
+		if (mousehit && !state->menu->dialog) {
 			if ((rects32(labelpos.X, labelpos.Y, labelpos.X + 90,
 					labelpos.Y + 25)).isPointInside(state->mouse_position)) {
 				viewport_contextmenu = (int)viewport;

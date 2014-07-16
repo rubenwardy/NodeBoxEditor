@@ -29,6 +29,10 @@ void EditorState::AddMode(EditorMode* value)
 
 void EditorState::SelectMode(int id)
 {
+	if (menu->dialog)
+		if (!menu->dialog->canClose() || !menu->dialog->close())
+			return;
+
 	if (!modes[id]) {
 		return;
 	}

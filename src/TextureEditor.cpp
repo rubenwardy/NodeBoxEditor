@@ -1,6 +1,7 @@
 #include <list>
 #include "TextureEditor.hpp"
 #include "util/string.hpp"
+#include "TextureDialog.hpp"
 
 TextureEditor::TextureEditor(EditorState* st) :
 	EditorMode(st)
@@ -26,7 +27,7 @@ void TextureEditor::update(double dtime)
 
 void drawIconAt(const wchar_t* label, int x, int y, Media::Image *image, IVideoDriver *driver, IGUIFont *font)
 {
-	if (image->name == "default" || !image) {		
+	if (image->name == "default" || !image) {
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
 		ITexture *texture = driver->addTexture("tmpicon.png", image->get());
@@ -65,9 +66,41 @@ void TextureEditor::draw(irr::video::IVideoDriver* driver)
 void TextureEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
 {}
 
+bool iconClicked(int x, int y, vector2di mouse)
+{
+	return (rect<s32>(x, y, x + 64, y + 64).isPointInside(mouse));
+}
+
 
 bool TextureEditor::OnEvent(const irr::SEvent &event)
 {
+	if (!state || !state->project || state->settings->getBool("hide_sidebar"))
+		return false;
+
+	Node *node = state->project->GetCurrentNode();
+
+	if (!node)
+		return false;
+
+	if (event.EventType == EET_MOUSE_INPUT_EVENT &&
+			event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
+		unsigned int start_x = state->device->getVideoDriver()->getScreenSize().Width - 256;
+
+		if (iconClicked(start_x + 96, 70, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_LEFT);
+		} else if (iconClicked(start_x + 16, 170, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_TOP);
+		} else if (iconClicked(start_x + 96, 170, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_FRONT);
+		} else if (iconClicked(start_x + 180, 170, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_BOTTOM);
+		} else if (iconClicked(start_x + 96, 270, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_RIGHT);
+		} else if (iconClicked(start_x + 96, 370, state->mouse_position)) {
+			TextureDialog::show(state, node, ECS_BACK);
+		}
+	}
+	
 	return false;
 }
 

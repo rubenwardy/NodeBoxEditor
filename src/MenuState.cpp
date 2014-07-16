@@ -82,8 +82,8 @@ void MenuState::init()
 }
 
 bool MenuState::OnEvent(const SEvent& event){
-	if (dialog && dialog->OnEvent(event))
-		return true;
+	if (dialog)
+		return dialog->OnEvent(event);
 	
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
@@ -211,7 +211,7 @@ bool MenuState::OnEvent(const SEvent& event){
 	return false;
 }
 
-void MenuState::draw(IVideoDriver* driver){
+void MenuState::draw(IVideoDriver *driver){
 	EditorMode* curs = state->Mode();
 
 	if (state->settings->getBool("hide_sidebar")) {

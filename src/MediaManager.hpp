@@ -39,6 +39,7 @@ public:
 	Media::Image *get(const char* name);
 	void clearGrabs();
 	void debug();
+	std::map<std::string, Media::Image*>& getList() const {return (std::map<std::string, Media::Image*>&)images;};
 private:
 	std::map<std::string, Media::Image*> images;
 };

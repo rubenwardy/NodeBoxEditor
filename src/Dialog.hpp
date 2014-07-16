@@ -14,6 +14,7 @@ public:
 	virtual bool canClose() = 0;
 	virtual bool close() = 0;
 	virtual bool OnEvent(const SEvent &event) = 0;
+	virtual void draw(IVideoDriver *driver) {}
 protected:
 	EditorState *state;
 };

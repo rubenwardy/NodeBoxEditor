@@ -193,13 +193,21 @@ void FileDialog::doOpen(const SEvent &event)
 
 bool FileDialog::OnEvent(const SEvent &event)
 {
-	if (event.EventType != EET_GUI_EVENT || event.GUIEvent.EventType != EGET_BUTTON_CLICKED
-			|| event.GUIEvent.Caller->getID() != GUI_DIALOG_SUBMIT)
+	if (event.EventType != EET_GUI_EVENT)
 		return false;
 
-	if (parser_type == EFPT_SAVE_PROJ || parser_type == EFPT_EXPORT)
-		doSave(event);
-	else
-		doOpen(event);
-	return true;
+	if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
+		if (canClose())
+			close();
+		return true;		
+	}
+
+	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT) {
+		if (parser_type == EFPT_SAVE_PROJ || parser_type == EFPT_EXPORT)
+			doSave(event);
+		else
+			doOpen(event);
+		return true;
+	}
+	return false;
 }

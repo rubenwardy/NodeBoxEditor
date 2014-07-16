@@ -206,6 +206,9 @@ void NBEditor::draw(irr::video::IVideoDriver* driver)
 		}
 	}
 
+	if (state->menu->dialog)
+		current = -1;
+
 	wasmd = state->mousedown;
 }
 

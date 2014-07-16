@@ -47,7 +47,7 @@ public:
 
 	// Input
 	bool mousedown;
-	irr::core::vector2di mouse_position;
+	vector2di mouse_position;
 	KeyState keys[NUMBER_OF_KEYS];
 	
 	Configuration *settings;
