@@ -229,6 +229,9 @@ void MenuState::draw(IVideoDriver *driver){
 			);
 	}
 
+	if (dialog)
+		return;
+
 	if (curs) {
 		driver->draw2DImage(curs->icon(),
 			rect<s32>(10, 32, 42, 64),

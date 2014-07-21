@@ -33,6 +33,7 @@ public:
 		unsigned int holders;
 	};
 
+	Media() { std::cerr << "Media Manager created!" << std::endl; }
 	~Media();
 	bool import(const char *file, IVideoDriver* driver);
 	bool add(const char *file, IImage *image);

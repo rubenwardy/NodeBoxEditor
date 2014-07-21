@@ -61,7 +61,7 @@ void TextureDialog::draw(IVideoDriver *driver)
 	Media::Image *image = node->getTexture(face);
 	int x = win->getAbsolutePosition().UpperLeftCorner.X + 10;
 	int y = win->getAbsolutePosition().UpperLeftCorner.Y + 30;
-	if (image->name == "default") {		
+	if (!image || image->name == "default") {		
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
 		ITexture *texture = driver->addTexture("tmpicon.png", image->get());
@@ -124,7 +124,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 			}
 			count++;
 		}
-
+		std::cerr << "Closing..." << std::endl;
 		close();
 	}
 

@@ -27,7 +27,7 @@ void TextureEditor::update(double dtime)
 
 void drawIconAt(const wchar_t* label, int x, int y, Media::Image *image, IVideoDriver *driver, IGUIFont *font)
 {
-	if (image->name == "default" || !image) {
+	if (!image || image->name == "default") {
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
 		ITexture *texture = driver->addTexture("tmpicon.png", image->get());

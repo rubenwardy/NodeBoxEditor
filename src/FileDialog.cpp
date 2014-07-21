@@ -135,7 +135,6 @@ void FileDialog::doSave(const SEvent &event)
 	} else {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
 				L"File format does not exist.");
-		return;
 	}
 
 	close();
@@ -182,7 +181,6 @@ void FileDialog::doOpen(const SEvent &event)
 		state->menu->init();
 		state->Mode()->load();
 		delete parser;
-		return ;
 	} else {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 				L"Reading file failed.");					

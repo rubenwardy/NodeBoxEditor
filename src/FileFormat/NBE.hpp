@@ -7,30 +7,29 @@
 class NBEFileFormat : public FileFormat
 {
 public:
-	NBEFileFormat(EditorState * st) :
+	NBEFileFormat(EditorState *st) :
 		state(st),
 		node(NULL),
-		stage(NBEFileFormat::READ_STAGE_ROOT)
+		stage(READ_STAGE_ROOT)
 	{}
-	virtual Project * read(const std::string & filename);
-	virtual bool write(Project * project, const std::string & filename);
-
+	virtual Project *read(const std::string &filename);
+	virtual bool write(Project *project, const std::string &filename);
+	virtual const char *getExtension() const {
+		return "nbe";
+	}
 	enum readstage
 	{
 		READ_STAGE_ROOT,
 		READ_STAGE_NODE
-	};
-
-	const char * getExtension() const {
-		return "nbe";
-	}
-
+	};	
 private:
 	readstage stage;
-	Node * node;
-	EditorState* state;
-
-	void parseLine(Project * project, std::string & line);
+	Node *node;
+	EditorState *state;
+	bool readProjectFile(Project *project, const std::string &filename);
+	bool writeProjectFile(Project *project, const std::string &filename);
+	void parseLine(Project *project, std::string &line);
 };
 
 #endif
+

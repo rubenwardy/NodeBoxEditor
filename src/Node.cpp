@@ -8,16 +8,30 @@ Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	_nid(id),
 	_box_count(0)
 {
-	Media::Image *image = state->project->media.get("default");
 	for (int i = 0; i < 6; i++) {
-		image->grab();
-		images[i] = image;
+		images[i] = NULL;
+	}
+}
+
+
+void Node::setAllTextures(Media::Image *def)
+{
+	if (!def) {
+		std::cerr << "[Node::setAllTextures] def is NULL" << std::endl;
+		return;
+	}
+	for (int i = 0; i < 6; i++) {
+		if (images[i])
+			images[i]->drop();
+		def->grab();
+		images[i] = def;
 	}
 }
 
 Node::~Node() {
 	for (int i = 0; i < 6; i++) {
-		images[i]->drop();
+		if (images[i])
+			images[i]->drop();
 		images[i] = NULL;
 	}
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
@@ -58,7 +72,8 @@ NodeBox* Node::addNodeBox(){
 	return tmp;
 }
 
-void Node::deleteNodebox(int id){
+void Node::deleteNodebox(int id)
+{
 	if (!GetNodeBox(id)) {
 		return;
 	}
@@ -72,7 +87,8 @@ void Node::deleteNodebox(int id){
 void Node::setTexture(CubeSide face, Media::Image *image)
 {
 	if (image) {
-		images[face]->drop();
+		if (images[face])
+			images[face]->drop();
 		image->grab();
 		images[face] = image;
 	}
@@ -80,10 +96,12 @@ void Node::setTexture(CubeSide face, Media::Image *image)
 
 // Build node models
 void Node::remesh() {
+	std::cerr << "[Node " << NodeId() << "] remeshing node boxes..." << std::endl;
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
 		(*it)->buildNode(state, position, device, images);
 	}
 }
+
 

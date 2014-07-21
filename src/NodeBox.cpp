@@ -179,6 +179,14 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
 void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6])
 {
 	video::IVideoDriver* driver = device->getVideoDriver();
+	Media::Image *def = new Media::Image("default", driver->createImageFromFile("media/texture_box.png"));
+	for (int i = 0; i < 6; i++) {
+		if (!images[i]) {
+			images[i] = def;
+			def->grab();
+		}
+	}
+	std::cerr << "start" << std::endl;
 	ISceneManager* smgr = device->getSceneManager();
 	if (model) {
 		model->remove();
@@ -372,5 +380,6 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	model->setScale(size);
 	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
 	model->setMaterialFlag(EMF_LIGHTING, false);
+	std::cerr << "done!" << std::endl;
 }
 

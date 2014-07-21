@@ -25,19 +25,6 @@ bool MTCFileFormat::write(Project * project, const std::string & filename){
 			it != nodes.end();
 			++it, ++i) {
 		Node* node = *it;
-		/*
-		 * Example output:
-		 * minetest.register_node("test:node_0", {
-		 * 	drawtype = "nodebox",
-		 * 	paramtype = "light",
-		 * 	node_box = {
-		 * 		type = "fixed",
-		 * 		fixed = {
-		 * 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5} -- Main box
-		 * 		}
-		 * 	}
-		 * })
-		 */
 		file << "void content_nodebox_";
 		if (node->name == "") {
 			file << "node_" << 1;

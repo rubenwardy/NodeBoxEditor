@@ -3,36 +3,52 @@
 #include "NBE.hpp"
 #include "../util/string.hpp"
 
+Project *NBEFileFormat::read(const std::string & filename)
+{
+	Project *project = new Project();
+	project->media.add("two", state->device->getVideoDriver()->createImageFromFile("media/texture_terrain.png"));
+	if (!readProjectFile(project, filename)) {
+		delete project;
+		return NULL;
+	}
+	return project;
+}
 
-Project * NBEFileFormat::read(const std::string & filename){
+bool NBEFileFormat::write(Project *project, const std::string &filename)
+{
+	return writeProjectFile(project, filename);
+}
+
+bool NBEFileFormat::readProjectFile(Project *project, const std::string & filename)
+{
+	// Open file
 	std::string line;
 	std::ifstream file(filename.c_str());
 	if (!file) {
-		return NULL;
+		return false;
 	}
 
 	// Read parser header
 	std::getline(file, line);
 	if (line != "MINETEST NODEBOX EDITOR") {
-		return NULL;
+		return false;
 	}
 	std::getline(file, line);
 	if (line != "PARSER 1") {
-		return NULL;
+		return false;
 	}
 
 	// Parse file
-	Project * project = new Project();
 	stage = READ_STAGE_ROOT;
 	while (std::getline(file, line)) {
 		parseLine(project, line);
 	}
 	file.close();
-	return project;
+	return true;
 }
 
-
-bool NBEFileFormat::write(Project * project, const std::string & filename){
+bool NBEFileFormat::writeProjectFile(Project *project, const std::string &filename)
+{
 	std::ofstream file(filename.c_str());
 	if (!file) {
 		return false;
@@ -74,7 +90,8 @@ bool NBEFileFormat::write(Project * project, const std::string & filename){
 	return true;
 }
 
-void NBEFileFormat::parseLine(Project * project, std::string & line){
+void NBEFileFormat::parseLine(Project * project, std::string & line)
+{
 	line = trim(line);
 
 	if (line.empty()) {
@@ -130,4 +147,5 @@ void NBEFileFormat::parseLine(Project * project, std::string & line){
 		}
 	}
 }
+
 
