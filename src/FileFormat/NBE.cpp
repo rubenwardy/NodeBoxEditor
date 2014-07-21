@@ -34,7 +34,7 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 		return false;
 	}
 	std::getline(file, line);
-	if (line != "PARSER 1") {
+	if (line != "PARSER 1" && line != "PARSER 2") {
 		return false;
 	}
 
