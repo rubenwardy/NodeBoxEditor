@@ -96,7 +96,6 @@ void Node::setTexture(CubeSide face, Media::Image *image)
 
 // Build node models
 void Node::remesh() {
-	std::cerr << "[Node " << NodeId() << "] remeshing node boxes..." << std::endl;
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {

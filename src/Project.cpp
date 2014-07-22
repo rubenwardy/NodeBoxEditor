@@ -70,7 +70,8 @@ void Project::AddNode(Node* node, bool select)
 	if (node->name == "") {
 		node->name = "Node" + num_to_str(_node_count);
 	}
-	node->position = vector3di((_node_count - 1), 0, 0);
+	if (node->position == vector3di(0, 0, 0))
+		node->position = vector3di((_node_count - 1), 0, 0);
 	node->remesh();
 	nodes.push_back(node);
 	if (select) {

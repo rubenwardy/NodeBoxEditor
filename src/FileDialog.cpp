@@ -72,17 +72,12 @@ bool FileDialog::canClose()
 
 bool FileDialog::close()
 {
-	std::cerr << "x0" << std::endl;
 	if (win) {
-		std::cerr << "x1" << std::endl;
 		win->remove();
 		win = NULL;
 	}
-	std::cerr << "x2" << std::endl;
 	delete state->menu->dialog;
-	std::cerr << "x3" << std::endl;
 	state->menu->dialog = NULL;
-	std::cerr << "x4" << std::endl;
 	return true;
 }
 

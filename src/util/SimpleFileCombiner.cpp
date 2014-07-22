@@ -23,11 +23,9 @@ std::vector<char> ReadAllBytes(char const* filename)
 }
 
 bool SimpleFileCombiner::write(std::string filename) {
-	std::cerr << std::endl << "===saving===" << std::endl;
 	std::ofstream output(filename.c_str(), std::ios::binary|std::ios::out);
 	output << (char)files.size();
 	unsigned int start = files.size() * sizeofdef + 1;
-	std::cerr << "Adding " << files.size() << " files" << std::endl;
 	for (std::list<SimpleFileCombiner::File>::const_iterator it = files.begin();
 			it != files.end();
 			++it) {
@@ -40,7 +38,6 @@ bool SimpleFileCombiner::write(std::string filename) {
 		unsigned int size = file.bytes.size();
 		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));	
 		output.write(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
-		std::cerr << trim(name) << " - start: " << start << ", size: " << size << std::endl;
 		start += file.bytes.size();		
 	}		
 	for (std::list<SimpleFileCombiner::File>::const_iterator it = files.begin();
@@ -50,7 +47,6 @@ bool SimpleFileCombiner::write(std::string filename) {
 		output.write(&file.bytes[0], file.bytes.size());
 	}		
 	output.close();
-	std::cerr << "==saved==" << std::endl;
 	return true;
 }
 bool SimpleFileCombiner::add(const char* readfrom, std::string file)
@@ -60,7 +56,6 @@ bool SimpleFileCombiner::add(const char* readfrom, std::string file)
 }
 std::list<std::string> SimpleFileCombiner::read(const char* file, std::string dir)
 {
-	std::cerr << "reading..." << std::endl;
 	// Start reading
 	std::ifstream ifs(file, std::ios::binary|std::ios::ate);
 	if (!ifs)

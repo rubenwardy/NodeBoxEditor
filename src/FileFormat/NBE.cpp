@@ -8,7 +8,6 @@
 Project *NBEFileFormat::read(const std::string &filename)
 {
 	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
-	std::cerr << "Temp directory is " << tmpdir << std::endl;
 	CreateDir(tmpdir);
 	Project *project = new Project();
 	SimpleFileCombiner fc;
@@ -17,8 +16,9 @@ Project *NBEFileFormat::read(const std::string &filename)
 			it != files.end();
 			++it) {
 		std::string name = *it;
-		std::cerr << "Adding " << name << std::endl;
-		project->media.add(name.c_str(), state->device->getVideoDriver()->createImageFromFile((tmpdir + name).c_str()));
+		if (name != "project.txt") {
+			project->media.add(name.c_str(), state->device->getVideoDriver()->createImageFromFile((tmpdir + name).c_str()));
+		}
 	}
 	if (!readProjectFile(project, tmpdir + "project.txt")) {
 		delete project;
@@ -89,7 +89,7 @@ bool NBEFileFormat::writeProjectFile(Project *project, const std::string &filena
 		return false;
 	}
 	file << "MINETEST NODEBOX EDITOR\n";
-	file << "PARSER 1\n";
+	file << "PARSER 2\n";
 	file << "NAME " << project->name << "\n\n";
 
 	std::list<Node*> & nodes = project->nodes;
@@ -145,7 +145,24 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 		}
 	} else if (stage == READ_STAGE_NODE) {
 		if (lower.find("position ") == 0) {
-			// TODO: Parse position
+			std::string n = trim(line.substr(8));
+			std::string s[3];
+			for (unsigned int i = 0; n != ""; i++){
+				size_t nid = n.find(" ");
+
+				if (nid == std::string::npos){
+					nid = n.size();
+				}
+				if (i >= 3) {
+					std::cerr << "Too many arguments in position tag" << std::endl;
+					break;
+				}
+				s[i] = trim(n.substr(0, nid));
+				n = trim(n.substr(nid));
+			}
+			node->position = vector3di((int)atof(s[0].c_str()),
+					(int)atof(s[1].c_str()),
+					(int)atof(s[2].c_str()));	
 		} else if (lower.find("nodebox ") == 0){
 			std::string n = trim(line.substr(7));
 			std::string s[7];

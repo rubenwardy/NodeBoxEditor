@@ -30,7 +30,8 @@ public:
 	{}
 
 	virtual Project * read(const std::string & filename) = 0; // Open from file	
-	virtual bool write(Project * project, const std::string & filename) = 0; // Save to file	
+	virtual bool write(Project *project, const std::string & filename) = 0; // Save to file
+	virtual std::string getAsString(Project *project) { return ""; }
 	virtual const char * getExtension() const = 0; // Get the main file extension
 	FileFormatError error_code;
 };
