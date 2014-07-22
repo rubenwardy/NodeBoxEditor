@@ -177,7 +177,6 @@ void FileDialog::doOpen(const SEvent &event)
 	std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
 	std::cerr << "Reading from " << dir + after << std::endl;
 	Project *tmp = parser->read(dir + after);
-
 	if (tmp) {
 		if (state->project)
 			delete state->project;
@@ -188,6 +187,7 @@ void FileDialog::doOpen(const SEvent &event)
 		state->Mode()->unload();
 		state->menu->init();
 		state->Mode()->load();
+		win = NULL;
 		delete parser;
 		parser = NULL;
 	} else {
