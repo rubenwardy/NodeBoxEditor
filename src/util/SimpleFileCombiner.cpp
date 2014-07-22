@@ -69,7 +69,7 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 
 	// Loop through files
 	for (int f = 0; f < (int)amount; f++) {
-		std::string name(51, '\0');
+		std::string name(50, '\0');
 		ifs.seekg(f * sizeofdef + 1, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&name[0])), 50);
 		name = trim(name);

@@ -30,7 +30,6 @@ Project *NBEFileFormat::read(const std::string &filename)
 bool NBEFileFormat::write(Project *project, const std::string &filename)
 {
 	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
-	std::cerr << "Temp directory is " << tmpdir << std::endl;
 	CreateDir(tmpdir);
 	SimpleFileCombiner fc;
 	Media *media = &project->media;
@@ -38,17 +37,16 @@ bool NBEFileFormat::write(Project *project, const std::string &filename)
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 			it != images.end();
 			++it) {
-		Media::Image *image = it->second;	
-		std::cerr << "Adding image " << image->name.c_str() << std::endl;
-		if (!image->get())
-			std::cerr << "Image->get() is NULL!" << std::endl;	
+		Media::Image *image = it->second;
+		if (!image->get()) {
+			std::cerr << "Image->get() is NULL!" << std::endl;
+			continue;
+		}
 		state->device->getVideoDriver()->writeImageToFile(image->get(), "tmp/two.png");
 		fc.add((tmpdir + image->name).c_str(), image->name);
-		std::cerr << "Added" << std::endl;
 	}
 	if (writeProjectFile(project, tmpdir + "project.txt")) {
 		fc.add((tmpdir + "project.txt").c_str(), "project.txt");
-		std::cerr << "writing..." << std::endl;
 		return fc.write(filename);
 	}
 	return true;
@@ -82,6 +80,41 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 	return true;
 }
 
+const char* getLabelForCubeSide(CubeSide face)
+{
+	switch(face) {
+	case (ECS_TOP):
+		return "top";
+	case (ECS_BOTTOM):
+		return "bottom";
+	case (ECS_LEFT):
+		return "left";
+	case (ECS_RIGHT):
+		return "right";
+	case (ECS_FRONT):
+		return "front";
+	case (ECS_BACK):
+		return "back";
+	}
+}
+
+CubeSide cubeSideFromString(std::string input)
+{
+	if (input == "left") {
+		return ECS_LEFT;
+	} else if (input == "right") {
+		return ECS_RIGHT;
+	} else if (input == "top") {
+		return ECS_TOP;
+	} else if (input == "bottom") {
+		return ECS_BOTTOM;
+	} else if (input == "front") {
+		return ECS_FRONT;
+	} else if (input == "back") {
+		return ECS_BACK;
+	}
+}
+
 bool NBEFileFormat::writeProjectFile(Project *project, const std::string &filename)
 {
 	std::ofstream file(filename.c_str());
@@ -107,6 +140,13 @@ bool NBEFileFormat::writeProjectFile(Project *project, const std::string &filena
 		file << "\n";
 		vector3di pos = node->position;
 		file << "POSITION " << pos.X << ' ' << pos.Y << ' ' << pos.Z << '\n';
+
+		for (int i = 0; i < 6; i++) {
+			Media::Image* image = node->getTexture((CubeSide)i);
+			if (image) {
+				file << "TEXTURE " << getLabelForCubeSide((CubeSide)i) << " " << image->name.c_str() << "\n";
+			}
+		}
 
 		for (std::vector<NodeBox*>::const_iterator it = node->boxes.begin();
 				it != node->boxes.end();
@@ -163,7 +203,18 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 			node->position = vector3di((int)atof(s[0].c_str()),
 					(int)atof(s[1].c_str()),
 					(int)atof(s[2].c_str()));	
-		} else if (lower.find("nodebox ") == 0){
+		} else if (lower.find("texture ") == 0){
+			std::string n = trim(line.substr(7));
+			size_t nid = n.find(" ");
+			if (nid == std::string::npos || nid < 0){
+				nid = n.size();
+			}
+			std::string one = trim(n.substr(0, nid));
+			std::string two = trim(n.substr(nid));
+			std::cerr << one << ": " << two << std::endl;
+			node->setTexture(cubeSideFromString(one), project->media.get(two.c_str()));
+			
+		} else if (lower.find("nodebox ") == 0) {
 			std::string n = trim(line.substr(7));
 			std::string s[7];
 			for (unsigned int i = 0; n != ""; i++){
