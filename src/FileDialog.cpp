@@ -72,9 +72,17 @@ bool FileDialog::canClose()
 
 bool FileDialog::close()
 {
-	win->remove();
+	std::cerr << "x0" << std::endl;
+	if (win) {
+		std::cerr << "x1" << std::endl;
+		win->remove();
+		win = NULL;
+	}
+	std::cerr << "x2" << std::endl;
 	delete state->menu->dialog;
+	std::cerr << "x3" << std::endl;
 	state->menu->dialog = NULL;
+	std::cerr << "x4" << std::endl;
 	return true;
 }
 
@@ -181,6 +189,7 @@ void FileDialog::doOpen(const SEvent &event)
 		state->menu->init();
 		state->Mode()->load();
 		delete parser;
+		parser = NULL;
 	} else {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 				L"Reading file failed.");					

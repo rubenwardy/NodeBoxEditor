@@ -23,6 +23,16 @@ std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_in
 	return dir;
 }
 
+std::string getTmpDirectory(bool editor_is_installed)
+{
+#ifndef _WIN32
+	if (editor_is_installed) {
+		return std::string(getenv("HOME")) + "/.nodeboxeditor/tmp/";	
+	}
+#endif
+	return "tmp/";
+}
+
 // This code was nicked from Minetest, subject to LGPLv2
 // See http://minetest.net
 #ifdef _WIN32
@@ -33,13 +43,37 @@ bool PathExists(const char* path)
 	return (GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES);
 }
 
+bool CreateDir(std::string path)
+{
+	bool r = CreateDirectory(path.c_str(), NULL);
+	if(r == true)
+		return true;
+	if(GetLastError() == ERROR_ALREADY_EXISTS)
+		return true;
+	return false;
+}
 #else
 #include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 
 bool PathExists(const char* path)
 {
 	struct stat st;
 	return (stat(path, &st) == 0);
+}
+
+bool CreateDir(std::string path)
+{
+	int r = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if(r == 0) {
+		return true;
+	} else {
+		// If already exists, return true
+		if(errno == EEXIST)
+			return true;
+		return false;
+	}	
 }
 
 #endif

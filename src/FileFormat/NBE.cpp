@@ -2,12 +2,25 @@
 #include <stdlib.h>
 #include "NBE.hpp"
 #include "../util/string.hpp"
+#include "../util/filesys.hpp"
+#include "../util/SimpleFileCombiner.hpp"
 
-Project *NBEFileFormat::read(const std::string & filename)
+Project *NBEFileFormat::read(const std::string &filename)
 {
+	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
+	std::cerr << "Temp directory is " << tmpdir << std::endl;
+	CreateDir(tmpdir);
 	Project *project = new Project();
-	project->media.add("two", state->device->getVideoDriver()->createImageFromFile("media/texture_terrain.png"));
-	if (!readProjectFile(project, filename)) {
+	SimpleFileCombiner fc;
+	std::list<std::string> files = fc.read(filename.c_str(), tmpdir);
+	for (std::list<std::string>::const_iterator it = files.begin();
+			it != files.end();
+			++it) {
+		std::string name = *it;
+		std::cerr << "Adding " << name << std::endl;
+		project->media.add(name.c_str(), state->device->getVideoDriver()->createImageFromFile((tmpdir + name).c_str()));
+	}
+	if (!readProjectFile(project, tmpdir + "project.txt")) {
 		delete project;
 		return NULL;
 	}
@@ -16,7 +29,29 @@ Project *NBEFileFormat::read(const std::string & filename)
 
 bool NBEFileFormat::write(Project *project, const std::string &filename)
 {
-	return writeProjectFile(project, filename);
+	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
+	std::cerr << "Temp directory is " << tmpdir << std::endl;
+	CreateDir(tmpdir);
+	SimpleFileCombiner fc;
+	Media *media = &project->media;
+	std::map<std::string, Media::Image*>& images = media->getList();
+	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+			it != images.end();
+			++it) {
+		Media::Image *image = it->second;	
+		std::cerr << "Adding image " << image->name.c_str() << std::endl;
+		if (!image->get())
+			std::cerr << "Image->get() is NULL!" << std::endl;	
+		state->device->getVideoDriver()->writeImageToFile(image->get(), "tmp/two.png");
+		fc.add((tmpdir + image->name).c_str(), image->name);
+		std::cerr << "Added" << std::endl;
+	}
+	if (writeProjectFile(project, tmpdir + "project.txt")) {
+		fc.add((tmpdir + "project.txt").c_str(), "project.txt");
+		std::cerr << "writing..." << std::endl;
+		return fc.write(filename);
+	}
+	return true;
 }
 
 bool NBEFileFormat::readProjectFile(Project *project, const std::string & filename)

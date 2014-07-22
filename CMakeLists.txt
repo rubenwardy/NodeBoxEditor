@@ -46,6 +46,7 @@ set(NBGEN_SRC
 	src/MediaManager.cpp
 	src/util/string.cpp
 	src/util/filesys.cpp
+	src/util/SimpleFileCombiner.cpp
 )
 
 # Include Directories

@@ -186,7 +186,6 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 			def->grab();
 		}
 	}
-	std::cerr << "start" << std::endl;
 	ISceneManager* smgr = device->getSceneManager();
 	if (model) {
 		model->remove();
@@ -380,6 +379,5 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	model->setScale(size);
 	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
 	model->setMaterialFlag(EMF_LIGHTING, false);
-	std::cerr << "done!" << std::endl;
 }
 

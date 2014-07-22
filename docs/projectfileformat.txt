@@ -21,7 +21,7 @@ POSITION 0 0 0      # position in editor grid
 # <name> <x1> <y1> <z1> <x2> <y2> <z2>
 NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # A single box called name.  
 NODEBOX name -0.5 -0.5 -0.5 0.5 0.5 0.5     # a single box called name
-TEXTURE top mod_top_texture.png     # uses mod_top_texture.png for top face in resources/
+TEXTURE top mod_top_texture.png     # uses textures/mod_top_texture.png for top face
 END NODE
 
 
