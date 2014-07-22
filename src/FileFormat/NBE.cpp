@@ -249,9 +249,7 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 			}
 			std::string one = trim(n.substr(0, nid));
 			std::string two = trim(n.substr(nid));
-			std::cerr << one << ": " << two << std::endl;
-			node->setTexture(cubeSideFromString(one), project->media.get(two.c_str()));
-			
+			node->setTexture(cubeSideFromString(one), project->media.get(two.c_str()));			
 		} else if (lower.find("nodebox ") == 0) {
 			std::string n = trim(line.substr(7));
 			std::string s[7];
@@ -262,7 +260,7 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 					nid = n.size();
 				}
 				if (i >= 7) {
-					// Too many arguments to nodebox tag
+					std::cerr << "Too many arguments in nodebox tag" << std::endl;
 					break;
 				}
 				s[i] = trim(n.substr(0, nid));

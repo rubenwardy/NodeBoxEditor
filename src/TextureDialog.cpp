@@ -37,6 +37,8 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	win = guienv->addWindow(rect<s32>(340, 50, 340 + 74 * 3 + 10, 50 + 74 * 3 + 10), true,
 			narrow_to_wide(std::string(getCubeSideName(face)) + " texture").c_str());
 	guienv->addButton(rect<s32>(155, 30, 74 * 3, 55), win, 501, L"Apply", L"Apply this texture selection to the node face");
+	//guienv->addButton(rect<s32>(155, 60, 74 * 3, 85), win, 505, L"Unique",
+	//		L"Duplicate the current texture, and make it so only this face uses it.");
 	guienv->addButton(rect<s32>(84, 30, 150, 55), win, 503, L"Import", L"Import images from files");
 	guienv->addButton(rect<s32>(84, 60, 150, 85), win, 504, L"Export", L"Export the selected texture");
 
