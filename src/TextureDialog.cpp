@@ -1,6 +1,7 @@
 #include "TextureDialog.hpp"
 #include "util/string.hpp"
 #include "ImageDialog.hpp"
+#include "util/filesys.hpp"
 
 const char* getCubeSideName(CubeSide face)
 {
@@ -35,8 +36,9 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	// Window and basic items
 	win = guienv->addWindow(rect<s32>(340, 50, 340 + 74 * 3 + 10, 50 + 74 * 3 + 10), true,
 			narrow_to_wide(std::string(getCubeSideName(face)) + " texture").c_str());
-	guienv->addButton(rect<s32>(74 * 3 - 80, 30, 74 * 3, 55), win, 501, L"Apply", L"Apply this texture selection to the node face");
-	guienv->addButton(rect<s32>(74 * 3 - 80, 60, 74 * 3, 85), win, 503, L"Import", L"Import images from files");
+	guienv->addButton(rect<s32>(155, 30, 74 * 3, 55), win, 501, L"Apply", L"Apply this texture selection to the node face");
+	guienv->addButton(rect<s32>(84, 30, 150, 55), win, 503, L"Import", L"Import images from files");
+	guienv->addButton(rect<s32>(84, 60, 150, 85), win, 504, L"Export", L"Export the selected texture");
 
 	// Fill out listbox
 	lb = guienv->addListBox(rect<s32>(10, 104, 74 * 3, 74 * 3), win, 502);
@@ -125,6 +127,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 			if (count == lb->getSelected()) {
 				node->setTexture(face, it->second);
 				node->remesh();
+				break;
 			}
 			count++;
 		}
@@ -132,6 +135,26 @@ bool TextureDialog::OnEvent(const SEvent &event)
 		return true;
 	} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 503) {
 		ImageDialog::show(state, node, face);
+		return true;
+	} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 504) {
+		int count = 0;
+		Media *media = &state->project->media;
+		std::map<std::string, Media::Image*>& images = media->getList();
+		for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+				it != images.end();
+				++it) {
+			if (count == lb->getSelected()) {
+				Media::Image *image = it->second;
+				std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+							state->settings->getBool("installed")) + image->name;
+				state->device->getVideoDriver()->writeImageToFile(image->get(), 
+					path.c_str());
+				state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to:",
+					narrow_to_wide(path).c_str());
+				break;
+			}
+			count++;
+		}
 		return true;
 	}
 
