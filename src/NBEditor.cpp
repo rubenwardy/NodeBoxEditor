@@ -360,9 +360,6 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 	case CDR_Z_N:
 		pos.Z = box->one.Z;
 		break;
-	default:
-		std::cerr << "Unknown CDR type! " << (int)actualType << std::endl;
-		break;
 	}
 
 	pos.X += node->position.X;

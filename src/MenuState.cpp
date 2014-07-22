@@ -4,6 +4,7 @@
 #include "FileFormat/FileFormat.hpp"
 #include "FileFormat/NBE.hpp"
 #include "FileDialog.hpp"
+#include "ImageDialog.hpp"
 
 MenuState::MenuState(EditorState* state) :
 	state(state),
@@ -62,6 +63,8 @@ void MenuState::init()
 
 	// Project
 	projectMenubar = menubar->getSubMenu(3);
+	projectMenubar->addItem(L"Import Image", GUI_PROJ_IMAGE_IM);
+
 
 	// Help
 	submenu = menubar->getSubMenu(4);
@@ -165,6 +168,9 @@ bool MenuState::OnEvent(const SEvent& event){
 
 				menu->setItemChecked(menu->getSelectedItem(),
 						state->settings->getBool("limiting"));
+				return true;
+			case GUI_PROJ_IMAGE_IM:
+				ImageDialog::show(state, NULL, ECS_TOP);
 				return true;
 			case GUI_HELP_ABOUT: {
 				core::stringw msg = L"The Nodebox Editor\n"
