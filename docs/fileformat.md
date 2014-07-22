@@ -1,8 +1,6 @@
 NBE File Format
 ===============
 
-.nbe files are a uni
-
 The first five bytes tell the parser that it is an NBE file.
 "NBEFP"
 
