@@ -11,6 +11,7 @@
 bool LuaFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
 	if (!file) {
+		error_code = EFFE_IO_ERROR;
 		return false;
 	}
 	file << "-- GENERATED CODE\n";
@@ -23,19 +24,6 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 			it != nodes.end();
 			++it, ++i) {
 		Node* node = *it;
-		/*
-		 * Example output:
-		 * minetest.register_node("test:node_0", {
-		 * 	drawtype = "nodebox",
-		 * 	paramtype = "light",
-		 * 	node_box = {
-		 * 		type = "fixed",
-		 * 		fixed = {
-		 * 			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5} -- Main box
-		 * 		}
-		 * 	}
-		 * })
-		 */
 		file << "minetest.register_node(\"";
 		if (node->name == "") {
 			file << project->name << ":node_" << 1;
@@ -72,7 +60,6 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 
 Project * LuaFileFormat::read(const std::string & file)
 {
-	// TODO: Read Lua files
 	throw std::runtime_error("LuaFileFormat::read() is not implemented!");
 	return NULL;
 }

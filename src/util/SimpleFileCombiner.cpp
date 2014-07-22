@@ -24,6 +24,10 @@ std::vector<char> ReadAllBytes(char const* filename)
 
 bool SimpleFileCombiner::write(std::string filename) {
 	std::ofstream output(filename.c_str(), std::ios::binary|std::ios::out);
+	if (!output) {
+		errcode = EERR_IO;
+		return false;	
+	}
 	output.write("NBEFP", 5);
 	output << (char)files.size();
 	unsigned int start = files.size() * sizeofdef + 6;

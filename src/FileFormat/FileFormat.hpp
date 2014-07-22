@@ -6,11 +6,12 @@
 
 enum FileFormatError
 {
-	EFFE_NONE,
-	EFFE_READ_OLD_VERSION,
-	EFFE_READ_NEW_VERSION,
-	EFFE_READ_IO_ERROR,
-	
+	EFFE_NONE, // No error reported
+ 	EFFE_IO_ERROR, // Problem opening file
+	EFFE_READ_OLD_VERSION, // File is too old for this version of NBE
+	EFFE_READ_NEW_VERSION, // File is newer than this version of NBE
+	EFFE_READ_PARSE_ERROR, // Corruption or issue in reading file
+	EFFE_READ_WRONG_TYPE // Wrong type of file
 };
 
 enum FileFormatType

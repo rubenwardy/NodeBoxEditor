@@ -8,7 +8,10 @@
 Project *NBEFileFormat::read(const std::string &filename)
 {
 	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
-	CreateDir(tmpdir);
+	if (!CreateDir(tmpdir)) {
+		error_code = EFFE_IO_ERROR;
+		return NULL;
+	}
 	Project *project = new Project();
 	SimpleFileCombiner fc;
 	std::list<std::string> files = fc.read(filename.c_str(), tmpdir);
@@ -21,6 +24,8 @@ Project *NBEFileFormat::read(const std::string &filename)
 			}
 			return project;
 		} else {
+			if (fc.errcode == SimpleFileCombiner::EERR_IO)
+				error_code = EFFE_IO_ERROR;
 			delete project;
 			return NULL;
 		}
@@ -44,7 +49,10 @@ Project *NBEFileFormat::read(const std::string &filename)
 bool NBEFileFormat::write(Project *project, const std::string &filename)
 {
 	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
-	CreateDir(tmpdir);
+	if (!CreateDir(tmpdir)) {
+		error_code = EFFE_IO_ERROR;
+		return false;
+	}
 	SimpleFileCombiner fc;
 	Media *media = &project->media;
 	std::map<std::string, Media::Image*>& images = media->getList();
@@ -61,7 +69,13 @@ bool NBEFileFormat::write(Project *project, const std::string &filename)
 	}
 	if (writeProjectFile(project, tmpdir + "project.txt")) {
 		fc.add((tmpdir + "project.txt").c_str(), "project.txt");
-		return fc.write(filename);
+		if (fc.write(filename)) {
+			return true;
+		} else {
+			if (fc.errcode == SimpleFileCombiner::EERR_IO)
+				error_code = EFFE_IO_ERROR;
+			return false;
+		}
 	}
 	return true;
 }
@@ -72,16 +86,19 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 	std::string line;
 	std::ifstream file(filename.c_str());
 	if (!file) {
+		error_code = EFFE_IO_ERROR;
 		return false;
 	}
 
 	// Read parser header
 	std::getline(file, line);
 	if (line != "MINETEST NODEBOX EDITOR") {
+		error_code = EFFE_READ_WRONG_TYPE;
 		return false;
 	}
 	std::getline(file, line);
 	if (line != "PARSER 1" && line != "PARSER 2") {
+		error_code = EFFE_READ_NEW_VERSION;
 		return false;
 	}
 
@@ -91,6 +108,13 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 		parseLine(project, line);
 	}
 	file.close();
+
+	if (node) {
+		std::cerr << "Unexpected EOF, expecting END NODE." << std::endl;
+		error_code = EFFE_READ_PARSE_ERROR;
+		return false;	
+	}
+
 	return true;
 }
 

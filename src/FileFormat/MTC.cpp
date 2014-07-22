@@ -10,7 +10,8 @@
 
 bool MTCFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
-	if (!file) {
+	if (!file) {		
+		error_code = EFFE_IO_ERROR;
 		return false;
 	}
 	file << "// GENERATED CODE\n";
@@ -61,7 +62,6 @@ bool MTCFileFormat::write(Project * project, const std::string & filename){
 
 Project * MTCFileFormat::read(const std::string & file)
 {
-	// TODO: Read MTC files
 	throw std::runtime_error("MTCFileFormat::read() is not implemented!");
 	return NULL;
 }

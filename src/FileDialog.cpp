@@ -130,9 +130,13 @@ void FileDialog::doSave(const SEvent &event)
 		std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
 		std::cerr << "Saving to " << dir + after << std::endl;
 		if (!writer->write(state->project, dir + after)) {
-			std::cerr << "Failed to save file for unknown reason." << std::endl;
-			state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
-					L"File writer failed.");
+			if (writer->error_code == EFFE_IO_ERROR) {
+				state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
+						L"Unable to open file to save to");
+			} else {
+				state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
+						L"Unknown reason");
+			}
 		}
 		delete writer;
 	} else {
@@ -186,9 +190,34 @@ void FileDialog::doOpen(const SEvent &event)
 		delete parser;
 		parser = NULL;
 	} else {
-		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-				L"Reading file failed.");					
+		switch(parser->error_code) {
+		case EFFE_IO_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"Failed to open the file\n\t(Does it not exist, or is it readonly?)");
+			break;
+		case EFFE_READ_OLD_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"This file is outdated and is not supported");
+			break;
+		case EFFE_READ_NEW_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"This file was created with a new version of NBE\n\t(Update your copy)");
+			break;
+		case EFFE_READ_PARSE_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"An error occurred while reading the file - it may be corrupted\n\t(This should never happen)");
+			break;
+		case EFFE_READ_WRONG_TYPE:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"The file is not in the correct format\n\t(Are you opening the wrong type of file?)");
+			break;
+		default:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"Unknown error");
+			break;
+		}			
 		delete parser;
+		parser = NULL;
 	}
 	close();
 }
