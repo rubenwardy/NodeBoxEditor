@@ -64,8 +64,8 @@ bool NBEFileFormat::write(Project *project, const std::string &filename)
 			std::cerr << "Image->get() is NULL!" << std::endl;
 			continue;
 		}
-		state->device->getVideoDriver()->writeImageToFile(image->get(), "tmp/two.png");
-		fc.add((tmpdir + image->name).c_str(), image->name);
+		state->device->getVideoDriver()->writeImageToFile(image->get(), (std::string("tmp/") + image->name).c_str());
+		fc.add(trim(tmpdir + image->name).c_str(), image->name);
 	}
 	if (writeProjectFile(project, tmpdir + "project.txt")) {
 		fc.add((tmpdir + "project.txt").c_str(), "project.txt");

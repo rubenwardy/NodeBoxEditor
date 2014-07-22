@@ -189,6 +189,7 @@ void FileDialog::doOpen(const SEvent &event)
 		win = NULL;
 		delete parser;
 		parser = NULL;
+		close();
 	} else {
 		switch(parser->error_code) {
 		case EFFE_IO_ERROR:
@@ -219,7 +220,6 @@ void FileDialog::doOpen(const SEvent &event)
 		delete parser;
 		parser = NULL;
 	}
-	close();
 }
 
 bool FileDialog::OnEvent(const SEvent &event)

@@ -32,6 +32,7 @@ set(NBGEN_SRC
 	src/MenuState.cpp
 	src/FileDialog.cpp
 	src/TextureDialog.cpp
+	src/ImageDialog.cpp
 	src/GUIHelpers.cpp
 	src/NBEditor.cpp
 	src/NodeEditor.cpp

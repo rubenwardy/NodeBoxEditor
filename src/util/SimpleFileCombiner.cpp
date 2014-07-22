@@ -8,7 +8,7 @@ std::vector<char> ReadAllBytes(char const* filename)
 	std::ifstream ifs(filename, std::ios::binary|std::ios::ate);
 
 	if (!ifs) {
-		std::cerr << "Error! Unable to open file '" << filename << std::endl << "' (util/SimpleFileCombiner.cpp::ReadAllBytes)";
+		std::cerr << "Error! Unable to open file '" << filename << "' (util/SimpleFileCombiner.cpp::ReadAllBytes)";
 		return std::vector<char>(0);
 	}
 
@@ -92,7 +92,7 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 
 		// Get start location
 		unsigned int start = 0;
-		ifs.seekg(f * sizeofdef + 57, std::ios::beg);
+		ifs.seekg(f * sizeofdef + 56, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));
 
 		// Get size

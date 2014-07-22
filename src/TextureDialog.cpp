@@ -1,5 +1,6 @@
 #include "TextureDialog.hpp"
 #include "util/string.hpp"
+#include "ImageDialog.hpp"
 
 const char* getCubeSideName(CubeSide face)
 {
@@ -28,15 +29,20 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	face(pface),
 	lb(NULL)
 {
+	
+	std::cerr << "1" << std::endl;
 	IVideoDriver *driver = state->device->getVideoDriver();
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 
 	// Window and basic items
 	win = guienv->addWindow(rect<s32>(340, 50, 340 + 74 * 3 + 10, 50 + 74 * 3 + 10), true,
 			narrow_to_wide(std::string(getCubeSideName(face)) + " texture").c_str());
-	guienv->addButton(rect<s32>(74 * 3 - 80, 30, 74 * 3, 60), win, 501, L"Apply", L"Apply this texture selection to the node face");
+	guienv->addButton(rect<s32>(74 * 3 - 80, 30, 74 * 3, 55), win, 501, L"Apply", L"Apply this texture selection to the node face");
+	guienv->addButton(rect<s32>(74 * 3 - 80, 60, 74 * 3, 85), win, 503, L"Import", L"Import images from files");
 
 	// Fill out listbox
+	
+	std::cerr << "2" << std::endl;
 	lb = guienv->addListBox(rect<s32>(10, 104, 74 * 3, 74 * 3), win, 502);
 	Media *media = &state->project->media;
 	std::map<std::string, Media::Image*>& images = media->getList();
@@ -44,6 +50,9 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 			it != images.end();
 			++it) {
+		if (!it->second) {
+			continue;		
+		}
 		if (it->second->name == "default") {
 			lb->addItem(L"");
 		} else {
@@ -54,6 +63,7 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 			lb->setSelected(count);
 		count++;
 	}
+	std::cerr << "done" << std::endl;
 }
 
 void TextureDialog::draw(IVideoDriver *driver)
@@ -61,7 +71,7 @@ void TextureDialog::draw(IVideoDriver *driver)
 	Media::Image *image = node->getTexture(face);
 	int x = win->getAbsolutePosition().UpperLeftCorner.X + 10;
 	int y = win->getAbsolutePosition().UpperLeftCorner.Y + 30;
-	if (!image || image->name == "default") {		
+	if (!image || image->name == "default" || !image->get()) {		
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
 		ITexture *texture = driver->addTexture("tmpicon.png", image->get());
@@ -111,7 +121,6 @@ bool TextureDialog::OnEvent(const SEvent &event)
 		return false;
 
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 501) {
-		std::cerr << "Applying and closing..." << std::endl;
 		int count = 0;
 		Media *media = &state->project->media;
 		std::map<std::string, Media::Image*>& images = media->getList();
@@ -124,8 +133,11 @@ bool TextureDialog::OnEvent(const SEvent &event)
 			}
 			count++;
 		}
-		std::cerr << "Closing..." << std::endl;
 		close();
+		return true;
+	} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 503) {
+		ImageDialog::show(state, node, face);
+		return true;
 	}
 
 	if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
