@@ -29,8 +29,6 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	face(pface),
 	lb(NULL)
 {
-	
-	std::cerr << "1" << std::endl;
 	IVideoDriver *driver = state->device->getVideoDriver();
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 
@@ -41,8 +39,6 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	guienv->addButton(rect<s32>(74 * 3 - 80, 60, 74 * 3, 85), win, 503, L"Import", L"Import images from files");
 
 	// Fill out listbox
-	
-	std::cerr << "2" << std::endl;
 	lb = guienv->addListBox(rect<s32>(10, 104, 74 * 3, 74 * 3), win, 502);
 	Media *media = &state->project->media;
 	std::map<std::string, Media::Image*>& images = media->getList();
@@ -63,7 +59,6 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 			lb->setSelected(count);
 		count++;
 	}
-	std::cerr << "done" << std::endl;
 }
 
 void TextureDialog::draw(IVideoDriver *driver)
