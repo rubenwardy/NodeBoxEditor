@@ -12,6 +12,20 @@ Project *NBEFileFormat::read(const std::string &filename)
 	Project *project = new Project();
 	SimpleFileCombiner fc;
 	std::list<std::string> files = fc.read(filename.c_str(), tmpdir);
+	if (files.size() == 0) {
+		if (fc.errcode == SimpleFileCombiner::EERR_WRONG_FILE) {
+			project->media.add("two.png", state->device->getVideoDriver()->createImageFromFile("media/texture_terrain.png"));
+			if (!readProjectFile(project, filename)) {
+				delete project;
+				return NULL;
+			}
+			return project;
+		} else {
+			delete project;
+			return NULL;
+		}
+	}
+
 	for (std::list<std::string>::const_iterator it = files.begin();
 			it != files.end();
 			++it) {

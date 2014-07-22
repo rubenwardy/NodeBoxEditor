@@ -5,9 +5,22 @@
 #include <list>
 #include <vector>
 
+
+
 class SimpleFileCombiner
 {
 public:
+	enum Errors
+	{
+		EERR_NONE = 0,
+		EERR_IO,
+		EERR_WRONG_FILE
+	};
+
+	SimpleFileCombiner():
+		errcode(EERR_NONE)
+	{}
+
 	static const unsigned int sizeofdef = 50 + 2 * sizeof(unsigned int);
 	class File
 	{
@@ -22,6 +35,7 @@ public:
 	bool write(std::string filename);
 	bool add(const char* readfrom, std::string file);
 	std::list<std::string> read(const char* file, std::string dir);
+	SimpleFileCombiner::Errors errcode;
 };
 
 #endif

@@ -19,7 +19,6 @@ std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_in
 			dir += "/";
 		}
 	}
-	std::cerr << "Returning " << dir.c_str() << std::endl;
 	return dir;
 }
 

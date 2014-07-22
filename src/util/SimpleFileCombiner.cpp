@@ -24,8 +24,9 @@ std::vector<char> ReadAllBytes(char const* filename)
 
 bool SimpleFileCombiner::write(std::string filename) {
 	std::ofstream output(filename.c_str(), std::ios::binary|std::ios::out);
+	output.write("NBEFP", 5);
 	output << (char)files.size();
-	unsigned int start = files.size() * sizeofdef + 1;
+	unsigned int start = files.size() * sizeofdef + 6;
 	for (std::list<SimpleFileCombiner::File>::const_iterator it = files.begin();
 			it != files.end();
 			++it) {
@@ -58,31 +59,41 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 {
 	// Start reading
 	std::ifstream ifs(file, std::ios::binary|std::ios::ate);
-	if (!ifs)
+	if (!ifs) {
+		errcode = EERR_IO;
 		return std::list<std::string>();
+	}
+
+	std::string start(5, '\0');
+	ifs.seekg(0, std::ios::beg);
+	ifs.read(static_cast<char*>(static_cast<void*>(&start[0])), 5);
+	if (start != "NBEFP") {
+		errcode = EERR_WRONG_FILE;
+		return std::list<std::string>();
+	}
 
 	// Read header
 	char amount = 0;
-	ifs.seekg(0, std::ios::beg);
+	ifs.seekg(5, std::ios::beg);
 	ifs.read(&amount, 1);
 	std::list<std::string> result;
 
 	// Loop through files
 	for (int f = 0; f < (int)amount; f++) {
 		std::string name(50, '\0');
-		ifs.seekg(f * sizeofdef + 1, std::ios::beg);
+		ifs.seekg(f * sizeofdef + 6, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&name[0])), 50);
 		name = trim(name);
 		result.push_back(name);
 
 		// Get start location
 		unsigned int start = 0;
-		ifs.seekg(f * sizeofdef + 51, std::ios::beg);
+		ifs.seekg(f * sizeofdef + 57, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));
 
 		// Get size
 		unsigned int size = 0;
-		ifs.seekg(f * sizeofdef + 55, std::ios::beg);
+		ifs.seekg(f * sizeofdef + 60, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
 
 		// Read and save data
