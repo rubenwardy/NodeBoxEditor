@@ -70,7 +70,7 @@ bool ImageDialog::OnEvent(const SEvent &event)
 		std::string path(t.c_str(), t.size());
 		path = trim(path);
 		std::cerr << path.c_str() << std::endl;
-		if (!state->project->media.add(path.c_str(), state->device->getVideoDriver()->createImageFromFile(path.c_str()))) {
+		if (!state->project->media.add(filenameWithExt(path).c_str(), state->device->getVideoDriver()->createImageFromFile(path.c_str()))) {
 			state->device->getGUIEnvironment()->addMessageBox(L"Unable to import",
 					L"Failed to open the image\n\t(Does it not exist, or is it readonly?)");
 			return true;

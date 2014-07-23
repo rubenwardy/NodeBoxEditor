@@ -56,7 +56,6 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 
 	// Project and state
 	Project *proj = new Project();
-	proj->media.add("two.png", driver->createImageFromFile("media/texture_terrain.png"));
 	state = new EditorState(device, proj, conf);
 
 	// Menu State

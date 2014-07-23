@@ -26,7 +26,8 @@ int main(int argc, char *argv[]) {
 		"| |\\  | (_) | (_| |  __/ | |_) | (_) >  <  | |__| (_| | | || (_) | |   \n"
 		"|_| \\_|\\___/ \\__,_|\\___| |____/ \\___/_/\\_\\ |_____\\__,_|_|\\__\\___/|_|   \n\n"
 		<< std::endl;
-	
+
+
 	// Find the working directory
 	bool editor_is_installed = false;
 #ifndef _WIN32

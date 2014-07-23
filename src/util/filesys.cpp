@@ -76,3 +76,22 @@ bool CreateDir(std::string path)
 }
 
 #endif
+
+
+std::string filenameWithExt(std::string path)
+{
+	size_t pos = path.find_last_of(DIR_DELIM);
+	if (pos >= path.size() || pos < 0)
+		return path;
+	
+	return path.substr(pos + 1);	
+}
+
+std::string filenameWithoutExt(std::string path)
+{
+	std::string res = filenameWithExt(path);
+	size_t pos = res.find_last_of(".");	
+	if (pos > res.size() || pos < 0)
+		return res;
+	return res.substr(0, pos);
+}
