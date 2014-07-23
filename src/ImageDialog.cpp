@@ -68,7 +68,9 @@ bool ImageDialog::OnEvent(const SEvent &event)
 		IGUIEditBox *box = static_cast<IGUIEditBox *>(win->getElementFromId(GUI_FILEDIALOG_PATH));
 		irr::core::stringc t = box->getText();
 		std::string path(t.c_str(), t.size());
+		path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed")) + path;
 		path = trim(path);
+		
 		std::cerr << path.c_str() << std::endl;
 		if (!state->project->media.add(filenameWithExt(path).c_str(), state->device->getVideoDriver()->createImageFromFile(path.c_str()))) {
 			state->device->getGUIEnvironment()->addMessageBox(L"Unable to import",
