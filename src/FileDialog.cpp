@@ -165,9 +165,10 @@ void FileDialog::doText(const SEvent &event)
 			guienv->addMessageBox(L"Unable to generate code",
 					L"Unknown reason");
 		}
-		IGUIWindow *dialog = guienv->addWindow(rect<irr::s32>(340, 50, 540, 250), false, L"Code Window");
-		IGUIEditBox *db = guienv->addEditBox(narrow_to_wide(res).c_str(), rect<s32>(5, 30, 195, 195), false, dialog);
+		IGUIWindow *dialog = guienv->addWindow(rect<irr::s32>(340, 50, 740, 350), false, L"Code Window");
+		IGUIEditBox *db = guienv->addEditBox(narrow_to_wide(res).c_str(), rect<s32>(5, 25, 395, 295), false, dialog);
 		db->setMultiLine(true);
+		db->setWordWrap(false);
 		delete writer;
 	} else {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
