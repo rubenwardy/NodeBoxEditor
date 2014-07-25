@@ -296,9 +296,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer3->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.75);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.75);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_LEFT]->get());
 	mat = SMaterial();
@@ -319,9 +319,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.75);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.75);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_RIGHT]->get());
 	mat = SMaterial();
