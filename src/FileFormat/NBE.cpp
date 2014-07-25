@@ -5,14 +5,19 @@
 #include "../util/filesys.hpp"
 #include "../util/SimpleFileCombiner.hpp"
 
-Project *NBEFileFormat::read(const std::string &filename)
+Project *NBEFileFormat::read(const std::string &filename, Project *project)
 {
 	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
 	if (!CreateDir(tmpdir)) {
 		error_code = EFFE_IO_ERROR;
 		return NULL;
 	}
-	Project *project = new Project();
+	if (project) {
+		merging = true;
+	} else {
+		merging = false;
+		project = new Project();
+	}
 	SimpleFileCombiner fc;
 	std::list<std::string> files = fc.read(filename.c_str(), tmpdir);
 	if (files.size() == 0) {
@@ -213,12 +218,22 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 	std::string lower = str_to_lower(line);
 
 	if (stage == READ_STAGE_ROOT) {
-		if (lower.find("name ") == 0) {
+		if (lower.find("name ") == 0 && !merging) {
 			project->name = trim(line.substr(4));
 		} else if (lower.find("node ") == 0) {
 			stage = READ_STAGE_NODE;
 			node = new Node(state->device, state, project->GetNodeCount());
 			node->name = trim(line.substr(4));
+			std::list<Node*> & nodes = project->nodes;
+			for (std::list<Node*>::const_iterator it = nodes.begin();
+					it != nodes.end();
+					++it) {
+				Node* xnode = *it;
+				if (xnode->name == node->name) {
+					node->name = "";
+					return;
+				}
+			}
 		}
 	} else if (stage == READ_STAGE_NODE) {
 		if (lower.find("position ") == 0) {
@@ -237,9 +252,20 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 				s[i] = trim(n.substr(0, nid));
 				n = trim(n.substr(nid));
 			}
-			node->position = vector3di((int)atof(s[0].c_str()),
+			vector3di newpos((int)atof(s[0].c_str()),
 					(int)atof(s[1].c_str()),
-					(int)atof(s[2].c_str()));	
+					(int)atof(s[2].c_str()));
+			if (merging) {				
+				std::list<Node*> & nodes = project->nodes;
+				for (std::list<Node*>::const_iterator it = nodes.begin();
+						it != nodes.end();
+						++it) {
+					Node* node = *it;
+					if (node->position == newpos)
+						return;
+				}
+			}
+			node->position = newpos;	
 		} else if (lower.find("texture ") == 0){
 			std::string n = trim(line.substr(7));
 			size_t nid = n.find(" ");

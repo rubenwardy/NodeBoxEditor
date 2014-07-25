@@ -40,8 +40,9 @@ void MenuState::init()
 	// File
 	submenu = menubar->getSubMenu(0);
 	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
-	submenu->addSeparator();
 	submenu->addItem(L"Save Project", GUI_FILE_SAVE_PROJECT);
+	submenu->addSeparator();
+	submenu->addItem(L"Import", GUI_FILE_IMPORT);
 	submenu->addItem(L"Export", GUI_FILE_EXPORT);
 	submenu->addSeparator();
 	submenu->addItem(L"Exit", GUI_FILE_EXIT);
@@ -138,6 +139,9 @@ bool MenuState::OnEvent(const SEvent& event){
 					return true;
 				}
 				addFileDialog(EFPT_SAVE_PROJ, L"Save Project", L"Save");
+				return true;
+			case GUI_FILE_IMPORT:
+				addFileDialog(EFPT_IMPORT, L"Import", L"Import");
 				return true;
 			case GUI_FILE_EXPORT:
 				if (!state->project) {

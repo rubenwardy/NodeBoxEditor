@@ -17,6 +17,7 @@ private:
 	IGUIWindow *win;
 	void doSave(const SEvent &event);
 	void doOpen(const SEvent &event);
+	void doImport(const SEvent &event);
 	void doText(const SEvent &event);
 };
 

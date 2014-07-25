@@ -34,7 +34,7 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 		txt->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_CENTER);
 
 	if (cb) {
-		if (type == EFPT_SAVE_PROJ || type == EFPT_LOAD_PROJ) {
+		if (type == EFPT_SAVE_PROJ || type == EFPT_LOAD_PROJ || type == EFPT_IMPORT) {
 			cb->addItem(L"NodeBoxEditor file (*.nbe)", FILE_FORMAT_NBE);
 		}
 		if (type == EFPT_EXPORT) {
@@ -252,6 +252,69 @@ void FileDialog::doOpen(const SEvent &event)
 	}
 }
 
+void FileDialog::doImport(const SEvent &event)
+{
+	IGUIEditBox *box = NULL;
+	IGUIComboBox *cb = NULL;
+	if (!get_parent_box_cb(state, event, win, &box, &cb)) {
+		return;
+	}
+
+	// Get file parser
+	FileFormat *parser = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
+	if (!parser) {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"File format does not exist.");
+		return;
+	}
+
+	// Get file name
+	irr::core::stringc t = box->getText();
+	std::string after(t.c_str(), t.size());
+	if (after.find('.') == std::string::npos) {
+		after += '.';
+		after += parser->getExtension();
+	}
+
+	// Get directory, and load
+	std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+	std::cerr << "Reading from " << dir + after << std::endl;
+	Project *tmp = parser->read(dir + after, state->project);
+	if (tmp) {
+		state->project->remesh();
+		close();
+	} else {
+		switch(parser->error_code) {
+		case EFFE_IO_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"Failed to open the file\n\t(Does it not exist, or is it readonly?)");
+			break;
+		case EFFE_READ_OLD_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"This file is outdated and is not supported");
+			break;
+		case EFFE_READ_NEW_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"This file was created with a new version of NBE\n\t(Update your copy)");
+			break;
+		case EFFE_READ_PARSE_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"An error occurred while reading the file - it may be corrupted\n\t(This should never happen)");
+			break;
+		case EFFE_READ_WRONG_TYPE:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"The file is not in the correct format\n\t(Are you opening the wrong type of file?)");
+			break;
+		default:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"Unknown error");
+			break;
+		}			
+		delete parser;
+		parser = NULL;
+	}
+}
+
 bool FileDialog::OnEvent(const SEvent &event)
 {
 	if (event.EventType != EET_GUI_EVENT)
@@ -267,6 +330,8 @@ bool FileDialog::OnEvent(const SEvent &event)
 		if (event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT) {
 			if (parser_type == EFPT_SAVE_PROJ || parser_type == EFPT_EXPORT)
 				doSave(event);
+			else if (parser_type == EFPT_IMPORT)
+				doImport(event);
 			else
 				doOpen(event);
 			return true;

@@ -65,7 +65,7 @@ std::string LuaFileFormat::getAsString(Project *project)
 }
 
 
-Project * LuaFileFormat::read(const std::string & file)
+Project * LuaFileFormat::read(const std::string & file, Project *project)
 {
 	throw std::runtime_error("LuaFileFormat::read() is not implemented!");
 	return NULL;

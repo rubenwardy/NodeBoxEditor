@@ -60,7 +60,7 @@ bool MTCFileFormat::write(Project * project, const std::string & filename){
 }
 
 
-Project * MTCFileFormat::read(const std::string & file)
+Project * MTCFileFormat::read(const std::string & file, Project *project)
 {
 	throw std::runtime_error("MTCFileFormat::read() is not implemented!");
 	return NULL;

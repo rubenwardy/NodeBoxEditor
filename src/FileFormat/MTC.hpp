@@ -9,7 +9,7 @@ class MTCFileFormat : public FileFormat
 public:
 	MTCFileFormat(EditorState* st) : state(st) {}
 	virtual bool write(Project* project, const std::string & filename);
-	virtual Project * read(const std::string & file);
+	virtual Project * read(const std::string & file, Project *project=NULL);
 
 	virtual const char * getExtension() const {
 		return "cpp";
