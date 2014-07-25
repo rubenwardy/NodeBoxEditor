@@ -251,6 +251,10 @@ bool Editor::OnEvent(const SEvent& event)
 			if (!event.KeyInput.PressedDown)
 				state->SelectMode(1);
 			break;
+		case KEY_KEY_T:
+			if (!event.KeyInput.PressedDown)
+				state->SelectMode(2);
+			break;
 		}
 	}
 	if (event.EventType == EET_GUI_EVENT) {
