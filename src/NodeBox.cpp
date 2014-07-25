@@ -240,8 +240,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	std::string lighting = editor->settings->get("lighting");
 
 	// Front face
-	vector2df topl((one.X+0.5), (two.Y+0.5));	
-	vector2df btmr((two.X+0.5), (one.Y+0.5));
+	vector2df topl((one.X+0.5), (one.Y+0.5));	
+	vector2df btmr((two.X+0.5), (two.Y+0.5));
 	buffer->Vertices.set_used(4);
 	buffer->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, btmr.Y);
 	buffer->Vertices[1] = video::S3DVertex(x1,x0,x0, 1,-1,-1, cubeColour, btmr.X, btmr.Y);
@@ -263,8 +263,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Back face
-	topl = vector2df((two.X + 0.5), (two.Y + 0.5));	
-	btmr = vector2df((one.X + 0.5), (one.Y + 0.5));
+	topl = vector2df((two.X + 0.5), (one.Y + 0.5));	
+	btmr = vector2df((one.X + 0.5), (two.Y + 0.5));
 	buffer2->Vertices.set_used(4);
 	buffer2->Vertices[0] = video::S3DVertex(x1,x0,x1, 1, -1, 1, cubeColour, topl.X, btmr.Y);
 	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, btmr.X, btmr.Y);
@@ -286,8 +286,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Left face
-	topl = vector2df((two.Z + 0.5), (two.Y + 0.5));	
-	btmr = vector2df((one.Z + 0.5), (one.Y + 0.5));
+	topl = vector2df((two.Z + 0.5), (one.Y + 0.5));	
+	btmr = vector2df((one.Z + 0.5), (two.Y + 0.5));
 	buffer3->Vertices.set_used(4);
 	buffer3->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
 	buffer3->Vertices[1] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, btmr.X, btmr.Y);
@@ -309,8 +309,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Right face
-	topl = vector2df((one.Z + 0.5), (two.Y + 0.5));	
-	btmr = vector2df((two.Z + 0.5), (one.Y + 0.5));
+	topl = vector2df((one.Z + 0.5), (one.Y + 0.5));	
+	btmr = vector2df((two.Z + 0.5), (two.Y + 0.5));
 	buffer4->Vertices.set_used(4);
 	buffer4->Vertices[0] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, topl.X, btmr.Y);
 	buffer4->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, btmr.X, btmr.Y);
@@ -332,8 +332,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	
 
 	// Top face	
-	topl = vector2df((one.X + 0.5), (two.Z + 0.5));	
-	btmr = vector2df((two.X + 0.5), (one.Z + 0.5));
+	topl = vector2df((one.X + 0.5), (one.Z + 0.5));	
+	btmr = vector2df((two.X + 0.5), (two.Z + 0.5));
 	buffer5->Vertices.set_used(4);
 	buffer5->Vertices[0] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, topl.X, btmr.Y);
 	buffer5->Vertices[1] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, btmr.X, btmr.Y);
@@ -353,8 +353,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Bottom face	
-	topl = vector2df((one.X + 0.5), (one.Z + 0.5));	
-	btmr = vector2df((two.X + 0.5), (two.Z + 0.5));
+	topl = vector2df((one.X + 0.5), (two.Z + 0.5));	
+	btmr = vector2df((two.X + 0.5), (one.Z + 0.5));
 	buffer6->Vertices.set_used(4);
 	buffer6->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
 	buffer6->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, btmr.X, btmr.Y);
