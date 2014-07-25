@@ -22,6 +22,10 @@ viewport_bottom_right = right
 # 2: Normal lighting (like in Minetest)
 lighting = 2
 
+# If true, nodes that are not selected will be hidden
+# when not in the node tool
+hide_other_nodes = true
+
 # Driver used to render
 driver = opengl
 

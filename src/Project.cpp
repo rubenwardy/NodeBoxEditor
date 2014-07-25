@@ -26,11 +26,26 @@ Node* Project::GetNode(int id) const
 	for (std::list<Node*>::const_iterator it = nodes.begin();
 			it != nodes.end();
 			++it, ++curid) {
-		if (*it && curid == id) {
+		if (curid == id) {
 			return *it;
 		}
 	}
 	return NULL;
+}
+
+
+void Project::hideAllButCurrentNode()
+{
+	int curid = 0;
+	for (std::list<Node*>::const_iterator it = nodes.begin();
+			it != nodes.end();
+			++it, ++curid) {
+		if (snode == curid) {
+			(*it)->remesh();	
+		} else {
+			(*it)->hide();
+		}
+	}
 }
 
 Node* Project::GetNode(vector3di pos) const

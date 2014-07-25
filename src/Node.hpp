@@ -28,6 +28,7 @@ public:
 	// Node bulk updaters
 	void remesh(); // creates the node mesh
 	void setAllTextures(Media::Image *def);
+	void hide();
 
 	void setTexture(CubeSide face, Media::Image *image);
 	Media::Image *getTexture(CubeSide face) { return images[face]; }

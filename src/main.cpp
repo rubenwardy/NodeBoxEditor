@@ -75,6 +75,7 @@ int main(int argc, char *argv[]) {
 	conf->set("viewport_bottom_left", "front");
 	conf->set("viewport_bottom_right", "right");
 	conf->set("lighting", "2");
+	conf->set("hide_other_nodes", "true");
 	conf->set("fullscreen", "false");
 	conf->set("width", "896");
 	conf->set("height", "520");

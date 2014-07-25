@@ -11,6 +11,7 @@ NodeEditor::NodeEditor(EditorState* st) :
 
 void NodeEditor::load()
 {
+	state->project->remesh();
 	IGUIStaticText* sidebar = state->menu->sidebar;
 	IGUIEnvironment* guienv = state->device->getGUIEnvironment();
 

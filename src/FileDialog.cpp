@@ -213,7 +213,6 @@ void FileDialog::doOpen(const SEvent &event)
 		win->remove();
 		win = NULL;
 		state->project = tmp;
-		state->project->remesh();
 		state->project->SelectNode(0);
 		state->Mode()->unload();
 		state->menu->init();

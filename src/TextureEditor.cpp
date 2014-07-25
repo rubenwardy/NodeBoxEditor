@@ -9,7 +9,12 @@ TextureEditor::TextureEditor(EditorState* st) :
 }
 
 void TextureEditor::load()
-{
+{	
+	if (state->settings->getBool("hide_other_nodes"))
+		state->project->hideAllButCurrentNode();
+	else
+		state->project->remesh();
+
 	IGUIStaticText* sidebar = state->menu->sidebar;
 
 	if (!sidebar)

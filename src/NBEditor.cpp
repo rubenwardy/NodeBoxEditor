@@ -43,6 +43,11 @@ void NBEditor::load()
 	IGUIStaticText* sidebar = state->menu->sidebar;
 	IGUIEnvironment* guienv = state->device->getGUIEnvironment();
 
+	if (state->settings->getBool("hide_other_nodes"))
+		state->project->hideAllButCurrentNode();
+	else
+		state->project->remesh();
+
 	if (sidebar) {
 		sidebar->setText(L"Node Box Tool");
 		IGUIStaticText* t = guienv->addStaticText(L"No node selected",

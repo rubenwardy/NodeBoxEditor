@@ -28,7 +28,8 @@ void Node::setAllTextures(Media::Image *def)
 	}
 }
 
-Node::~Node() {
+Node::~Node()
+{
 	for (int i = 0; i < 6; i++) {
 		if (images[i])
 			images[i]->drop();
@@ -42,11 +43,13 @@ Node::~Node() {
 	boxes.clear();
 }
 
-NodeBox* Node::GetCurrentNodeBox() {
+NodeBox* Node::GetCurrentNodeBox()
+{
 	return GetNodeBox(GetId());
 }
 
-NodeBox* Node::GetNodeBox(int id) {
+NodeBox* Node::GetNodeBox(int id)
+{
 	if (id < 0 || id > boxes.size()) {
 		return NULL;
 	}
@@ -55,7 +58,8 @@ NodeBox* Node::GetNodeBox(int id) {
 }
 
 // Operation functions
-NodeBox* Node::addNodeBox(){
+NodeBox* Node::addNodeBox()
+{
 	_box_count++;
 	// Name it
 	std::string name = "NodeBox" + num_to_str(_box_count);
@@ -100,6 +104,19 @@ void Node::remesh() {
 			it != boxes.end();
 			++it) {
 		(*it)->buildNode(state, position, device, images);
+	}
+}
+
+void Node::hide()
+{
+	for (std::vector<NodeBox*>::iterator it = boxes.begin();
+			it != boxes.end();
+			++it) {
+		NodeBox *box = *it;
+		if (box->model) {
+			box->model->remove();
+			box->model = NULL;
+		}
 	}
 }
 
