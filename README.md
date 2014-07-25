@@ -3,7 +3,7 @@ Node Box Editor
 
 Use this editor to make nodeboxes for nodes in Minetest.
 
-Version: 0.6.5
+Version: 0.7
 
 To do list and bug tracker is here: https://github.com/rubenwardy/NodeBoxEditor/issues?state=open
 
@@ -61,6 +61,7 @@ Editor
     * Click an icon to select the corresponding mode.
 * Press N to enter the node tool.
 * Press B to enter the node box tool.
+* Press T to enter the texture tool.
 
 Menu
 ----
@@ -103,6 +104,19 @@ Icon: A yellow cube.
 * Click + on the sidebar to add a node. (or press insert)
 * Click an item in the listbox to select a node. (or press up/down)
 * Click - on the sidebar to remove the selected node. (or press delete)
+
+Texture Tool
+------------
+
+In this mode / tool, you can edit the textures of a node.
+Icon: Red, green and blue cube.
+
+* Click a face in the side bar to open up the texture dialog.
+* Click import to import an texture.
+	* Type the location relative to the NBE root if a portable build, or relative to the home directory if installed.
+* Click export to export the currently selected texture to the nbe root folder if portable, or the home directory if installed.
+* Click an texture in the list box to select it.
+* Click apply to apply the selected texture to the side of the node.
 
 Saving and Exporting
 --------------------
