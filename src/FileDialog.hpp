@@ -9,14 +9,15 @@ public:
 		const wchar_t* title, const wchar_t* button);
 	static bool show(EditorState *mstate, FileParserType type,
 			const wchar_t* title, const wchar_t* button);
-	void doSave(const SEvent &event);
-	void doOpen(const SEvent &event);
 	virtual bool canClose();
 	virtual bool close();
 	virtual bool OnEvent(const SEvent &event);
 private:
 	FileParserType parser_type;
 	IGUIWindow *win;
+	void doSave(const SEvent &event);
+	void doOpen(const SEvent &event);
+	void doText(const SEvent &event);
 };
 
 #endif

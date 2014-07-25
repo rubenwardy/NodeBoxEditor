@@ -10,6 +10,11 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 	win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 160), true, title);
 	guienv->addButton(rect<irr::s32>(250, 30, 320, 60), win, GUI_DIALOG_SUBMIT, button);
+#if !(IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8)
+	if (parser_type == EFPT_EXPORT) {
+		guienv->addButton(rect<irr::s32>(250, 65, 320, 95), win, GUI_DIALOG_SUBMIT + 1, L"View");
+	}
+#endif
 	std::string path = trim(state->project->name);
 	if (path.empty()) {
 		path = "test";
@@ -83,18 +88,12 @@ bool FileDialog::close()
 
 static bool get_parent_box_cb(EditorState *state,
 		const SEvent &event,
-		IGUIWindow **parent,
+		IGUIWindow *parent,
 		IGUIEditBox **box,
 		IGUIComboBox **cb)
 {
-	*parent = static_cast<IGUIWindow *>(event.GUIEvent.Caller->getParent());
-	if (!(*parent)) {
-		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
-				L"Error trying to get the dialog.");
-		return false;
-	}
-	*box = static_cast<IGUIEditBox *>((*parent)->getElementFromId(GUI_FILEDIALOG_PATH));
-	*cb = static_cast<IGUIComboBox *>((*parent)->getElementFromId(GUI_FILEDIALOG_FORM));
+	*box = static_cast<IGUIEditBox *>(parent->getElementFromId(GUI_FILEDIALOG_PATH));
+	*cb = static_cast<IGUIComboBox *>(parent->getElementFromId(GUI_FILEDIALOG_FORM));
 
 	if (!(*box) || !(*cb)) {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
@@ -111,10 +110,9 @@ void FileDialog::doSave(const SEvent &event)
 				L"You have not yet opened a project.");
 		return;
 	}
-	IGUIWindow *parent = NULL;
 	IGUIEditBox *box = NULL;
 	IGUIComboBox *cb = NULL;
-	if (!get_parent_box_cb(state, event, &parent, &box, &cb)) {
+	if (!get_parent_box_cb(state, event, win, &box, &cb)) {
 		return;
 	}
 	FileFormat *writer = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
@@ -147,12 +145,43 @@ void FileDialog::doSave(const SEvent &event)
 	close();
 }
 
-void FileDialog::doOpen(const SEvent &event)
+void FileDialog::doText(const SEvent &event)
 {
-	IGUIWindow *parent = NULL;
+	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
+	if (!state->project) {
+		guienv->addMessageBox(L"Unable to save",
+				L"You have not yet opened a project.");
+		return;
+	}
 	IGUIEditBox *box = NULL;
 	IGUIComboBox *cb = NULL;
-	if (!get_parent_box_cb(state, event, &parent, &box, &cb)) {
+	if (!get_parent_box_cb(state, event, win, &box, &cb)) {
+		return;
+	}
+	FileFormat *writer = getFromType((FileFormatType) cb->getItemData(cb->getSelected()), state);
+	if (writer) {
+		std::string res = writer->getAsString(state->project);
+		if (res == "") {
+			guienv->addMessageBox(L"Unable to generate code",
+					L"Unknown reason");
+		}
+		IGUIWindow *dialog = guienv->addWindow(rect<irr::s32>(340, 50, 540, 250), false, L"Code Window");
+		IGUIEditBox *db = guienv->addEditBox(narrow_to_wide(res).c_str(), rect<s32>(5, 30, 195, 195), false, dialog);
+		db->setMultiLine(true);
+		delete writer;
+	} else {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
+				L"File format does not exist.");
+	}
+
+	close();
+}
+
+void FileDialog::doOpen(const SEvent &event)
+{
+	IGUIEditBox *box = NULL;
+	IGUIComboBox *cb = NULL;
+	if (!get_parent_box_cb(state, event, win, &box, &cb)) {
 		return;
 	}
 
@@ -189,7 +218,7 @@ void FileDialog::doOpen(const SEvent &event)
 		win = NULL;
 		delete parser;
 		parser = NULL;
-		close();
+		return;
 	} else {
 		switch(parser->error_code) {
 		case EFFE_IO_ERROR:
@@ -233,12 +262,17 @@ bool FileDialog::OnEvent(const SEvent &event)
 		return true;		
 	}
 
-	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT) {
-		if (parser_type == EFPT_SAVE_PROJ || parser_type == EFPT_EXPORT)
-			doSave(event);
-		else
-			doOpen(event);
-		return true;
+	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
+		if (event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT) {
+			if (parser_type == EFPT_SAVE_PROJ || parser_type == EFPT_EXPORT)
+				doSave(event);
+			else
+				doOpen(event);
+			return true;
+		} else if (event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT + 1) {
+			doText(event);
+			return true;
+		}
 	}
 	return false;
 }

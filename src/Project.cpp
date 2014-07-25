@@ -68,7 +68,7 @@ void Project::AddNode(Node* node, bool select)
 {
 	_node_count++;
 	if (node->name == "") {
-		node->name = "Node" + num_to_str(_node_count);
+		node->name = "node_" + num_to_str(_node_count);
 	}
 	if (node->position == vector3di(0, 0, 0))
 		node->position = vector3di((_node_count - 1), 0, 0);

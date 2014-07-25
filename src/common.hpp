@@ -11,10 +11,10 @@ using namespace video;
 // Enums
 enum FileParserType
 {
-	EFPT_SAVE_PROJ = 1,
-	EFPT_LOAD_PROJ = 2,
-	EFPT_EXPORT = 3,
-	EFPT_IMPORT = 4
+	EFPT_SAVE_PROJ,
+	EFPT_LOAD_PROJ,
+	EFPT_EXPORT,
+	EFPT_IMPORT
 };
 
 enum CubeSide

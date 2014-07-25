@@ -20,6 +20,13 @@ void MenuState::init()
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 	guienv->clear();
 	guienv->getSkin()->setFont(guienv->getFont("media/fontlucida.png"));
+	if (dialog) {
+		dialog->close();
+		if (dialog) {
+			delete dialog;
+			dialog = NULL;		
+		}
+	}
 
 	// Main menu bar
 	menubar = guienv->addMenu();

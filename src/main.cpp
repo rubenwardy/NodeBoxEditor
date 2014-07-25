@@ -117,6 +117,10 @@ int main(int argc, char *argv[]) {
 	if (device == NULL) {
 		return EXIT_FAILURE; // could not create selected driver.
 	}
+	
+#if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
+	std::cerr << "Warning! Your irrlicht version is outdated, so some NBE features will not be available." << std::endl;
+#endif
 
 	// Editor
 	Editor* editor = new Editor();

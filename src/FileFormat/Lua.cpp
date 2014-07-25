@@ -7,6 +7,7 @@
 #include "../Project.hpp"
 #include "../Node.hpp"
 #include "Lua.hpp"
+#include <sstream>
 
 bool LuaFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
@@ -14,6 +15,14 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 		error_code = EFFE_IO_ERROR;
 		return false;
 	}
+	file << getAsString(project);
+	file.close();
+	return true;
+}
+
+std::string LuaFileFormat::getAsString(Project *project)
+{
+	std::ostringstream file;
 	file << "-- GENERATED CODE\n";
 	file << "-- Node Box Editor, version " << EDITOR_TEXT_VERSION << '\n';
 	file << "-- Namespace: " << project->name << "\n\n";
@@ -52,9 +61,7 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 			"})\n\n";
 	}
 
-	file.close();
-
-	return true;
+	return file.str();
 }
 
 
