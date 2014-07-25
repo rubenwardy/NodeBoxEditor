@@ -250,9 +250,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer->BoundingBox.reset(0,0,0);
 	ITexture *texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_FRONT]->get());
 	SMaterial mat = SMaterial();
@@ -273,9 +273,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer2->BoundingBox.reset(0,0,0);	
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.7);
+		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.7);
+		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_BACK]->get());
 	mat = SMaterial();
@@ -296,9 +296,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer3->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.75);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.75);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_LEFT]->get());
 	mat = SMaterial();
@@ -319,9 +319,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.75);
 	else if (lighting == "1")		
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.75);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_RIGHT]->get());
 	mat = SMaterial();

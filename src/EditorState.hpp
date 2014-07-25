@@ -36,6 +36,8 @@ public:
 	}
 	EditorMode* Mode() const
 	{
+		if (!Mode(currentmode))
+			std::cerr << "Warning! Null mode returned..." << std::endl;
 		return Mode(currentmode);
 	}
 

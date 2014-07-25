@@ -210,15 +210,17 @@ void FileDialog::doOpen(const SEvent &event)
 		if (state->project)
 			delete state->project;
 
+		win->remove();
+		win = NULL;
 		state->project = tmp;
 		state->project->remesh();
 		state->project->SelectNode(0);
 		state->Mode()->unload();
 		state->menu->init();
 		state->Mode()->load();
-		win = NULL;
 		delete parser;
 		parser = NULL;
+		close();
 		return;
 	} else {
 		switch(parser->error_code) {

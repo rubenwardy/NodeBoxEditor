@@ -29,7 +29,7 @@ std::string getTmpDirectory(bool editor_is_installed)
 		return std::string(getenv("HOME")) + "/.nbetmp/";	
 	}
 #endif
-	return ".tmp/";
+	return "tmp/";
 }
 
 // This code was nicked from Minetest, subject to LGPLv2
