@@ -57,22 +57,22 @@ bool NBEFileFormat::write(Project *project, const std::string &filename)
 		error_code = EFFE_IO_ERROR;
 		return false;
 	}
-	SimpleFileCombiner fc;
-	Media *media = &project->media;
-	std::map<std::string, Media::Image*>& images = media->getList();
-	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
-			it != images.end();
-			++it) {
-		Media::Image *image = it->second;
-		if (!image->get()) {
-			std::cerr << "Image->get() is NULL!" << std::endl;
-			continue;
-		}
-		state->device->getVideoDriver()->writeImageToFile(image->get(), (std::string("tmp/") + image->name).c_str());
-		fc.add(trim(tmpdir + image->name).c_str(), image->name);
-	}
 	if (writeProjectFile(project, tmpdir + "project.txt")) {
+		SimpleFileCombiner fc;
 		fc.add((tmpdir + "project.txt").c_str(), "project.txt");
+		Media *media = &project->media;
+		std::map<std::string, Media::Image*>& images = media->getList();
+		for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+				it != images.end();
+				++it) {
+			Media::Image *image = it->second;
+			if (!image->get()) {
+				std::cerr << "Image->get() is NULL!" << std::endl;
+				continue;
+			}
+			state->device->getVideoDriver()->writeImageToFile(image->get(), (tmpdir + image->name).c_str());
+			fc.add(trim(tmpdir + image->name).c_str(), image->name);
+		}
 		if (fc.write(filename)) {
 			return true;
 		} else {

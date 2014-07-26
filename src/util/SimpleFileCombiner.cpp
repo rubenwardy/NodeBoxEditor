@@ -36,12 +36,12 @@ bool SimpleFileCombiner::write(std::string filename) {
 			++it) {
 		SimpleFileCombiner::File file = *it;
 		std::string name = file.name;
+		unsigned int size = file.bytes.size();
+		std::cerr << "(SFC) Writing " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 		while (name.size() < 50) {
 			name += " ";
 		}
 		output << name.c_str();
-		unsigned int size = file.bytes.size();
-		std::cerr << "(SFC) Writing " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));	
 		output.write(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
 		start += size;

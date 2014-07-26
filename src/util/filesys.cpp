@@ -26,10 +26,10 @@ std::string getTmpDirectory(bool editor_is_installed)
 {
 #ifndef _WIN32
 	if (editor_is_installed) {
-		return std::string(getenv("HOME")) + "/nbetmp/";	
+		return std::string(getenv("HOME")) + "/.nbetmp/";	
 	}
 #endif
-	return "tmp/";
+	return ".tmp/";
 }
 
 // This code was nicked from Minetest, subject to LGPLv2
