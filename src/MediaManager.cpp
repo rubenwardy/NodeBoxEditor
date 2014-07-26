@@ -1,5 +1,5 @@
 #include "MediaManager.hpp"
-#include "utils/filesys.hpp"
+#include "util/filesys.hpp"
 
 Media::~Media()
 {
@@ -20,7 +20,7 @@ bool Media::add(const char *file, IImage *image)
 	if (!image)
 		return false;
 
-	if (images.find(file) != m.end()) {
+	if (images.find(file) != images.end()) {
 		std::cerr << "Image '" << file << "' already exists in file manager!" << std::endl;
 		return false;
 	}
