@@ -1,6 +1,6 @@
 # --------------------------------------------------------- #
 # FILE FORMAT FOR NBE PROJECT FILES USING PARSER VERSION 1  #
-# This is the file format for .nbe files                    #
+# This is the file format for project.txt in .nbe files     #
 # Comments ARE NOT allowed in real format                   #
 # Axis Y is height                                          #
 # --------------------------------------------------------- #

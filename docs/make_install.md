@@ -20,9 +20,11 @@ Using Installed Builds
 
 To run, use <code>$ nodeboxeditor</code>
 
-* Project and exports will be saved to <code>/home/</code>. You can change this with the save_directory setting in editor.conf
+* Project, imports and exports will be saved to and read from <code>/home/</code>.
+  You can change this with the save_directory setting in editor.conf
 * Configuration will be read from <code>/home/.config/nodeboxeditor.conf</code> first,
   and then </code>/usr/local/share/nodeboxeditor/editor.conf</code> if that fails.
 * Resources are saved in <code>/usr/local/share/nodeboxeditor</code>
 * The executable is in <code>/usr/local/bin</code>
+* Textures will be imported and exported to <code>/home/</code>.
 
