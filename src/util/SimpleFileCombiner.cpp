@@ -8,7 +8,7 @@ std::vector<char> ReadAllBytes(char const* filename)
 	std::ifstream ifs(filename, std::ios::binary|std::ios::ate);
 
 	if (!ifs) {
-		std::cerr << "Error! Unable to open file '" << filename << "' (util/SimpleFileCombiner.cpp::ReadAllBytes)";
+		std::cerr << "Error! Unable to open file '" << filename << "' in SimpleFileCombiner/ReadAllBytes" << std::endl;
 		return std::vector<char>(0);
 	}
 
@@ -41,7 +41,7 @@ bool SimpleFileCombiner::write(std::string filename) {
 		}
 		output << name.c_str();
 		unsigned int size = file.bytes.size();
-		std::cerr << "Writing " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
+		std::cerr << "(SFC) Writing " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));	
 		output.write(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
 		start += size;
@@ -101,7 +101,7 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 		unsigned int size = 0;
 		ifs.seekg(f * sizeofdef + 60, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
-		std::cerr << "Reading " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
+		std::cerr << "(SFC) Reading " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 
 		// Read and save data
 		ifs.seekg(start, std::ios::beg);
