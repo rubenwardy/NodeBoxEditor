@@ -41,9 +41,11 @@ bool SimpleFileCombiner::write(std::string filename) {
 		}
 		output << name.c_str();
 		unsigned int size = file.bytes.size();
+		std::cerr << "Writing " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));	
 		output.write(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
-		start += file.bytes.size();		
+		start += size;
+			
 	}		
 	for (std::list<SimpleFileCombiner::File>::const_iterator it = files.begin();
 			it != files.end();
@@ -99,6 +101,7 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 		unsigned int size = 0;
 		ifs.seekg(f * sizeofdef + 60, std::ios::beg);
 		ifs.read(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
+		std::cerr << "Reading " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 
 		// Read and save data
 		ifs.seekg(start, std::ios::beg);
