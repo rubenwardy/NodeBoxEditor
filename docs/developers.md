@@ -73,12 +73,9 @@ Express edition makes no difference to the process.
 
 **Step One: Set up a project**
 
-* Copy the common.hpp.in to common.hpp file where you downloaded the source
-* Open up common.hpp, and edit the defines where there is @NBE_A_SETTING@
-	* @NBE_DESCR_VERSION@:  "0.6.4 - Stone" for example
-	* @NBE_MAJOR_VERSION@: 0
-	* @NBE_MINOR_VERSION@: 6
-	* @NBE_PATCH_VERSION@: 4
+* Copy the conf_cmake.hpp.in to conf_cmake.hpp where you downloaded the source
+* Open up conf_cmake.hpp, and edit the defines where there is @NBE_A_SETTING@
+	* @NBE_DESCR_VERSION@:  "0.7 - Iron" for example
 * Create a C++ project in Visual Studio
 * Add the source code using right click > Add > Existing file. Make sure to include src/FileFormat and src/util as well.
 
@@ -99,7 +96,8 @@ The project should now build correctly. You will need to copy the media folder a
 Code
 ====
 
-* **common**.hpp.in - general compile settings, includes and defines. Used in every other file.
+* **common**.hpp - general compile settings, includes and defines. Used in every other file.
+* **conf_cmake**.hpp.in - defines from cmake.
 * **main**.cpp - contains the main() function, starts irrlicht and the editor.
 * **Editor**.cpp/hpp - contains the Editor class which contains the update loop.
 * **EditorState**.cpp/hpp - contains the EditorState class, which is used to share common variables. Also contains main class for mode FSM.
