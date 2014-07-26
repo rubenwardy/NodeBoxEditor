@@ -35,6 +35,11 @@ Linux
 
 **Install Dependencies**
 
+I recommend that you use the **misc/install_irrlicht.sh** script to install Irrlicht,
+as some features in NBE require Irrlicht 1.8 or later, which is not in apt-get
+
+Alternative method (Installs Irrlicht 1.7.2):
+
     # download source and go to the root folder
     $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
@@ -62,7 +67,7 @@ Express edition makes no difference to the process.
 
 **Prerequisites**
 
-* Download Irrlicht. 1.8 is prefered, but 1.7.x will also work.
+* Download Irrlicht. Some features in NBE require Irrlicht 1.8 or later in order to be enabled.
 * Download the source code for NBE
 * You will need to download Visual Studio, of course.
 
