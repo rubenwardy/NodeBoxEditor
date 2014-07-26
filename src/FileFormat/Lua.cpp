@@ -8,6 +8,7 @@
 #include "../Node.hpp"
 #include "Lua.hpp"
 #include <sstream>
+#include "../util/filesys.hpp"
 
 bool LuaFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
@@ -17,7 +18,33 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 	}
 	file << getAsString(project);
 	file.close();
+
+	// Save images
+	std::string path = pathWithoutFilename(filename) + "textures/";
+	std::cerr << path.c_str() << std::endl;
+	CreateDir(path.c_str());
+	Media *media = &project->media;
+	std::map<std::string, Media::Image*>& images = media->getList();
+	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+			it != images.end();
+			++it) {
+		Media::Image *image = it->second;
+		if (!image->get()) {
+			std::cerr << "Image->get() is NULL!" << std::endl;
+			continue;
+		}
+		state->device->getVideoDriver()->writeImageToFile(image->get(), (path + image->name).c_str());
+	}
 	return true;
+}
+
+std::string doTileImage(Node *node, CubeSide face)
+{
+	Media::Image *image = node->getTexture(face);
+	if (!image)
+		return "default_wood.png";
+	
+	return image->name;
 }
 
 std::string LuaFileFormat::getAsString(Project *project)
@@ -40,6 +67,14 @@ std::string LuaFileFormat::getAsString(Project *project)
 			file << project->name << ":" << node->name;
 		}
 		file << "\", {\n";
+		file << "\ttiles = {\n";
+		file << "\t\t\"" << doTileImage(node, ECS_TOP).c_str() << "\",\n";
+		file << "\t\t\"" << doTileImage(node, ECS_BOTTOM).c_str() << "\",\n";
+		file << "\t\t\"" << doTileImage(node, ECS_RIGHT).c_str() << "\",\n";
+		file << "\t\t\"" << doTileImage(node, ECS_LEFT).c_str() << "\",\n";
+		file << "\t\t\"" << doTileImage(node, ECS_BACK).c_str() << "\",\n";
+		file << "\t\t\"" << doTileImage(node, ECS_FRONT).c_str() << "\"\n";
+		file << "\t},\n";
 		file << "\tdrawtype = \"nodebox\",\n"
 			"\tparamtype = \"light\",\n"
 			"\tnode_box = {\n"

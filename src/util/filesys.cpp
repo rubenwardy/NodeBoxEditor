@@ -95,3 +95,13 @@ std::string filenameWithoutExt(std::string path)
 		return res;
 	return res.substr(0, pos);
 }
+
+
+std::string pathWithoutFilename(std::string path)
+{
+	size_t pos = path.find_last_of(DIR_DELIM);
+	if (pos >= path.size() || pos < 0)
+		return "";
+	
+	return path.substr(0, pos);
+}

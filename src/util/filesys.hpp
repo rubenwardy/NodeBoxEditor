@@ -18,5 +18,6 @@ bool CreateDir(std::string path);
 
 std::string filenameWithExt(std::string path);
 std::string filenameWithoutExt(std::string path);
+std::string pathWithoutFilename(std::string path);
 
 #endif
