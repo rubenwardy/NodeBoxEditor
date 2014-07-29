@@ -27,6 +27,7 @@ public:
 
 	// Node bulk updaters
 	void remesh(); // creates the node mesh
+	void remesh(NodeBox *box);
 	void setAllTextures(Media::Image *def);
 	void hide();
 

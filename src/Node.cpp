@@ -107,6 +107,10 @@ void Node::remesh() {
 	}
 }
 
+void Node::remesh(NodeBox *box) {
+	box->buildNode(state, position, device, images);
+}
+
 void Node::hide()
 {
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();

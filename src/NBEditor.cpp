@@ -339,7 +339,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		} else {
 			box->moveNodeBox(editor->state, actualType, wpos);
 		}
-		node->remesh();
+		node->remesh(box);
 
 		editor->triggerCDRmoved();
 	}
