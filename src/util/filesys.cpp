@@ -103,5 +103,5 @@ std::string pathWithoutFilename(std::string path)
 	if (pos >= path.size() || pos < 0)
 		return "";
 	
-	return str_replace(str_replace(path.substr(0, pos), '\\', (char)DIR_DELIM), '/', (char)DIR_DELIM);
+	return str_replace(str_replace(path.substr(0, pos), '\\', DIR_DELIM), '/', DIR_DELIM);
 }
