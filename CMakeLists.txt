@@ -27,24 +27,24 @@ find_library(XXF86VM_LIBRARY Xxf86vm)
 set(NBGEN_SRC
 	src/main.cpp
 	src/Configuration.cpp
-	src/Editor.cpp
+	src/GUIHelpers.cpp
 	src/EditorState.cpp
 	src/MenuState.cpp
-	src/FileDialog.cpp
-	src/TextureDialog.cpp
-	src/ImageDialog.cpp
-	src/GUIHelpers.cpp
+	src/Editor.cpp
 	src/NBEditor.cpp
 	src/NodeEditor.cpp
 	src/TextureEditor.cpp
+	src/FileDialog.cpp
+	src/TextureDialog.cpp
+	src/ImageDialog.cpp
+	src/Project.cpp
+	src/MediaManager.cpp
+	src/Node.cpp
+	src/NodeBox.cpp
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp	
 	src/FileFormat/MTC.cpp
-	src/Node.cpp
-	src/NodeBox.cpp
-	src/Project.cpp
-	src/MediaManager.cpp
 	src/util/string.cpp
 	src/util/filesys.cpp
 	src/util/SimpleFileCombiner.cpp
