@@ -14,7 +14,7 @@ std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_in
 #endif
 
 	if (dir.length() != 0) {
-		size_t pos = dir.find_last_of("/");
+		size_t pos = str_replace(dir, '\\', '/').find_last_of("/");
 		if(pos != dir.length() - 1) {
 			dir += "/";
 		}
@@ -80,7 +80,7 @@ bool CreateDir(std::string path)
 
 std::string filenameWithExt(std::string path)
 {
-	size_t pos = path.find_last_of(DIR_DELIM);
+	size_t pos = str_replace(path, '\\', '/').find_last_of("/");
 	if (pos >= path.size() || pos < 0)
 		return path;
 	
@@ -99,9 +99,9 @@ std::string filenameWithoutExt(std::string path)
 
 std::string pathWithoutFilename(std::string path)
 {
-	size_t pos = path.find_last_of(DIR_DELIM);
+	size_t pos = str_replace(path, '\\', '/').find_last_of("/");
 	if (pos >= path.size() || pos < 0)
 		return "";
 	
-	return path.substr(0, pos);
+	return str_replace(str_replace(path.substr(0, pos), '\\', (char)DIR_DELIM), '/', (char)DIR_DELIM);
 }

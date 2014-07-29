@@ -104,11 +104,11 @@ std::list<std::string> SimpleFileCombiner::read(const char* file, std::string di
 		std::cerr << "(SFC) Reading " << name.c_str() << ": " << start << " (" << size << ")" << std::endl;
 
 		// Read and save data
+		std::string data(size, '\0');
 		ifs.seekg(start, std::ios::beg);
-		char data[size];
-		ifs.read(static_cast<char*>(static_cast<void*>(&data)), size);
+		ifs.read(static_cast<char*>(static_cast<void*>(&data[0])), size);
 		std::ofstream output((dir + "/" + name).c_str(), std::ios::binary|std::ios::out);
-		output.write(data, size);
+		output.write(static_cast<char*>(static_cast<void*>(&data[0])), size);
 		output.close();
 	}
 	return result;

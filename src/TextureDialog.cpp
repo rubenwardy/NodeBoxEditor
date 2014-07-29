@@ -109,8 +109,8 @@ bool TextureDialog::canClose()
 bool TextureDialog::close()
 {
 	win->remove();
-	delete state->menu->dialog;
 	state->menu->dialog = NULL;
+	delete this;
 	return true;
 }
 
@@ -151,7 +151,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 							state->settings->getBool("installed")) + image->name;
 				state->device->getVideoDriver()->writeImageToFile(image->get(), 
 					path.c_str());
-				state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to:",
+				state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to: ",
 					narrow_to_wide(path).c_str());
 				break;
 			}

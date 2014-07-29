@@ -81,8 +81,8 @@ bool FileDialog::close()
 		win->remove();
 		win = NULL;
 	}
-	delete state->menu->dialog;
 	state->menu->dialog = NULL;
+	delete this;
 	return true;
 }
 
