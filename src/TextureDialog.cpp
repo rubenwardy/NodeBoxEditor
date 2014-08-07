@@ -28,7 +28,8 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	Dialog(pstate),
 	node(pnode),
 	face(pface),
-	lb(NULL)
+	lb(NULL),
+	the_image(NULL)
 {
 	IVideoDriver *driver = state->device->getVideoDriver();
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
@@ -47,6 +48,8 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	Media *media = &state->project->media;
 	std::map<std::string, Media::Image*>& images = media->getList();
 	int count = 0;
+	lb->addItem(L"");
+	lb->setSelected(0);
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 			it != images.end();
 			++it) {
@@ -63,19 +66,22 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 			lb->setSelected(count);
 		count++;
 	}
+
+	Media::Image *image = node->getTexture(face);
+	if (image) {
+		the_image = driver->addTexture("tmpicon.png", image->get());
+	}
 }
 
 void TextureDialog::draw(IVideoDriver *driver)
 {
-	Media::Image *image = node->getTexture(face);
 	int x = win->getAbsolutePosition().UpperLeftCorner.X + 10;
 	int y = win->getAbsolutePosition().UpperLeftCorner.Y + 30;
-	if (!image || image->name == "default" || !image->get()) {		
+	if (!the_image) {		
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
-		ITexture *texture = driver->addTexture("tmpicon.png", image->get());
-		driver->draw2DImage(texture, rect<s32>(x, y, x + 64, y + 64),
-				rect<s32>(0, 0, texture->getSize().Width, texture->getSize().Height));
+		driver->draw2DImage(the_image, rect<s32>(x, y, x + 64, y + 64),
+				rect<s32>(0, 0, the_image->getSize().Width, the_image->getSize().Height));
 	}
 }
 
@@ -119,40 +125,77 @@ bool TextureDialog::OnEvent(const SEvent &event)
 	if (event.EventType != EET_GUI_EVENT)
 		return false;
 
-	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 501) {
-		int count = 0;
-		Media *media = &state->project->media;
-		std::map<std::string, Media::Image*>& images = media->getList();
-		for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
-				it != images.end();
-				++it) {
-			if (count == lb->getSelected()) {
-				node->setTexture(face, it->second);
+	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
+		switch (event.GUIEvent.Caller->getID()) {
+		case 501: {
+			if (lb->getSelected() == 0) {				
+				node->setTexture(face, NULL);
 				node->remesh();
-				break;
+				return true;
 			}
-			count++;
+
+			int count = 0;
+			Media *media = &state->project->media;
+			std::map<std::string, Media::Image*>& images = media->getList();
+			for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+					it != images.end();
+					++it) {
+				if (count == lb->getSelected()-1) {
+					node->setTexture(face, it->second);
+					node->remesh();
+					break;
+				}
+				count++;
+			}
+
+	
+			close();
+			return true;
 		}
-		close();
-		return true;
-	} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 503) {
-		ImageDialog::show(state, node, face);
-		return true;
-	} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == 504) {
+		case 503: {
+			ImageDialog::show(state, node, face);
+			return true;
+		}
+		case 504: {
+			if (lb->getSelected() == 0)
+				return true;
+
+			int count = 0;
+			Media *media = &state->project->media;
+			std::map<std::string, Media::Image*>& images = media->getList();
+			for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+					it != images.end();
+					++it) {
+				if (count == lb->getSelected()-1) {
+					Media::Image *image = it->second;
+					std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+								state->settings->getBool("installed")) + image->name;
+					state->device->getVideoDriver()->writeImageToFile(image->get(), 
+						path.c_str());
+					state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to: ",
+						narrow_to_wide(path).c_str());
+					break;
+				}
+				count++;
+			}
+			return true;
+		}} // end of switch
+	}
+
+	if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED && event.GUIEvent.Caller == lb) {
+		if (lb->getSelected() == 0) {
+			the_image = NULL;
+			return true;
+		}
+		
 		int count = 0;
 		Media *media = &state->project->media;
 		std::map<std::string, Media::Image*>& images = media->getList();
 		for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 				it != images.end();
 				++it) {
-			if (count == lb->getSelected()) {
-				Media::Image *image = it->second;
-				std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-							state->settings->getBool("installed")) + image->name;
-				state->device->getVideoDriver()->writeImageToFile(image->get(), 
-					path.c_str());
-				state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to: ",
-					narrow_to_wide(path).c_str());
+			if (count == lb->getSelected()-1) {
+				the_image = state->device->getVideoDriver()->addTexture("tmpicon.png", it->second->get());
 				break;
 			}
 			count++;

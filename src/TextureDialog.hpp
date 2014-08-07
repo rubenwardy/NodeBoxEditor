@@ -16,6 +16,7 @@ private:
 	CubeSide face;
 	IGUIWindow *win;
 	IGUIListBox *lb;
+	ITexture *the_image;
 };
 
 #endif
