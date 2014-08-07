@@ -10,21 +10,26 @@ Media::~Media()
 	}
 }
 
-bool Media::import(const char *file, IVideoDriver* driver)
+bool Media::import(std::string file, IVideoDriver* driver)
 {		
-	return add(filenameWithExt(file).c_str(), driver->createImageFromFile(file));
+	return add(file, driver->createImageFromFile(file.c_str()));
 }
 
-bool Media::add(const char *file, IImage *image)
+bool Media::add(std::string file, IImage *image)
 {
 	if (!image)
 		return false;
 
-	if (images.find(file) != images.end()) {
-		std::cerr << "Image '" << file << "' already exists in file manager!" << std::endl;
-		return false;
+	const char *shortname = trim(filenameWithExt(file)).c_str();
+	if (images.find(shortname) != images.end()) {
+		std::cerr << "Overwriting '" << shortname << "'" << std::endl;
+		images[shortname]->update(image);
+		images[shortname]->origpath = file;
+	} else {
+		std::cerr << "Adding '" << shortname << "'" << std::endl;
+		images[shortname] = new Media::Image(shortname, image);
+		images[shortname]->origpath = file;
 	}
-	images[file] = new Media::Image(file, image);
 	return true;
 }
 

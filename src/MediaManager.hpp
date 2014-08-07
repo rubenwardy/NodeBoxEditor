@@ -13,7 +13,8 @@ public:
 		Image(const char *the_name, IImage *the_data):
 			name(the_name),
 			data(the_data),
-			holders(0)
+			holders(0),
+			origpath("")
 		{}
 		
 		Image():
@@ -21,6 +22,7 @@ public:
 		{}
 
 		std::string name;
+		std::string origpath;
 
 		IImage *get() const { return data; }
 		void grab() { holders++; }
@@ -28,6 +30,7 @@ public:
 		void dropAll() { holders = 0; }
 		void deleteImage() { data->drop(); }
 		unsigned int getHolders() const { return holders; }
+		void update(IImage *ndata) { data->drop(); data = ndata; }
 	private:
 		IImage *data;
 		unsigned int holders;
@@ -35,8 +38,8 @@ public:
 
 	Media() { std::cerr << "Media Manager created!" << std::endl; }
 	~Media();
-	bool import(const char *file, IVideoDriver* driver);
-	bool add(const char *file, IImage *image);
+	bool import(std::string  file, IVideoDriver* driver);
+	bool add(std::string file, IImage *image);
 	Media::Image *get(const char* name);
 	void clearGrabs();
 	void debug();
