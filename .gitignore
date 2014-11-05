@@ -181,3 +181,5 @@ pip-log.txt
 
 # Linux
 *~*
+.directory
+*kate-swp*
