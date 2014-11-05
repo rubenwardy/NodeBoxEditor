@@ -210,7 +210,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 	// Initialise buffers
 	SMeshBuffer *buffer = new SMeshBuffer();
-	SMeshBuffer *buffer2 = new SMeshBuffer();	
+	SMeshBuffer *buffer2 = new SMeshBuffer();
 	SMeshBuffer *buffer3 = new SMeshBuffer();
 	SMeshBuffer *buffer4 = new SMeshBuffer();
 	SMeshBuffer *buffer5 = new SMeshBuffer();
@@ -240,7 +240,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	std::string lighting = editor->settings->get("lighting");
 
 	// Front face
-	vector2df topl((one.X+0.5), (-two.Y+0.5));	
+	vector2df topl((one.X+0.5), (-two.Y+0.5));
 	vector2df btmr((two.X+0.5), (-one.Y+0.5));
 	buffer->Vertices.set_used(4);
 	buffer->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, btmr.Y);
@@ -251,7 +251,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	ITexture *texture = NULL;
 	if (lighting == "2")
 		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
-	else if (lighting == "1")		
+	else if (lighting == "1")
 		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_FRONT]->get());
@@ -263,18 +263,18 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Back face
-	topl = vector2df((-two.X + 0.5), (-two.Y + 0.5));	
+	topl = vector2df((-two.X + 0.5), (-two.Y + 0.5));
 	btmr = vector2df((-one.X + 0.5), (-one.Y + 0.5));
 	buffer2->Vertices.set_used(4);
 	buffer2->Vertices[0] = video::S3DVertex(x1,x0,x1, 1, -1, 1, cubeColour, topl.X, btmr.Y);
 	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, btmr.X, btmr.Y);
 	buffer2->Vertices[2] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, btmr.X, topl.Y);
 	buffer2->Vertices[3] = video::S3DVertex(x1,x1,x1, 1, 1, 1, cubeColour, topl.X, topl.Y);
-	buffer2->BoundingBox.reset(0,0,0);	
+	buffer2->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
 		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
-	else if (lighting == "1")		
+	else if (lighting == "1")
 		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_BACK]->get());
@@ -286,7 +286,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Left face
-	topl = vector2df((-two.Z + 0.5), (-two.Y + 0.5));	
+	topl = vector2df((-two.Z + 0.5), (-two.Y + 0.5));
 	btmr = vector2df((-one.Z + 0.5), (-one.Y + 0.5));
 	buffer3->Vertices.set_used(4);
 	buffer3->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
@@ -297,7 +297,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	texture = NULL;
 	if (lighting == "2")
 		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
-	else if (lighting == "1")		
+	else if (lighting == "1")
 		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_LEFT]->get());
@@ -309,7 +309,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Right face
-	topl = vector2df((one.Z + 0.5), (-two.Y + 0.5));	
+	topl = vector2df((one.Z + 0.5), (-two.Y + 0.5));
 	btmr = vector2df((two.Z + 0.5), (-one.Y + 0.5));
 	buffer4->Vertices.set_used(4);
 	buffer4->Vertices[0] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, topl.X, btmr.Y);
@@ -320,7 +320,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	texture = NULL;
 	if (lighting == "2")
 		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
-	else if (lighting == "1")		
+	else if (lighting == "1")
 		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_RIGHT]->get());
@@ -329,10 +329,10 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->Material = mat;
 	cubeMesh->addMeshBuffer(buffer4);
 	buffer4->drop();
-	
 
-	// Top face	
-	topl = vector2df((one.X + 0.5), (-two.Z + 0.5));	
+
+	// Top face
+	topl = vector2df((one.X + 0.5), (-two.Z + 0.5));
 	btmr = vector2df((two.X + 0.5), (-one.Z + 0.5));
 	buffer5->Vertices.set_used(4);
 	buffer5->Vertices[0] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, topl.X, btmr.Y);
@@ -341,7 +341,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer5->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, topl.X, topl.Y);
 	buffer5->BoundingBox.reset(0,0,0);
 	texture = NULL;
-	if (lighting == "1")		
+	if (lighting == "1")
 		texture = darken(driver, copied[ECS_TOP]->get(), 0.7);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_TOP]->get());
@@ -352,8 +352,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer5->drop();
 
 
-	// Bottom face	
-	topl = vector2df((-one.X + 0.5), (-one.Z + 0.5));	
+	// Bottom face
+	topl = vector2df((-one.X + 0.5), (-one.Z + 0.5));
 	btmr = vector2df((-two.X + 0.5), (-two.Z + 0.5));
 	buffer6->Vertices.set_used(4);
 	buffer6->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
@@ -363,7 +363,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer6->BoundingBox.reset(0,0,0);
 	if (lighting == "2")
 		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4);
-	else if (lighting == "1")		
+	else if (lighting == "1")
 		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4);
 	else
 		texture = driver->addTexture("media/texture_box.png", copied[ECS_BOTTOM]->get());
@@ -381,5 +381,54 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	model->setScale(size);
 	model->setMaterialFlag(EMF_BILINEAR_FILTER, false);
 	model->setMaterialFlag(EMF_LIGHTING, false);
+}
+
+void NodeBox::rotate(EAxis axis)
+{
+	switch (axis) {
+	case EAX_X: {
+		f32 tmp = one.X;
+		one.X = one.Y;
+		one.Y = -tmp;
+		tmp = two.X;
+		two.X = two.Y;
+		two.Y = -tmp;
+		break;
+	}
+	case EAX_Y: {
+		f32 tmp = one.X;
+		one.X = one.Z;
+		one.Z = -tmp;
+		tmp = two.X;
+		two.X = two.Z;
+		two.Z = -tmp;
+		break;
+	}
+	case EAX_Z: {
+		f32 tmp = one.Z;
+		one.Z = one.Y;
+		one.Y = -tmp;
+		tmp = two.Z;
+		two.Z = two.Y;
+		two.Y = -tmp;
+		break;
+	}};
+
+	// Check relative sizes
+	if (one.X > two.X) {
+		f32 tmp = one.X;
+		one.X = two.X;
+		two.X = tmp;
+	}
+	if (one.Y > two.Y) {
+		f32 tmp = one.Y;
+		one.Y = two.Y;
+		two.Y = tmp;
+	}
+	if (one.Z > two.Z) {
+		f32 tmp = one.Z;
+		one.Z = two.Z;
+		two.Z = tmp;
+	}
 }
 

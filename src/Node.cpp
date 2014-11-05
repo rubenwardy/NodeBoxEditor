@@ -99,7 +99,8 @@ void Node::setTexture(CubeSide face, Media::Image *image)
 }
 
 // Build node models
-void Node::remesh() {
+void Node::remesh()
+{
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
@@ -107,7 +108,8 @@ void Node::remesh() {
 	}
 }
 
-void Node::remesh(NodeBox *box) {
+void Node::remesh(NodeBox *box)
+{
 	box->buildNode(state, position, device, images);
 }
 
@@ -122,6 +124,15 @@ void Node::hide()
 			box->model = NULL;
 		}
 	}
+}
+
+void Node::rotate(EAxis axis) {
+	for (std::vector<NodeBox*>::iterator it = boxes.begin();
+			it != boxes.end();
+			++it) {
+		(*it)->rotate(axis);
+	}
+	remesh();
 }
 
 

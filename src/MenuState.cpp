@@ -83,12 +83,13 @@ void MenuState::init()
 		), false, true, 0, GUI_SIDEBAR
 	);
 	sidebar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	sidebar->setNotClipped(true);
 }
 
 bool MenuState::OnEvent(const SEvent& event){
 	if (dialog)
 		return dialog->OnEvent(event);
-	
+
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
 		if (rect<s32>(10, 32, 42, 64).isPointInside(state->mouse_position)){
@@ -197,7 +198,7 @@ bool MenuState::OnEvent(const SEvent& event){
 
 					// Get directory to save to
 					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
-					
+
 					std::cerr << "Saving to " << dir + "exit.nbe" << std::endl;
 					if (!writer.write(state->project, dir + "exit.nbe"))
 						std::cerr << "Failed to save file for unknown reason." << std::endl;

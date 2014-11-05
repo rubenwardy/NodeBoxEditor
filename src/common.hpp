@@ -27,6 +27,13 @@ enum CubeSide
 	ECS_FRONT
 };
 
+enum EAxis
+{
+	EAX_X,
+	EAX_Y,
+	EAX_Z
+};
+
 enum Viewport
 {
 	VIEW_TL = 0,
@@ -58,7 +65,7 @@ enum CDR_TYPE
 enum CDRType
 {
 	CDR_NONE = 0,
-	CDR_X_P, 
+	CDR_X_P,
 	CDR_X_N,
 	CDR_Y_P,
 	CDR_Y_N,

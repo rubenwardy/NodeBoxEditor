@@ -9,7 +9,7 @@
 // NOTE: the maximum that can be here is 20
 //       see in MenuState.h to raise limit
 enum NODEBOX_EDITOR_GUI_IDS {
-	ENB_GUI_MAIN_LISTBOX = GUI_SIDEBAR + 1,	
+	ENB_GUI_MAIN_LISTBOX = GUI_SIDEBAR + 1,
 	ENB_GUI_MAIN_MSG,
 	ENB_GUI_PROP,
 	ENB_GUI_PROP_X1,
@@ -20,7 +20,10 @@ enum NODEBOX_EDITOR_GUI_IDS {
 	ENB_GUI_PROP_Z2,
 	ENB_GUI_PROP_NAME,
 	ENB_GUI_PROP_UPDATE,
-	ENB_GUI_PROP_REVERT
+	ENB_GUI_PROP_REVERT,
+	ENB_GUI_ROT_X,
+	ENB_GUI_ROT_Y,
+	ENB_GUI_ROT_Z
 };
 
 NBEditor::NBEditor(EditorState* st) :
@@ -29,11 +32,11 @@ NBEditor::NBEditor(EditorState* st) :
 	prop_needs_update(false)
 {
 	for (int i = 0; i < 4; i++) {
-		cdrs[i*5]	= CDR((Viewport)i, CDR_L);
-		cdrs[i*5 + 1]	= CDR((Viewport)i, CDR_R);
-		cdrs[i*5 + 2]	= CDR((Viewport)i, CDR_U);
-		cdrs[i*5 + 3]	= CDR((Viewport)i, CDR_D);
-		cdrs[i*5 + 4]	= CDR((Viewport)i, CDR_M);
+		cdrs[i*5]     = CDR((Viewport)i, CDR_L);
+		cdrs[i*5 + 1] = CDR((Viewport)i, CDR_R);
+		cdrs[i*5 + 2] = CDR((Viewport)i, CDR_U);
+		cdrs[i*5 + 3] = CDR((Viewport)i, CDR_D);
+		cdrs[i*5 + 4] = CDR((Viewport)i, CDR_M);
 	}
 }
 
@@ -53,8 +56,9 @@ void NBEditor::load()
 		IGUIStaticText* t = guienv->addStaticText(L"No node selected",
 				rect<s32>(20, 30, 140, 100),
 				false, true, sidebar, ENB_GUI_MAIN_MSG);
-		
-		IGUIListBox* lb = guienv->addListBox(rect<s32>(20, 30, 230, 128),
+
+
+		IGUIListBox *lb = guienv->addListBox(rect<s32>(20, 35, 230, 133),
 				sidebar, ENB_GUI_MAIN_LISTBOX, true);
 
 		if (lb) {
@@ -66,6 +70,24 @@ void NBEditor::load()
 			b1->setNotClipped(true);
 			b2->setNotClipped(true);
 		}
+
+		// Rotate X
+		static ITexture *rot_x = state->device->getVideoDriver()->getTexture("media/rotate_x.png");
+		IGUIButton *btn = guienv->addButton(rect<s32>(120, 0, 120+32, 32), sidebar, ENB_GUI_ROT_X, L"", L"Rotate node through X axis");
+		btn->setImage(rot_x);
+		btn->setUseAlphaChannel(true);
+
+		// Rotate Y
+		static ITexture *rot_y = state->device->getVideoDriver()->getTexture("media/rotate_y.png");
+		btn = guienv->addButton(rect<s32>(120 + (32+5)*1, 0, 120+32 + (32+5)*1, 32), sidebar, ENB_GUI_ROT_Y, L"", L"Rotate node through Y axis");
+		btn->setImage(rot_y);
+		btn->setUseAlphaChannel(true);
+
+		// Rotate Z|
+		static ITexture *rot_z = state->device->getVideoDriver()->getTexture("media/rotate_z.png");
+		btn = guienv->addButton(rect<s32>(120 + (32+5)*2, 0, 120+32 + (32+5)*2, 32), sidebar, ENB_GUI_ROT_Z, L"", L"Rotate node through Z axis");
+		btn->setImage(rot_z);
+		btn->setUseAlphaChannel(true);
 
 		// Create nodebox properties
 		t = guienv->addStaticText(L"Properties",
@@ -107,7 +129,7 @@ void NBEditor::load_ui()
 		sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX)->setVisible(false);
 		sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(false);
 	} else {
-		IGUIListBox *lb = (IGUIListBox *) sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);		
+		IGUIListBox *lb = (IGUIListBox *) sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 		sidebar->getElementFromId(ENB_GUI_MAIN_MSG)->setVisible(false);
 		sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(false);
 
@@ -398,7 +420,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			}
 			case GUI_PROJ_DELETE_BOX: {
 				Node* node = state->project->GetCurrentNode();
-				IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
+				IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 				if (node && node->GetNodeBox(lb->getSelected())){
 					node->deleteNodebox(lb->getSelected());
 					load_ui();
@@ -411,10 +433,28 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			case ENB_GUI_PROP_UPDATE:
 				updateProperties();
 				break;
+			case ENB_GUI_ROT_X: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->rotate(EAX_X);
+				break;
+			}
+			case ENB_GUI_ROT_Y: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->rotate(EAX_Y);
+				break;
+			}
+			case ENB_GUI_ROT_Z: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->rotate(EAX_Z);
+				break;
+			}
 			}
 		} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED) {
 			Node* node = state->project->GetCurrentNode();
-			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);	
+			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 			if (node && lb && node->GetNodeBox(lb->getSelected())){
 				node->select(lb->getSelected());
 			}
