@@ -1,8 +1,8 @@
-#include <list>
 #include "NodeEditor.hpp"
-#include "Node.hpp"
-#include "GUIHelpers.hpp"
-#include "util/string.hpp"
+#include <list>
+#include "../Node.hpp"
+#include "../GUIHelpers.hpp"
+#include "../util/string.hpp"
 
 NodeEditor::NodeEditor(EditorState* st) :
 	EditorMode(st)
@@ -46,7 +46,7 @@ void NodeEditor::load()
 		guienv->addStaticText(L"Name:", rect<s32>(10, 30, 50, 50),
 				false, true, t)->setNotClipped(true);
 		guienv->addEditBox(L"", rect<s32>(60, 30, 210, 50), true,
-				t, ENG_GUI_PROP_NAME)->setNotClipped(true);		
+				t, ENG_GUI_PROP_NAME)->setNotClipped(true);
 
 		// Add positioning
 		addXYZ(t, guienv, vector2di(10, 60), ENG_GUI_PROP_X);
@@ -167,11 +167,11 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 				break;
 			}
 		} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED) {
-			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);	
+			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			if (lb && state->project->GetNode(lb->getSelected())){
 				state->project->SelectNode(lb->getSelected());
 				load_ui();
-			}	
+			}
 		}
 	} else if (event.EventType == EET_KEY_INPUT_EVENT && !event.KeyInput.PressedDown) {
 		if (event.KeyInput.Key == KEY_RETURN){

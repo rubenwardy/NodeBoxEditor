@@ -1,7 +1,7 @@
-#include <list>
 #include "TextureEditor.hpp"
-#include "util/string.hpp"
-#include "TextureDialog.hpp"
+#include <list>
+#include "../util/string.hpp"
+#include "../TextureDialog.hpp"
 
 TextureEditor::TextureEditor(EditorState* st) :
 	EditorMode(st)
@@ -9,7 +9,7 @@ TextureEditor::TextureEditor(EditorState* st) :
 }
 
 void TextureEditor::load()
-{	
+{
 	if (state->settings->getBool("hide_other_nodes"))
 		state->project->hideAllButCurrentNode();
 	else
@@ -105,7 +105,7 @@ bool TextureEditor::OnEvent(const irr::SEvent &event)
 			TextureDialog::show(state, node, ECS_BACK);
 		}
 	}
-	
+
 	return false;
 }
 

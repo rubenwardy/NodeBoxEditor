@@ -1,7 +1,8 @@
 #include "Editor.hpp"
 #include "Node.hpp"
-#include "NBEditor.hpp"
-#include "TextureEditor.hpp"
+#include "modes/NBEditor.hpp"
+#include "modes/TextureEditor.hpp"
+#include "modes/NodeEditor.hpp"
 #include <ctime>
 #include <time.h>
 

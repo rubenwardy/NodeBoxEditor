@@ -1,7 +1,7 @@
 #ifndef NBEDITOR_HPP_INCLUDED
 #define NBEDITOR_HPP_INCLUDED
-#include "common.hpp"
-#include "EditorState.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
 
 class EditorState;
 class NBEditor;

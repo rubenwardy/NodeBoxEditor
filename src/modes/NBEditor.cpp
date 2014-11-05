@@ -1,9 +1,9 @@
-#include <vector>
-#include "util/string.hpp"
-#include "Node.hpp"
-#include "NodeBox.hpp"
 #include "NBEditor.hpp"
-#include "GUIHelpers.hpp"
+#include <vector>
+#include "../GUIHelpers.hpp"
+#include "../util/string.hpp"
+#include "../Node.hpp"
+#include "../NodeBox.hpp"
 
 // The gui id numbers for this mode
 // NOTE: the maximum that can be here is 20

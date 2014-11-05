@@ -1,7 +1,7 @@
 #ifndef TEXTUREEDITOR_HPP_INCLUDED
 #define TEXTUREEDITOR_HPP_INCLUDED
-#include "common.hpp"
-#include "EditorState.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
 
 class EditorMode;
 class TextureEditor :public EditorMode
