@@ -3,8 +3,8 @@
 #include "MenuState.hpp"
 #include "FileFormat/FileFormat.hpp"
 #include "FileFormat/NBE.hpp"
-#include "FileDialog.hpp"
-#include "ImageDialog.hpp"
+#include "dialogs/FileDialog.hpp"
+#include "dialogs/ImageDialog.hpp"
 
 MenuState::MenuState(EditorState* state) :
 	state(state),

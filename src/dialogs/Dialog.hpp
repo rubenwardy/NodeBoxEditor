@@ -1,7 +1,7 @@
 #ifndef DIALOG_HPP_INCLUDED
 #define DIALOG_HPP_INCLUDED
-#include "common.hpp"
-#include "EditorState.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
 
 class EditorState;
 class Dialog : public IEventReceiver

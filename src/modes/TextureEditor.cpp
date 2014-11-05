@@ -1,7 +1,7 @@
 #include "TextureEditor.hpp"
 #include <list>
 #include "../util/string.hpp"
-#include "../TextureDialog.hpp"
+#include "../dialogs/TextureDialog.hpp"
 
 TextureEditor::TextureEditor(EditorState* st) :
 	EditorMode(st)

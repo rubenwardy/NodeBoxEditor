@@ -1,7 +1,7 @@
 #include "TextureDialog.hpp"
-#include "util/string.hpp"
+#include "../util/string.hpp"
 #include "ImageDialog.hpp"
-#include "util/filesys.hpp"
+#include "../util/filesys.hpp"
 
 enum TEXTURE_DIALOG_GUI_IDS
 {

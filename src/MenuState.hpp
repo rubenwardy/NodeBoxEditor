@@ -2,7 +2,7 @@
 #define MENUSTATE_HPP_INCLUDED
 #include "common.hpp"
 #include "EditorState.hpp"
-#include "Dialog.hpp"
+#include "dialogs/Dialog.hpp"
 
 
 // FILE

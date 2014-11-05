@@ -1,6 +1,6 @@
 #include "ImageDialog.hpp"
-#include "util/string.hpp"
-#include "util/filesys.hpp"
+#include "../util/string.hpp"
+#include "../util/filesys.hpp"
 #include "TextureDialog.hpp"
 
 ImageDialog::ImageDialog(EditorState *mstate, Node *tnode, CubeSide tface):
@@ -10,7 +10,7 @@ ImageDialog::ImageDialog(EditorState *mstate, Node *tnode, CubeSide tface):
 {
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
 	win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 120), true, L"Import Image");
-	guienv->addButton(rect<irr::s32>(250, 30, 320, 60), win, GUI_DIALOG_SUBMIT, L"Import");	
+	guienv->addButton(rect<irr::s32>(250, 30, 320, 60), win, GUI_DIALOG_SUBMIT, L"Import");
 	IGUIEditBox *box = guienv->addEditBox(L"", rect<irr::s32>(10, 30, 240, 60),
 			true, win, GUI_FILEDIALOG_PATH);
 }
@@ -61,7 +61,7 @@ bool ImageDialog::OnEvent(const SEvent &event)
 	if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
 		if (canClose())
 			close();
-		return true;		
+		return true;
 	}
 
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED && event.GUIEvent.Caller->getID() == GUI_DIALOG_SUBMIT) {
@@ -70,7 +70,7 @@ bool ImageDialog::OnEvent(const SEvent &event)
 		std::string path(t.c_str(), t.size());
 		path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed")) + path;
 		path = trim(path);
-		
+
 		std::cerr << path.c_str() << std::endl;
 		IImage *image = state->device->getVideoDriver()->createImageFromFile(path.c_str());
 		if (!image) {

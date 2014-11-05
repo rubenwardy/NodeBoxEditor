@@ -1,7 +1,7 @@
 #include "FileDialog.hpp"
-#include "util/string.hpp"
-#include "util/filesys.hpp"
-#include "FileFormat/FileFormat.hpp"
+#include "../util/string.hpp"
+#include "../util/filesys.hpp"
+#include "../FileFormat/FileFormat.hpp"
 
 FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 		const wchar_t* title, const wchar_t* button):
@@ -19,7 +19,7 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 	if (path.empty()) {
 		path = "test";
 	}
-	
+
 	IGUIEditBox *box = guienv->addEditBox(narrow_to_wide(path).c_str(),
 			rect<irr::s32>(10, 30, 240, 60),
 			true, win, GUI_FILEDIALOG_PATH);
@@ -247,7 +247,7 @@ void FileDialog::doOpen(const SEvent &event)
 			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 					L"Unknown error");
 			break;
-		}			
+		}
 		delete parser;
 		parser = NULL;
 	}
@@ -310,7 +310,7 @@ void FileDialog::doImport(const SEvent &event)
 			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 					L"Unknown error");
 			break;
-		}			
+		}
 		delete parser;
 		parser = NULL;
 	}
@@ -324,7 +324,7 @@ bool FileDialog::OnEvent(const SEvent &event)
 	if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
 		if (canClose())
 			close();
-		return true;		
+		return true;
 	}
 
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
