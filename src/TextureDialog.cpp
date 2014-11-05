@@ -3,6 +3,15 @@
 #include "ImageDialog.hpp"
 #include "util/filesys.hpp"
 
+enum TEXTURE_DIALOG_GUI_IDS
+{
+	ETD_GUI_ID_APPLY = GUI_DIALOG,
+	ETD_GUI_ID_IMPORT,
+	ETD_GUI_ID_ACTIONS,
+	ETD_GUI_ID_ACTIONS_CM,
+	ETD_GUI_ID_EXPORT
+};
+
 const char* getCubeSideName(CubeSide face)
 {
 	switch (face) {
@@ -29,7 +38,8 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	node(pnode),
 	face(pface),
 	lb(NULL),
-	the_image(NULL)
+	the_image(NULL),
+	context(NULL)
 {
 	IVideoDriver *driver = state->device->getVideoDriver();
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
@@ -37,24 +47,22 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	// Window and basic items
 	win = guienv->addWindow(rect<s32>(340, 50, 340 + 74 * 3 + 10, 50 + 74 * 3 + 10), true,
 			narrow_to_wide(std::string(getCubeSideName(face)) + " texture").c_str());
-	guienv->addButton(rect<s32>(155, 30, 74 * 3, 55), win, 501, L"Apply", L"Apply this texture selection to the node face");
-	//guienv->addButton(rect<s32>(155, 60, 74 * 3, 85), win, 505, L"Unique",
-	//		L"Duplicate the current texture, and make it so only this face uses it.");
-	guienv->addButton(rect<s32>(84, 30, 150, 55), win, 503, L"Import", L"Import images from files");
-	guienv->addButton(rect<s32>(84, 60, 150, 85), win, 504, L"Export", L"Export the selected texture");
+	guienv->addButton(rect<s32>(155, 30, 74*3, 55), win, ETD_GUI_ID_APPLY,   L"Apply",  L"Apply this texture selection to the node face");
+	guienv->addButton(rect<s32>(155, 60, 74*3, 85), win, ETD_GUI_ID_IMPORT,  L"Import", L"Import images from files");
+	guienv->addButton(rect<s32>(84,  60, 150,  85), win, ETD_GUI_ID_ACTIONS, L"Actions");
 
 	// Fill out listbox
 	lb = guienv->addListBox(rect<s32>(10, 104, 74 * 3, 74 * 3), win, 502);
 	Media *media = &state->project->media;
 	std::map<std::string, Media::Image*>& images = media->getList();
-	int count = 0;
+	int count = 1;
 	lb->addItem(L"");
 	lb->setSelected(0);
 	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 			it != images.end();
 			++it) {
 		if (!it->second) {
-			continue;		
+			continue;
 		}
 		if (it->second->name == "default") {
 			lb->addItem(L"");
@@ -71,13 +79,20 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 	if (image) {
 		the_image = driver->addTexture("tmpicon.png", image->get());
 	}
+
+	// Context menu
+	context = guienv->addContextMenu(rect<s32>(84, 85, 150, 180), win, ETD_GUI_ID_ACTIONS_CM);
+	context->addItem(L"Export", ETD_GUI_ID_EXPORT);
+	context->setCloseHandling(ECMC_HIDE);
+	context->setVisible(false);
+	context->setEventParent(win);
 }
 
 void TextureDialog::draw(IVideoDriver *driver)
 {
 	int x = win->getAbsolutePosition().UpperLeftCorner.X + 10;
 	int y = win->getAbsolutePosition().UpperLeftCorner.Y + 30;
-	if (!the_image) {		
+	if (!the_image) {
 		driver->draw2DRectangle(SColor(100, 0, 0, 0), rect<s32>(x, y, x + 64, y + 64));
 	} else {
 		driver->draw2DImage(the_image, rect<s32>(x, y, x + 64, y + 64),
@@ -127,8 +142,8 @@ bool TextureDialog::OnEvent(const SEvent &event)
 
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
 		switch (event.GUIEvent.Caller->getID()) {
-		case 501: {
-			if (lb->getSelected() == 0) {				
+		case ETD_GUI_ID_APPLY: {
+			if (lb->getSelected() == 0) {
 				node->setTexture(face, NULL);
 				node->remesh();
 				return true;
@@ -148,15 +163,23 @@ bool TextureDialog::OnEvent(const SEvent &event)
 				count++;
 			}
 
-	
+
 			close();
 			return true;
 		}
-		case 503: {
+		case ETD_GUI_ID_IMPORT: {
 			ImageDialog::show(state, node, face);
-			return true;
+			return false;
 		}
-		case 504: {
+		case ETD_GUI_ID_ACTIONS:
+			context->setVisible(true);
+			state->device->getGUIEnvironment()->setFocus(context);
+			return false;
+		}
+	} else if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
+		IGUIContextMenu *menu = (IGUIContextMenu *)event.GUIEvent.Caller;
+		switch (menu->getItemCommandId(menu->getSelectedItem())) {
+		case ETD_GUI_ID_EXPORT: {
 			if (lb->getSelected() == 0)
 				return true;
 
@@ -170,7 +193,8 @@ bool TextureDialog::OnEvent(const SEvent &event)
 					Media::Image *image = it->second;
 					std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
 								state->settings->getBool("installed")) + image->name;
-					state->device->getVideoDriver()->writeImageToFile(image->get(), 
+					std::cerr << "Exported image to " << path.c_str() << std::endl;
+					state->device->getVideoDriver()->writeImageToFile(image->get(),
 						path.c_str());
 					state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to: ",
 						narrow_to_wide(path).c_str());
@@ -178,16 +202,14 @@ bool TextureDialog::OnEvent(const SEvent &event)
 				}
 				count++;
 			}
-			return true;
+			return false;
 		}} // end of switch
-	}
-
-	if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED && event.GUIEvent.Caller == lb) {
+	} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED && event.GUIEvent.Caller == lb) {
 		if (lb->getSelected() == 0) {
 			the_image = NULL;
 			return true;
 		}
-		
+
 		int count = 0;
 		Media *media = &state->project->media;
 		std::map<std::string, Media::Image*>& images = media->getList();
@@ -201,12 +223,10 @@ bool TextureDialog::OnEvent(const SEvent &event)
 			count++;
 		}
 		return true;
-	}
-
-	if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
+	} else if (event.GUIEvent.EventType == EGET_ELEMENT_CLOSED && event.GUIEvent.Caller == win) {
 		if (canClose())
 			close();
-		return true;		
+		return true;
 	}
 	return false;
 }

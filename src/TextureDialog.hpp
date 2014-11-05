@@ -17,6 +17,7 @@ private:
 	IGUIWindow *win;
 	IGUIListBox *lb;
 	ITexture *the_image;
+	IGUIContextMenu *context;
 };
 
 #endif

@@ -46,7 +46,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	device = irr_device;
 	IVideoDriver *driver = device->getVideoDriver();
 	ISceneManager *smgr = device->getSceneManager();
-	IGUIEnvironment *guienv = device->getGUIEnvironment();	
+	IGUIEnvironment *guienv = device->getGUIEnvironment();
 	device->setEventReceiver(this);
 	device->setWindowCaption(L"Node Box Editor");
 
@@ -72,7 +72,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	proj->media.debug();
 
 	// Load user interface
-	LoadScene();	
+	LoadScene();
 	state->SelectMode(0);
 
 	int LastX = driver->getScreenSize().Width;
@@ -98,7 +98,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		int ResX = driver->getScreenSize().Width;
 		if (!state->settings->getBool("hide_sidebar"))
 			ResX -= 256;
-		
+
 		int ResY = driver->getScreenSize().Height;
 
 		if (currentWindow == -1) {
@@ -179,7 +179,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 		dtime = double(now - last) / 1000;
 		last = now;
 
-		click_handled = true;		
+		click_handled = true;
 	}
 
 	return true;
@@ -208,18 +208,18 @@ bool Editor::OnEvent(const SEvent& event)
 	}
 
 	if (state->menu){
-		if (state->menu->OnEvent(event)){
+		if (state->menu->OnEvent(event)) {
 			return true;
 		}
 	}
 
-	if (event.EventType == EET_KEY_INPUT_EVENT && event.KeyInput.Key < NUMBER_OF_KEYS){
+	if (event.EventType == EET_KEY_INPUT_EVENT && event.KeyInput.Key < NUMBER_OF_KEYS) {
 		if (event.KeyInput.PressedDown) {
 			state->keys[event.KeyInput.Key] = EKS_DOWN;
 		} else {
 			state->keys[event.KeyInput.Key] = EKS_UP;
 		}
-	
+
 		if (
 			state->device->getGUIEnvironment()->getFocus() &&
 			state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
@@ -292,7 +292,7 @@ void Editor::LoadScene()
 	target->setPosition(vector3df(0, 0, 0));
 
 	// Create cameras
-	pivot = smgr->addEmptySceneNode(target, 199);	
+	pivot = smgr->addEmptySceneNode(target, 199);
 	pivot->setRotation(vector3df(25, -45, 0));
 	recreateCameras();
 
@@ -329,7 +329,7 @@ void Editor::recreateCameras()
 	// Get screen sizes
 	int ResX = driver->getScreenSize().Width;
 	if (!state->settings->getBool("hide_sidebar"))
-		ResX -= 256;	
+		ResX -= 256;
 	int ResY = driver->getScreenSize().Height;
 
 	// reset matrix
@@ -354,7 +354,7 @@ void Editor::recreateCameras()
 			camera[i]->setParent(pivot);
 			camera[i]->setAspectRatio((float)ResX / (float)ResY);
 			pivot->setRotation(oldrot);
-		} else {			
+		} else {
 			camera[i] = smgr->addCameraSceneNode(target);
 			switch(type) {
 			case VIEWT_TOP:
@@ -364,8 +364,8 @@ void Editor::recreateCameras()
 				camera[i]->setPosition(vector3df(0, -2, -0.01));
 				break;
 			case VIEWT_LEFT:
-				camera[i]->setPosition(vector3df(-5, 0, 0));	
-				break;		
+				camera[i]->setPosition(vector3df(-5, 0, 0));
+				break;
 			case VIEWT_RIGHT:
 				camera[i]->setPosition(vector3df(5, 0, 0));
 				break;
@@ -434,7 +434,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 	if (state->Mode())
 		state->Mode()->viewportTick(viewport, driver, rect);
 
-	// Draw text	
+	// Draw text
 	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 	{
 		static const wchar_t* labels[7] = {L"Perspective", L"Front", L"Left", L"Top", L"Back", L"Right", L"Bottom"};
@@ -477,7 +477,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 		}
 
 		// Context menu
-		if (context_is_open) {		
+		if (context_is_open) {
 			// Context menu background
 			driver->draw2DRectangle(SColor(100, 32, 32, 32), backgroundrect);
 			s32 y2 = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?52:32);
@@ -523,7 +523,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 		case VIEWT_LEFT:
 			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
 					rect.LowerRightCorner.Y - 42, L"-Z", L"Y");
-			break;		
+			break;
 		case VIEWT_RIGHT:
 			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
 					rect.LowerRightCorner.Y - 42, L"Z", L"Y");
@@ -536,7 +536,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 			drawCoord(guienv->getSkin()->getFont(), driver, rect.UpperLeftCorner.X + 10,
 					rect.LowerRightCorner.Y - 42, L"-X", L"Y");
 			break;
-		}		
+		}
 	}
 }
 
