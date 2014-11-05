@@ -43,7 +43,7 @@ set(NBGEN_SRC
 	src/NodeBox.cpp
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
-	src/FileFormat/Lua.cpp	
+	src/FileFormat/Lua.cpp
 	src/FileFormat/MTC.cpp
 	src/util/string.cpp
 	src/util/filesys.cpp
@@ -77,7 +77,7 @@ target_link_libraries(
 
 file(MAKE_DIRECTORY "bin")
 
-SET(CMAKE_CXX_FLAGS 
+SET(CMAKE_CXX_FLAGS
 	"${CMAKE_CXX_FLAGS} -pthread")
 
 set_target_properties(${PROJECT_NAME}
@@ -96,6 +96,9 @@ install (FILES media/sky.jpg DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_box.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/texture_terrain.png DESTINATION share/nodeboxeditor/media)
 install (FILES media/icon.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/rotate_x.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/rotate_y.png DESTINATION share/nodeboxeditor/media)
+install (FILES media/rotate_z.png DESTINATION share/nodeboxeditor/media)
 install (FILES editor.conf.example DESTINATION share/nodeboxeditor)
 install (FILES nodeboxeditor.desktop DESTINATION ~/.local/share/applications)
 install (FILES README.md DESTINATION share/nodeboxeditor)
