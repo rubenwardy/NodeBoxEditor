@@ -1,6 +1,8 @@
 Node Box Editor
 ===============
 
+[![Build Status](https://travis-ci.org/rubenwardy/NodeBoxEditor.svg?branch=master)](https://travis-ci.org/rubenwardy/NodeBoxEditor)
+
 Use this editor to make nodeboxes for nodes in Minetest.
 
 Version: 0.7
