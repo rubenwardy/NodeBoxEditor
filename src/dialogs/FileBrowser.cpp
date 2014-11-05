@@ -2,9 +2,6 @@
 #include "../util/filesys.hpp"
 #include "../util/string.hpp"
 
-void FileBrowser::build_gui()
-{}
-
 void FileBrowser::show_directory(std::string dir)
 {
 	std::vector<std::string> files = filesInDirectory(dir);
@@ -15,6 +12,9 @@ void FileBrowser::show_directory(std::string dir)
 		browser->addItem(narrow_to_wide(*it).c_str());
 	}
 }
+
+void FileBrowser::go_up()
+{}
 
 bool FileBrowser::OnEvent(const SEvent &event)
 {

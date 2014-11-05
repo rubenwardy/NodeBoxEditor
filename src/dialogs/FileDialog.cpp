@@ -15,7 +15,7 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 	guienv->addButton(rect<irr::s32>(250, 30+128, 320, 60+128), win, GUI_DIALOG_SUBMIT, button);
 #if !(IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8)
 	if (parser_type == EFPT_EXPORT) {
-		guienv->addButton(rect<irr::s32>(250, 65+128, 320, 95), win, GUI_DIALOG_SUBMIT + 1, L"View");
+		guienv->addButton(rect<irr::s32>(250, 65+128, 320, 95+128), win, GUI_DIALOG_SUBMIT + 1, L"View");
 	}
 #endif
 	std::string path = trim(state->project->name);
@@ -350,6 +350,6 @@ bool FileDialog::OnEvent(const SEvent &event)
 
 	if (browser.OnEvent(event))
 		return true;
-	
+
 	return false;
 }

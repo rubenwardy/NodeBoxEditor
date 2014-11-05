@@ -17,8 +17,8 @@ public:
 		browser = ebrowser;
 		path = epath;
 	}
-	void build_gui();
 	void show_directory(std::string dir);
+	void go_up();
 	bool OnEvent(const SEvent &event);
 private:
 	std::string cur_dir;
