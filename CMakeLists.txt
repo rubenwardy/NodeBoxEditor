@@ -34,6 +34,7 @@ set(NBGEN_SRC
 	src/modes/NBEditor.cpp
 	src/modes/NodeEditor.cpp
 	src/modes/TextureEditor.cpp
+	src/dialogs/FileBrowser.cpp
 	src/dialogs/FileDialog.cpp
 	src/dialogs/TextureDialog.cpp
 	src/dialogs/ImageDialog.cpp

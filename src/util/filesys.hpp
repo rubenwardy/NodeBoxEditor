@@ -1,6 +1,7 @@
 #ifndef UTIL_FILESYS_HPP_INCLUDED
 #define UTIL_FILESYS_HPP_INCLUDED
 #include "string.hpp"
+#include <vector>
 
 #ifdef _WIN32
 #define DIR_DELIM '\\'
@@ -16,8 +17,11 @@ bool PathExists(const char* path);
 
 bool CreateDir(std::string path);
 
+std::vector<std::string> filesInDirectory(std::string path);
+
 std::string filenameWithExt(std::string path);
 std::string filenameWithoutExt(std::string path);
 std::string pathWithoutFilename(std::string path);
+
 
 #endif

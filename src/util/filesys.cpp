@@ -26,7 +26,7 @@ std::string getTmpDirectory(bool editor_is_installed)
 {
 #ifndef _WIN32
 	if (editor_is_installed) {
-		return std::string(getenv("HOME")) + "/.nbetmp/";	
+		return std::string(getenv("HOME")) + "/.nbetmp/";
 	}
 #endif
 	return ".tmp/";
@@ -51,10 +51,19 @@ bool CreateDir(std::string path)
 		return true;
 	return false;
 }
+
+std::vector<std::string> filesInDirectory(std::string path)
+{
+	std::vector<std::string> res;
+	res.push_back("No file browser for Windows yet :/");
+	return res;
+}
+
 #else
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include <dirent.h>
 
 bool PathExists(const char* path)
 {
@@ -72,7 +81,24 @@ bool CreateDir(std::string path)
 		if(errno == EEXIST)
 			return true;
 		return false;
-	}	
+	}
+}
+
+std::vector<std::string> filesInDirectory(std::string path)
+{
+	std::vector<std::string> res;
+	if (path == "")
+		path = ".";
+	DIR *dirp = opendir(path.c_str());
+	if (!dirp) {
+		std::cerr << "Failed to open directory" << std::endl;
+		return std::vector<std::string>();
+	}
+	while (dirent *dp = readdir(dirp)) {
+		res.push_back(std::string(dp->d_name));
+	}
+	(void)closedir(dirp);
+	return res;
 }
 
 #endif
@@ -83,14 +109,14 @@ std::string filenameWithExt(std::string path)
 	size_t pos = str_replace(path, '\\', '/').find_last_of("/");
 	if (pos >= path.size() || pos < 0)
 		return path;
-	
-	return path.substr(pos + 1);	
+
+	return path.substr(pos + 1);
 }
 
 std::string filenameWithoutExt(std::string path)
 {
 	std::string res = filenameWithExt(path);
-	size_t pos = res.find_last_of(".");	
+	size_t pos = res.find_last_of(".");
 	if (pos > res.size() || pos < 0)
 		return res;
 	return res.substr(0, pos);
@@ -102,6 +128,6 @@ std::string pathWithoutFilename(std::string path)
 	size_t pos = str_replace(path, '\\', '/').find_last_of("/");
 	if (pos >= path.size() || pos < 0)
 		return "";
-	
+
 	return str_replace(str_replace(path.substr(0, pos), '\\', DIR_DELIM), '/', DIR_DELIM);
 }

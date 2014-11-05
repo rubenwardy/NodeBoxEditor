@@ -8,11 +8,14 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 	Dialog(mstate), parser_type(type)
 {
 	IGUIEnvironment *guienv = state->device->getGUIEnvironment();
-	win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 160), true, title);
-	guienv->addButton(rect<irr::s32>(250, 30, 320, 60), win, GUI_DIALOG_SUBMIT, button);
+	win = guienv->addWindow(rect<irr::s32>(340, 50, 669, 160+128), true, title);
+
+	IGUIListBox *lb = guienv->addListBox(rect<irr::s32>(10, 25, 320, 30+118), win, GUI_FILEDIALOG_BROWSER, true);
+
+	guienv->addButton(rect<irr::s32>(250, 30+128, 320, 60+128), win, GUI_DIALOG_SUBMIT, button);
 #if !(IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8)
 	if (parser_type == EFPT_EXPORT) {
-		guienv->addButton(rect<irr::s32>(250, 65, 320, 95), win, GUI_DIALOG_SUBMIT + 1, L"View");
+		guienv->addButton(rect<irr::s32>(250, 65+128, 320, 95), win, GUI_DIALOG_SUBMIT + 1, L"View");
 	}
 #endif
 	std::string path = trim(state->project->name);
@@ -21,13 +24,13 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 	}
 
 	IGUIEditBox *box = guienv->addEditBox(narrow_to_wide(path).c_str(),
-			rect<irr::s32>(10, 30, 240, 60),
+			rect<irr::s32>(10, 30+128, 240, 60+128),
 			true, win, GUI_FILEDIALOG_PATH);
 
-	IGUIComboBox* cb = guienv->addComboBox(rect<irr::s32>(60, 70, 240, 100),
+	IGUIComboBox* cb = guienv->addComboBox(rect<irr::s32>(60, 70+128, 240, 100+128),
 			win, GUI_FILEDIALOG_FORM);
 	IGUIStaticText* txt = guienv->addStaticText(L"Format:",
-			rect<irr::s32>(10, 70, 60, 100), false,
+			rect<irr::s32>(10, 70+128, 60, 100+128), false,
 			true, win, -1, false);
 
 	if (box)
@@ -45,6 +48,9 @@ FileDialog::FileDialog(EditorState *mstate, FileParserType type,
 		if (cb->getItemCount() > 0)
 			cb->setSelected(0);
 	}
+
+	browser.setup(state->device, lb, box);
+	browser.show_directory(getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed")));
 }
 
 
@@ -341,5 +347,9 @@ bool FileDialog::OnEvent(const SEvent &event)
 			return true;
 		}
 	}
+
+	if (browser.OnEvent(event))
+		return true;
+	
 	return false;
 }

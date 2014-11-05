@@ -1,6 +1,7 @@
 #ifndef FILEDIALOG_HPP_INCLUDED
 #define FILEDIALOG_HPP_INCLUDED
 #include "Dialog.hpp"
+#include "FileBrowser.hpp"
 
 class FileDialog : public Dialog
 {
@@ -14,6 +15,7 @@ public:
 	virtual bool OnEvent(const SEvent &event);
 private:
 	FileParserType parser_type;
+	FileBrowser browser;
 	IGUIWindow *win;
 	void doSave(const SEvent &event);
 	void doOpen(const SEvent &event);
