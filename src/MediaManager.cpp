@@ -10,32 +10,33 @@ Media::~Media()
 	}
 }
 
-bool Media::import(std::string file, IVideoDriver* driver)
+bool Media::import(std::string filepath, std::string filename, IVideoDriver* driver)
 {
-	return add(file, driver->createImageFromFile(file.c_str()));
+	return add(filepath, filename, driver->createImageFromFile(filepath.c_str()));
 }
 
-bool Media::add(std::string file, IImage *image, bool overwrite)
+bool Media::add(std::string filepath, std::string filename, IImage *image, bool overwrite)
 {
 	if (!image)
 		return false;
 
-	const char *shortname = trim(filenameWithExt(file)).c_str();
-	if (images.find(shortname) != images.end()) {
+	filename = trim(filename);
+	const char *shortpath = filename.c_str();
+	if (images[shortpath] != NULL) {
 		if (overwrite) {
-			std::cerr << "Overwriting '" << shortname << "'" << std::endl;
-			images[shortname]->update(image);
-			images[shortname]->origpath = file;
+			std::cerr << "Overwriting '" << shortpath << "'" << std::endl;
+			images[shortpath]->update(image);
+			images[shortpath]->origpath = filepath;
 		} else {
-			std::cerr << "Failed to add image '" << shortname
+			std::cerr << "Failed to add image '" << shortpath
 					<< "', it already exists (and overwrite was not authorised)"
 					<< std::endl;
 			return false;
 		}
 	} else {
-		std::cerr << "Adding '" << shortname << "'" << std::endl;
-		images[shortname] = new Media::Image(shortname, image);
-		images[shortname]->origpath = file;
+		std::cerr << "Adding '" << shortpath << "'" << std::endl;
+		images[shortpath] = new Media::Image(shortpath, image);
+		images[shortpath]->origpath = filepath;
 	}
 	return true;
 }

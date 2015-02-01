@@ -38,8 +38,8 @@ public:
 
 	Media() { std::cerr << "Media Manager created!" << std::endl; }
 	~Media();
-	bool import(std::string  file, IVideoDriver* driver);
-	bool add(std::string file, IImage *image, bool overwrite = false);
+	bool import(std::string filepath, std::string filename, IVideoDriver* driver);
+	bool add(std::string filepath, std::string filename, IImage *image, bool overwrite = false);
 	Media::Image *get(const char* name);
 	void clearGrabs();
 	void debug();

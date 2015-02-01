@@ -40,7 +40,7 @@ Project *NBEFileFormat::read(const std::string &filename, Project *project)
 			++it) {
 		std::string name = *it;
 		if (name != "project.txt") {
-			project->media.add(name.c_str(), state->device->getVideoDriver()->createImageFromFile((tmpdir + name).c_str()));
+			project->media.add(name.c_str(), name.c_str(), state->device->getVideoDriver()->createImageFromFile((tmpdir + name).c_str()));
 		}
 	}
 	if (!readProjectFile(project, tmpdir + "project.txt")) {
@@ -116,7 +116,7 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 	if (node) {
 		std::cerr << "Unexpected EOF, expecting END NODE." << std::endl;
 		error_code = EFFE_READ_PARSE_ERROR;
-		return false;	
+		return false;
 	}
 
 	return true;
@@ -255,7 +255,7 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 			vector3di newpos((int)atof(s[0].c_str()),
 					(int)atof(s[1].c_str()),
 					(int)atof(s[2].c_str()));
-			if (merging) {				
+			if (merging) {
 				std::list<Node*> & nodes = project->nodes;
 				for (std::list<Node*>::const_iterator it = nodes.begin();
 						it != nodes.end();
@@ -265,7 +265,7 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 						return;
 				}
 			}
-			node->position = newpos;	
+			node->position = newpos;
 		} else if (lower.find("texture ") == 0){
 			std::string n = trim(line.substr(7));
 			size_t nid = n.find(" ");
@@ -274,7 +274,7 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 			}
 			std::string one = trim(n.substr(0, nid));
 			std::string two = trim(n.substr(nid));
-			node->setTexture(cubeSideFromString(one), project->media.get(two.c_str()));			
+			node->setTexture(cubeSideFromString(one), project->media.get(two.c_str()));
 		} else if (lower.find("nodebox ") == 0) {
 			std::string n = trim(line.substr(7));
 			std::string s[7];
@@ -311,5 +311,3 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 		}
 	}
 }
-
-
