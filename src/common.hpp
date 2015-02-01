@@ -13,7 +13,6 @@ enum FileParserType
 {
 	EFPT_SAVE_PROJ,
 	EFPT_LOAD_PROJ,
-	EFPT_EXPORT,
 	EFPT_IMPORT
 };
 
@@ -82,4 +81,3 @@ enum CDRType
 #define EDITOR_PARSER 1
 
 #endif
-

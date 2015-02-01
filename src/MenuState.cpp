@@ -32,11 +32,11 @@ void MenuState::init()
 
 	// File
 	submenu = menubar->getSubMenu(0);
-	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
-	submenu->addItem(L"Save Project", GUI_FILE_SAVE_PROJECT);
+	//submenu->addItem(L"New", GUI_FILE_NEW_PROJECT);
+	submenu->addItem(L"Open", GUI_FILE_OPEN_PROJECT);
+	submenu->addItem(L"Save", GUI_FILE_SAVE_PROJECT);
 	submenu->addSeparator();
-	submenu->addItem(L"Import", GUI_FILE_IMPORT);
-	submenu->addItem(L"Export", GUI_FILE_EXPORT);
+	submenu->addItem(L"Import Nodes", GUI_FILE_IMPORT);
 	submenu->addSeparator();
 	submenu->addItem(L"Exit", GUI_FILE_EXIT);
 
@@ -136,15 +136,6 @@ bool MenuState::OnEvent(const SEvent& event){
 				return true;
 			case GUI_FILE_IMPORT:
 				addFileDialog(EFPT_IMPORT, L"Import", L"Import");
-				return true;
-			case GUI_FILE_EXPORT:
-				if (!state->project) {
-					state->device->getGUIEnvironment()->addMessageBox(
-							L"Unable to save",
-							L"You have not yet opened a project.");
-					return true;
-				}
-				addFileDialog(EFPT_EXPORT, L"Export", L"Export");
 				return true;
 			case GUI_FILE_EXIT: {
 				IGUIEnvironment *guienv = state->device->getGUIEnvironment();
@@ -269,6 +260,5 @@ void MenuState::draw(IVideoDriver *driver){
 void MenuState::addFileDialog(FileParserType type,
 		const wchar_t *title, const wchar_t *button)
 {
-	FileDialog::show(state, type, title, button);
+	FileDialog_show(state, type, title, button);
 }
-

@@ -123,6 +123,15 @@ std::string filenameWithoutExt(std::string path)
 }
 
 
+std::string extFromFilename(std::string path)
+{
+	std::string res = filenameWithExt(path);
+	size_t pos = res.find_last_of(".");
+	if (pos > res.size() || pos < 0)
+		return "";
+	return res.substr(pos + 1, res.size());
+}
+
 std::string pathWithoutFilename(std::string path)
 {
 	size_t pos = str_replace(path, '\\', '/').find_last_of("/");

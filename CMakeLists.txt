@@ -34,7 +34,6 @@ set(NBGEN_SRC
 	src/modes/NBEditor.cpp
 	src/modes/NodeEditor.cpp
 	src/modes/TextureEditor.cpp
-	src/dialogs/FileBrowser.cpp
 	src/dialogs/FileDialog.cpp
 	src/dialogs/TextureDialog.cpp
 	src/dialogs/ImageDialog.cpp
@@ -49,6 +48,7 @@ set(NBGEN_SRC
 	src/util/string.cpp
 	src/util/filesys.cpp
 	src/util/SimpleFileCombiner.cpp
+	src/util/tinyfiledialogs.c
 )
 
 # Include Directories

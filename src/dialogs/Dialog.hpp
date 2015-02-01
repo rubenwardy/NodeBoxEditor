@@ -11,13 +11,12 @@ public:
 		state(mstate)
 	{}
 
-	virtual bool canClose() = 0;
+	virtual bool canClose() { return true; }
 	virtual bool close() = 0;
-	virtual bool OnEvent(const SEvent &event) = 0;
+	virtual bool OnEvent(const SEvent &event) { return false; }
 	virtual void draw(IVideoDriver *driver) {}
 protected:
 	EditorState *state;
 };
 
 #endif
-

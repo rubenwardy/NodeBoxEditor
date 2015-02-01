@@ -11,20 +11,27 @@ Media::~Media()
 }
 
 bool Media::import(std::string file, IVideoDriver* driver)
-{		
+{
 	return add(file, driver->createImageFromFile(file.c_str()));
 }
 
-bool Media::add(std::string file, IImage *image)
+bool Media::add(std::string file, IImage *image, bool overwrite)
 {
 	if (!image)
 		return false;
 
 	const char *shortname = trim(filenameWithExt(file)).c_str();
 	if (images.find(shortname) != images.end()) {
-		std::cerr << "Overwriting '" << shortname << "'" << std::endl;
-		images[shortname]->update(image);
-		images[shortname]->origpath = file;
+		if (overwrite) {
+			std::cerr << "Overwriting '" << shortname << "'" << std::endl;
+			images[shortname]->update(image);
+			images[shortname]->origpath = file;
+		} else {
+			std::cerr << "Failed to add image '" << shortname
+					<< "', it already exists (and overwrite was not authorised)"
+					<< std::endl;
+			return false;
+		}
 	} else {
 		std::cerr << "Adding '" << shortname << "'" << std::endl;
 		images[shortname] = new Media::Image(shortname, image);

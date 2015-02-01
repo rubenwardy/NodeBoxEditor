@@ -13,11 +13,9 @@ public:
 	virtual bool close();
 	virtual bool OnEvent(const SEvent &event);
 private:
-	FileParserType parser_type;
 	IGUIWindow *win;
 	Node *node;
 	CubeSide face;
 };
 
 #endif
-

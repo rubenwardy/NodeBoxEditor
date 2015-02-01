@@ -20,6 +20,7 @@ bool CreateDir(std::string path);
 std::vector<std::string> filesInDirectory(std::string path);
 
 std::string filenameWithExt(std::string path);
+std::string extFromFilename(std::string path);
 std::string filenameWithoutExt(std::string path);
 std::string pathWithoutFilename(std::string path);
 

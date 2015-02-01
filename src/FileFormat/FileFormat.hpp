@@ -25,12 +25,12 @@ class Project;
 class EditorState;
 class FileFormat
 {
-public:	
+public:
 	FileFormat():
 		error_code(EFFE_NONE)
 	{}
 
-	virtual Project * read(const std::string &filename, Project *project=NULL) = 0; // Open from file	
+	virtual Project * read(const std::string &filename, Project *project=NULL) = 0; // Open from file
 	virtual bool write(Project *project, const std::string & filename) = 0; // Save to file
 	virtual std::string getAsString(Project *project) { return ""; }
 	virtual const char * getExtension() const = 0; // Get the main file extension
@@ -39,6 +39,6 @@ public:
 
 // FileFormat factory
 extern FileFormat *getFromType(FileFormatType id, EditorState *st);
+extern FileFormat *getFromExt(std::string path, EditorState *st);
 
 #endif
-
