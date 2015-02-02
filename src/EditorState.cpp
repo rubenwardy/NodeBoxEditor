@@ -83,4 +83,3 @@ ViewportType EditorState::getViewportType(Viewport id)
 		return stringToType(settings->get("viewport_bottom_right"), VIEWT_PERS);
 	}
 }
-

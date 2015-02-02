@@ -546,5 +546,3 @@ irr::video::ITexture* NBEditor::icon()
 			->getTexture("media/icon_mode_nodebox.png");
 	return icon;
 }
-
-

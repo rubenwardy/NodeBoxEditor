@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 	if (!editor_is_installed)
 		conf->load("editor.conf");
 	else
-		if (!conf->load(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))			
+		if (!conf->load(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))
 			conf->load("editor.conf");
 	conf->set("installed", editor_is_installed?"true":"false");
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 	if (device == NULL) {
 		return EXIT_FAILURE; // could not create selected driver.
 	}
-	
+
 #if IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8
 	std::cerr << "Warning! Your irrlicht version is outdated, so some NBE features will not be available." << std::endl;
 #endif
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 	if (!editor_is_installed)
 		conf->save("editor.conf");
 	else
-		if (!conf->save(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))			
+		if (!conf->save(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))
 			conf->save("editor.conf");
 
 	return 1;
@@ -144,4 +144,3 @@ void junk() {
 	i = pthread_getconcurrency();
 };
 #endif
-

@@ -43,7 +43,7 @@ std::string doTileImage(Node *node, CubeSide face)
 	Media::Image *image = node->getTexture(face);
 	if (!image)
 		return "default_wood.png";
-	
+
 	return image->name;
 }
 
@@ -105,4 +105,3 @@ Project * LuaFileFormat::read(const std::string & file, Project *project)
 	throw std::runtime_error("LuaFileFormat::read() is not implemented!");
 	return NULL;
 }
-

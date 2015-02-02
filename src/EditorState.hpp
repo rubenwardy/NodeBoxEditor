@@ -42,8 +42,8 @@ public:
 	}
 
 	void SelectMode(int id);
-	
-	void AddMode(EditorMode *value);	
+
+	void AddMode(EditorMode *value);
 	void CloseEditor() { close_requested = true; }
 	bool NeedsClose() const { return close_requested; }
 
@@ -51,7 +51,7 @@ public:
 	bool mousedown;
 	vector2di mouse_position;
 	KeyState keys[NUMBER_OF_KEYS];
-	
+
 	Configuration *settings;
 	MenuState *menu;
 

@@ -30,7 +30,7 @@ On UNIX it tries successive command line calls:
 - python 2 / tkinter
 - dialog.
 The same executable can run across desktops and distributions.
- 
+
 - License -
 
 This software is provided 'as-is', without any express or implied

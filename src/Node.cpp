@@ -134,5 +134,3 @@ void Node::rotate(EAxis axis) {
 	}
 	remesh();
 }
-
-

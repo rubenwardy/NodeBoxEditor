@@ -26,7 +26,7 @@ bool SimpleFileCombiner::write(std::string filename) {
 	std::ofstream output(filename.c_str(), std::ios::binary|std::ios::out);
 	if (!output) {
 		errcode = EERR_IO;
-		return false;	
+		return false;
 	}
 	output.write("NBEFP", 5);
 	output << (char)files.size();
@@ -42,17 +42,17 @@ bool SimpleFileCombiner::write(std::string filename) {
 			name += " ";
 		}
 		output << name.c_str();
-		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));	
+		output.write(static_cast<char*>(static_cast<void*>(&start)), sizeof(unsigned int));
 		output.write(static_cast<char*>(static_cast<void*>(&size)), sizeof(unsigned int));
 		start += size;
-			
-	}		
+
+	}
 	for (std::list<SimpleFileCombiner::File>::const_iterator it = files.begin();
 			it != files.end();
 			++it) {
 		SimpleFileCombiner::File file = *it;
 		output.write(&file.bytes[0], file.bytes.size());
-	}		
+	}
 	output.close();
 	return true;
 }

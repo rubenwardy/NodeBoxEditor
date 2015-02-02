@@ -41,7 +41,7 @@ void Project::hideAllButCurrentNode()
 			it != nodes.end();
 			++it, ++curid) {
 		if (snode == curid) {
-			(*it)->remesh();	
+			(*it)->remesh();
 		} else {
 			(*it)->hide();
 		}
@@ -120,4 +120,3 @@ Node* Project::GetCurrentNode() const
 		return NULL;
 	}
 }
-

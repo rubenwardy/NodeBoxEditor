@@ -10,7 +10,7 @@
 
 bool CPPFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
-	if (!file) {		
+	if (!file) {
 		error_code = EFFE_IO_ERROR;
 		return false;
 	}
@@ -39,7 +39,7 @@ bool CPPFileFormat::write(Project * project, const std::string & filename){
 		for (std::vector<NodeBox*>::const_iterator it = boxes.begin();
 				it != boxes.end();
 				++it) {
-			
+
 			file << "\t// " << (*it)->name << "\n";
 			if (is_first) {
 				file << "\tf->setNodeBox(core::aabbox3d<f32>(\n";
@@ -65,4 +65,3 @@ Project * CPPFileFormat::read(const std::string & file, Project *project)
 	throw std::runtime_error("CPPFileFormat::read() is not implemented!");
 	return NULL;
 }
-

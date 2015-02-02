@@ -33,4 +33,3 @@ std::string str_replace(const std::string & str, char f, char r)
 	std::replace(s.begin(), s.end(), f, r);
 	return s;
 }
-

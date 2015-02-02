@@ -86,4 +86,3 @@ int Configuration::getInt(const std::string & key) const
 {
 	return atoi(settings.find(key)->second.c_str());
 }
-

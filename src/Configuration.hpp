@@ -8,7 +8,7 @@ class Configuration
 public:
 	Configuration() {}
 	bool load(const std::string & filename);
-	bool save(const std::string & filename);	
+	bool save(const std::string & filename);
 
 	// Getters
 	const std::string & get(const std::string & key) const;

@@ -21,7 +21,7 @@ public:
 	{
 		READ_STAGE_ROOT,
 		READ_STAGE_NODE
-	};	
+	};
 private:
 	readstage stage;
 	Node *node;
@@ -33,4 +33,3 @@ private:
 };
 
 #endif
-

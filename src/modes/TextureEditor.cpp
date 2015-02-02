@@ -115,4 +115,3 @@ irr::video::ITexture* TextureEditor::icon()
 			getVideoDriver()->getTexture("media/icon_mode_texture.png");
 	return icon;
 }
-

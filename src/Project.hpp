@@ -32,7 +32,7 @@ public:
 	void hideAllButCurrentNode();
 	void remesh();
 	Node* GetNode(int id) const;
-	Node* GetNode(vector3di pos) const;	
+	Node* GetNode(vector3di pos) const;
 	Node* GetCurrentNode() const;
 	int GetSelectedNodeId() const { return snode; }
 	unsigned int GetNodeCount() const { return _node_count; }

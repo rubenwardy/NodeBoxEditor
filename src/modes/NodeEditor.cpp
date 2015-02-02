@@ -241,4 +241,3 @@ irr::video::ITexture* NodeEditor::icon()
 			getVideoDriver()->getTexture("media/icon_mode_node.png");
 	return icon;
 }
-

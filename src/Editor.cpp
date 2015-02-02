@@ -540,4 +540,3 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 		}
 	}
 }
-

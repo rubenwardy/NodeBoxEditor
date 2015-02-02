@@ -431,4 +431,3 @@ void NodeBox::rotate(EAxis axis)
 		two.Z = tmp;
 	}
 }
-
