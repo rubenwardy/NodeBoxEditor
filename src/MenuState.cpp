@@ -152,7 +152,7 @@ bool MenuState::OnEvent(const SEvent& event){
 				FileDialog_export_textures(state);
 				return true;
 			case GUI_FILE_IMPORT:
-				//addFileDialog(EFPT_IMPORT, L"Import", L"Import");
+				FileDialog_import(state);
 				return true;
 			case GUI_FILE_EXIT: {
 				IGUIEnvironment *guienv = state->device->getGUIEnvironment();

@@ -5,7 +5,7 @@
 
 extern void FileDialog_open_project(EditorState *state);
 extern void FileDialog_save_project(EditorState *state);
-//extern void FileDialog_import(EditorState *state, FileFormatType parser);
+extern void FileDialog_import(EditorState *state);
 extern void FileDialog_export(EditorState *state, int parser);
 extern void FileDialog_export_textures(EditorState *state);
 

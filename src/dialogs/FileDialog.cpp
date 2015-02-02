@@ -24,7 +24,7 @@ void FileDialog_open_project(EditorState *state)
 	std::cerr << file.c_str() << std::endl;
 
 	// Get file parser
-	FileFormat *parser = getFromExt(file, state);
+	FileFormat *parser = getFromType(FILE_FORMAT_NBE, state);
 	if (!parser) {
 		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
 		L"File format does not exist. (It is based on file extensions)");
@@ -74,6 +74,72 @@ void FileDialog_open_project(EditorState *state)
 		}
 	}
 }
+
+void FileDialog_import(EditorState *state)
+{
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->settings->getBool("installed"));
+
+	const char* filters[] = {"*.nbe"};
+	const char *cfile = tinyfd_openFileDialog("Import Nodes",
+			path.c_str(), 1, filters, 0);
+
+	if (!cfile)
+		return;
+
+	std::string file = cfile;
+
+	if (file == "")
+		return;
+
+
+	std::cerr << file.c_str() << std::endl;
+
+	// Get file parser
+	FileFormat *parser = getFromType(FILE_FORMAT_NBE, state);
+	if (!parser) {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+		L"File format does not exist.");
+		return;
+	}
+
+	// Get directory, and load
+	std::cerr << "Reading from " << file << std::endl;
+	Project *tmp = parser->read(file, state->project);
+	if (tmp) {
+		state->project->remesh();
+	} else {
+		switch(parser->error_code) {
+		case EFFE_IO_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+					L"Failed to open the file\n\t(Does it not exist, or is it readonly?)");
+			break;
+		case EFFE_READ_OLD_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"This file is outdated and is not supported");
+			break;
+		case EFFE_READ_NEW_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"This file was created with a new version of NBE\n\t(Update your copy)");
+			break;
+		case EFFE_READ_PARSE_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"An error occurred while reading the file - it may be corrupted\n\t(This should never happen)");
+			break;
+		case EFFE_READ_WRONG_TYPE:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"The file is not in the correct format\n\t(Are you opening the wrong type of file?)");
+			break;
+		default:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"Unknown error");
+			break;
+		}
+		delete parser;
+		parser = NULL;
+	}
+}
+
 
 void save_file(FileFormat *writer, EditorState *state, std::string file)
 {
