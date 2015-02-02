@@ -146,7 +146,7 @@ bool MenuState::OnEvent(const SEvent& event){
 				FileDialog_export(state, FILE_FORMAT_LUA);
 				return true;
 			case GUI_FILE_EXPORT_CPP:
-				FileDialog_export(state, FILE_FORMAT_MTC);
+				FileDialog_export(state, FILE_FORMAT_CPP);
 				return true;
 			case GUI_FILE_IMPORT:
 				//addFileDialog(EFPT_IMPORT, L"Import", L"Import");

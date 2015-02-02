@@ -128,7 +128,7 @@ void FileDialog_export(EditorState *state, int parser)
 
 	if (parser == (int)FILE_FORMAT_LUA)
 		filters[0] = "*.lua";
-	else if (parser == (int)FILE_FORMAT_MTC)
+	else if (parser == (int)FILE_FORMAT_CPP)
 		filters[0] = "*.cpp";
 
 	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),

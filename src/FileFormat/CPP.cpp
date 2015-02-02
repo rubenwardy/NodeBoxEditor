@@ -6,9 +6,9 @@
 #include "../common.hpp"
 #include "../Project.hpp"
 #include "../Node.hpp"
-#include "MTC.hpp"
+#include "CPP.hpp"
 
-bool MTCFileFormat::write(Project * project, const std::string & filename){
+bool CPPFileFormat::write(Project * project, const std::string & filename){
 	std::ofstream file(filename.c_str());
 	if (!file) {		
 		error_code = EFFE_IO_ERROR;
@@ -60,9 +60,9 @@ bool MTCFileFormat::write(Project * project, const std::string & filename){
 }
 
 
-Project * MTCFileFormat::read(const std::string & file, Project *project)
+Project * CPPFileFormat::read(const std::string & file, Project *project)
 {
-	throw std::runtime_error("MTCFileFormat::read() is not implemented!");
+	throw std::runtime_error("CPPFileFormat::read() is not implemented!");
 	return NULL;
 }
 

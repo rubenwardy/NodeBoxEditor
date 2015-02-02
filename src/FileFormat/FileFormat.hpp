@@ -18,7 +18,7 @@ enum FileFormatType
 {
 	FILE_FORMAT_NBE,
 	FILE_FORMAT_LUA,
-	FILE_FORMAT_MTC
+	FILE_FORMAT_CPP
 };
 
 class Project;

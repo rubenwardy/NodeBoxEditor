@@ -44,7 +44,7 @@ set(NBGEN_SRC
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp
-	src/FileFormat/MTC.cpp
+	src/FileFormat/CPP.cpp
 	src/util/string.cpp
 	src/util/filesys.cpp
 	src/util/SimpleFileCombiner.cpp
