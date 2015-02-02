@@ -18,23 +18,6 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 	}
 	file << getAsString(project);
 	file.close();
-
-	// Save images
-	std::string path = pathWithoutFilename(filename) + "textures/";
-	std::cerr << path.c_str() << std::endl;
-	CreateDir(path.c_str());
-	Media *media = &project->media;
-	std::map<std::string, Media::Image*>& images = media->getList();
-	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
-			it != images.end();
-			++it) {
-		Media::Image *image = it->second;
-		if (!image->get()) {
-			std::cerr << "Image->get() is NULL!" << std::endl;
-			continue;
-		}
-		state->device->getVideoDriver()->writeImageToFile(image->get(), (path + image->name).c_str());
-	}
 	return true;
 }
 

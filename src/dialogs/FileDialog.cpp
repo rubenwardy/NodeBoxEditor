@@ -138,9 +138,43 @@ void FileDialog_export(EditorState *state, int parser)
 	if (file == "")
 		return;
 
-
 	FileFormat *writer = getFromType((FileFormatType)parser, state);
 	save_file(writer, state, file);
+}
+
+void FileDialog_export_textures(EditorState *state)
+{
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->settings->getBool("installed"));
+
+	const char *cdir = tinyfd_selectFolderDialog ("Select Folder", path.c_str());
+
+	if (!cdir)
+		return;
+
+	// Save images
+	std::string dir = trim(cdir);
+
+	if (dir == "")
+		return;
+
+	if (*dir.rbegin() != '/')
+		dir += "/";
+
+	std::cerr << "Exporting Images to " << dir.c_str() << std::endl;
+	CreateDir(dir.c_str());
+	Media *media = &state->project->media;
+	std::map<std::string, Media::Image*>& images = media->getList();
+	for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
+			it != images.end();
+			++it) {
+		Media::Image *image = it->second;
+		if (!image->get()) {
+			std::cerr << "Image->get() is NULL!" << std::endl;
+			continue;
+		}
+		state->device->getVideoDriver()->writeImageToFile(image->get(), (dir + image->name).c_str());
+	}
 }
 
 /*

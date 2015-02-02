@@ -46,7 +46,7 @@ void MenuState::init()
 	submenu->addItem(L"Standalone Lua File (.lua)", GUI_FILE_EXPORT_LUA);
 	submenu->addItem(L"Voxelands (.cpp)", GUI_FILE_EXPORT_CPP);
 	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD, false);
-	submenu->addItem(L"Textures to Folder", GUI_FILE_EXPORT_TEX, false);
+	submenu->addItem(L"Textures to Folder", GUI_FILE_EXPORT_TEX);
 
 	// Edit
 	submenu = menubar->getSubMenu(1);
@@ -126,8 +126,8 @@ bool MenuState::OnEvent(const SEvent& event){
 			}
 		}
 	}
-	if (event.EventType == EET_GUI_EVENT){
-		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED){
+	if (event.EventType == EET_GUI_EVENT) {
+		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
 			IGUIContextMenu *menu = (IGUIContextMenu *)event.GUIEvent.Caller;
 			switch (menu->getItemCommandId(menu->getSelectedItem())){
 			case GUI_FILE_OPEN_PROJECT:
@@ -147,6 +147,9 @@ bool MenuState::OnEvent(const SEvent& event){
 				return true;
 			case GUI_FILE_EXPORT_CPP:
 				FileDialog_export(state, FILE_FORMAT_CPP);
+				return true;
+			case GUI_FILE_EXPORT_TEX:
+				FileDialog_export_textures(state);
 				return true;
 			case GUI_FILE_IMPORT:
 				//addFileDialog(EFPT_IMPORT, L"Import", L"Import");
