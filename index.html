@@ -7,36 +7,77 @@
 			font-family: "Arial", sans-serif;
 			margin: 0;
 			padding: 0;
+			background: #333;
+			color: #d0d0d0;
 		}
+		
+		img {
+			max-width: 100%;
+			margin:  0;
+		}
+		
 		#header {
-			color: white;
-			background: green;
+			background: #3a3a3a;
 			display: block;
-			margin: 0 0 2em 0;
+			margin: 0 0 15px 0;
 			padding: 2em;
 			text-align: center;
 		}
+		
+		a {
+			color: #e0e0e0;
+		}
+		
 		h1 {
 			margin: 0;
 			padding: 0;
+			color: #f0f0f0;
 		}
-		#page p {
+		
+		p {
+			margin-top: 0;
+		}
+		
+		article {
+			border-bottom: 1px solid #444;
+			padding: 0 0 10px 0;
+			margin: 0 0 15px 0;
+		}
+		
+		h2 {
+			margin: 10px 0 10px 0;
+			text-align: center;
+			color: #f0f0f0;
+		}
+		
+		h3 {
+			margin: 10px 0 10px 0;
+			color: #f0f0f0;
+		}
+		
+		article:last-child {
+			border: none;
+		}
+		
+		#page {
 			width: 80%;
 			max-width: 600px;
 			margin: auto auto 2em auto;
 		}
 		
 		.button {
-			background: green;
-			color: white;
+			background: #333;
+			color: #e0e0e0;
 			text-decoration: none;
 			padding: 5px 1em 5px 1em;
 			margin: 4px;
+			border: 1px solid #444;
 			border-radius: 4px;
 		}
 		
 		.button:hover {
-			background: darkgreen;
+			border: 1px solid #555;
+			background: #3a3a3a;
 		}
 	</style>
 </head>
@@ -45,15 +86,137 @@
 		<h1>Node Box Editor</h1>
 	</div>
 	<div id="page">
-		<p>
-			Use this editor to easily build node boxes by dragging their edges.
-			This program supports all operating systems Minetest supports.
-		</p>
-		<p style="text-align: center">
-			<a href="https://forum.minetest.net/viewtopic.php?f=14&t=2840" class="button">Forum Topic</a>
-			<a href="http://github.com/rubenwardy/NodeBoxEditor" class="button">GitHub</a>
-			<a href="https://www.dropbox.com/s/f7ukajwg3nh8ju9/NodeBoxEditor_0_7_WindowsBuild.zip?dl=1" class="button">Windows Build</a>
-		</p>
+		<article>
+			<p>
+				Use this editor to easily build node boxes by dragging their edges.
+				This program supports all operating systems Minetest supports.
+			</p>
+			<p style="text-align: center">
+				<a href="https://forum.minetest.net/viewtopic.php?f=14&t=2840" class="button">Forum Topic</a>
+				<a href="http://github.com/rubenwardy/NodeBoxEditor" class="button">GitHub</a>
+				<a href="https://www.dropbox.com/s/f7ukajwg3nh8ju9/NodeBoxEditor_0_7_WindowsBuild.zip?dl=1" class="button">Windows Build</a>
+			</p>
+		</article>
+		<article>
+			<a href="http://a.pomf.se/ndyske.png">
+				<img src="http://a.pomf.se/ndyske.png" alt="screenshot" />
+			</a>
+		</article>
+		<article>
+			<h2>Installation</h2>
+			
+			<h3>Windows</h3>
+			<p>
+				Download the Windows build using the button above.
+				Extract it to a location such as My Documents/nodeboxeditor,
+				to run it open the nodeboxeditor file in bin/
+			</p>
+			
+			<h3>Linux</h3>
+			<p>
+				It is recommended that you <a href="https://github.com/rubenwardy/NodeBoxEditor/blob/master/docs/developers.md">compile it yourself</a>.
+				However, there are builds available:
+				
+				<ul>
+					<li><a href="https://forum.minetest.net/viewtopic.php?p=155186#p155186">Arch Linux</a>, by Zatherz</li>
+					<li><a href="https://dl.dropboxusercontent.com/u/82342922/minetest/NodeBoxEditor-Ubuntu-1410-amd64.tar.xz">Ubuntu amd64</a>, by Calinou</li>
+					<li><a href="https://forum.minetest.net/viewtopic.php?p=155186#p155186">Debian/Ubuntu</a>, by Zatherz</li>
+				</ul>
+				
+				Please see the documentation on
+				<a href="https://github.com/rubenwardy/NodeBoxEditor/blob/master/docs/make_install.md">
+					make install
+				</a>
+				if you want to install it system wide.
+			</p>
+		</article>
+		
+		
+		<article>
+			<h2>Using the Editor</h2>
+
+				What actions you can take are limited by which mode / tool you are in.
+
+			<h3>Editor</h3>
+
+			<p>Use WASD to move the perspective view.</p>
+			<ul>
+			<li>Use the options under view to pick which viewport to show.</li>
+			<li>Use the mode icon on the top left of the screen to change modes / tools.</li>
+			<li>Click the icon to pop out a list of modes / tools.</li>
+			<li>Click an icon to select the corresponding mode.</li>
+			<li>Press N to enter the node tool.</li>
+			<li>Press B to enter the node box tool.</li>
+			<li>Press T to enter the texture tool.</li>
+			</ul>
+			<h3 id="menu">Menu</h3>
+			<ul>
+			<li>File<ul>
+			<li>Open Project - discard the current project and open a new one.</li>
+			<li>Save Project - save the current project.</li>
+			<li>Export - export the project to Lua, or other formats supported.</li>
+			<li>Exit - exit the editor.</li>
+			</ul>
+			</li>
+			<li>Editor<ul>
+			<li>Limiting - toggle whether node boxes can go outside of node boundaries.</li>
+			<li>Snapping - toggle whether node boxes will snap to a 16 pixel grid.</li>
+			</ul>
+			</li>
+			<li>View - use these options to change the viewport (tiled, or make a viewport fullscreen).</li>
+			<li>Project - options unique to an tool.</li>
+			<li>Help<ul>
+			<li>About - see program&#39;s version, and credits.</li>
+			</ul>
+			</li>
+			</ul>
+			<h3 id="node-box-tool">Node Box Tool</h3>
+			<p>In this mode / tool, you can edit the contents of a node.
+			Icon: A blue cube with a chunk taken out of it.</p>
+			<ul>
+			<li>Click + on the sidebar to add a node box. (or press insert)</li>
+			<li>Click an item in the listbox to select a node box. (or press up/down)</li>
+			<li>Click - on the sidebar to remove the selected node box. (or press delete)</li>
+			<li>Size the node box using the handles in the orthographic viewports.</li>
+			<li>Scale the node box by pressing control, and using the handles in the orthographic viewports.</li>
+			<li>Position the node box by pressing shift, and using the handles in the orthographic viewports.</li>
+			<li>Enter properties for a node box in the text boxes on the side bar.<ul>
+			<li>Click update to apply your changes.</li>
+			<li>Click revert to discard your changes, and get the current properties.</li>
+			</ul>
+			</li>
+			</ul>
+			<h3 id="node-tool">Node Tool</h3>
+			<p>In this mode / tool, you can create multiple nodes and manage them.
+			Icon: A yellow cube.</p>
+			<ul>
+			<li>Click + on the sidebar to add a node. (or press insert)</li>
+			<li>Click an item in the listbox to select a node. (or press up/down)</li>
+			<li>Click - on the sidebar to remove the selected node. (or press delete)</li>
+			</ul>
+			<h3 id="texture-tool">Texture Tool</h3>
+			<p>In this mode / tool, you can edit the textures of a node.
+			Icon: Red, green and blue cube.</p>
+			<ul>
+			<li>Click a face in the side bar to open up the texture dialog.</li>
+			<li>Click import to import an texture.<ul>
+			<li>Type the location relative to the NBE root if a portable build, or relative to the home directory if installed.</li>
+			</ul>
+			</li>
+			<li>Click export to export the currently selected texture to the nbe root folder if portable, or the home directory if installed.</li>
+			<li>Click an texture in the list box to select it.</li>
+			<li>Click apply to apply the selected texture to the side of the node.</li>
+			</ul>
+			<h3 id="saving-and-exporting">Saving and Exporting</h3>
+			<p>The editor can currently save and export to several formats.</p>
+			<ul>
+			<li>Node Box Editor file (nbe) - The file unique to this editor. General save / open format.</li>
+			<li>Lua file (lua) - Exports code which could be installed as a mod. Use when you want to run in Minetest.</li>
+			<li>Minetest Classic (cpp) - Exports code to be used in Minetest Classic. Use when you want to run in Minetest Classic.</li>
+			</ul>
+
+		</article>
 	</div>
 </body>
 </html>
+
