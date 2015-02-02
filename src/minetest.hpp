@@ -14,6 +14,7 @@ public:
 private:
 	Configuration *_conf;
 	std::string minetest_dir;
+	std::string minetest_exe;
 };
 
 #endif
