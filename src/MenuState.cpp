@@ -33,12 +33,20 @@ void MenuState::init()
 	// File
 	submenu = menubar->getSubMenu(0);
 	//submenu->addItem(L"New", GUI_FILE_NEW_PROJECT);
-	submenu->addItem(L"Open", GUI_FILE_OPEN_PROJECT);
-	submenu->addItem(L"Save", GUI_FILE_SAVE_PROJECT);
+	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
+	submenu->addItem(L"Save Project As", GUI_FILE_SAVE_PROJECT);
 	submenu->addSeparator();
+	submenu->addItem(L"Export", -1, true, true);
 	submenu->addItem(L"Import Nodes", GUI_FILE_IMPORT);
 	submenu->addSeparator();
 	submenu->addItem(L"Exit", GUI_FILE_EXIT);
+
+	// File > Export
+	submenu = submenu->getSubMenu(3);
+	submenu->addItem(L"Standalone Lua File (.lua)", GUI_FILE_EXPORT_LUA);
+	submenu->addItem(L"Voxelands (.cpp)", GUI_FILE_EXPORT_CPP);
+	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD, false);
+	submenu->addItem(L"Textures to Folder", GUI_FILE_EXPORT_TEX, false);
 
 	// Edit
 	submenu = menubar->getSubMenu(1);
@@ -123,7 +131,7 @@ bool MenuState::OnEvent(const SEvent& event){
 			IGUIContextMenu *menu = (IGUIContextMenu *)event.GUIEvent.Caller;
 			switch (menu->getItemCommandId(menu->getSelectedItem())){
 			case GUI_FILE_OPEN_PROJECT:
-				addFileDialog(EFPT_LOAD_PROJ, L"Open Project", L"Open");
+				FileDialog_open_project(state);
 				return true;
 			case GUI_FILE_SAVE_PROJECT:
 				if (!state->project) {
@@ -132,10 +140,16 @@ bool MenuState::OnEvent(const SEvent& event){
 							L"You have not yet opened a project.");
 					return true;
 				}
-				addFileDialog(EFPT_SAVE_PROJ, L"Save Project", L"Save");
+				FileDialog_save_project(state);
+				return true;
+			case GUI_FILE_EXPORT_LUA:
+				FileDialog_export(state, FILE_FORMAT_LUA);
+				return true;
+			case GUI_FILE_EXPORT_CPP:
+				FileDialog_export(state, FILE_FORMAT_MTC);
 				return true;
 			case GUI_FILE_IMPORT:
-				addFileDialog(EFPT_IMPORT, L"Import", L"Import");
+				//addFileDialog(EFPT_IMPORT, L"Import", L"Import");
 				return true;
 			case GUI_FILE_EXIT: {
 				IGUIEnvironment *guienv = state->device->getGUIEnvironment();
@@ -206,7 +220,7 @@ bool MenuState::OnEvent(const SEvent& event){
 						L"You have not yet opened a project.");
 				return true;
 			}
-			addFileDialog(EFPT_SAVE_PROJ, L"Save Project", L"Save");
+			FileDialog_save_project(state);
 			return true;
 		}
 	}
@@ -255,10 +269,4 @@ void MenuState::draw(IVideoDriver *driver){
 			}
 		}
 	}
-}
-
-void MenuState::addFileDialog(FileParserType type,
-		const wchar_t *title, const wchar_t *button)
-{
-	FileDialog_show(state, type, title, button);
 }

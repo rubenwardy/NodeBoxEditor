@@ -4,77 +4,39 @@
 #include "../FileFormat/FileFormat.hpp"
 #include "../util/tinyfiledialogs.h"
 
-void FileDialog_show(EditorState *state, FileParserType type,
-		const wchar_t* title, const wchar_t* button)
+void FileDialog_open_project(EditorState *state)
 {
-	// Get path
 	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
 
-	if (type == EFPT_SAVE_PROJ) {
-		const char* filters[] = {"*.nbe", "*.lua", "*.cpp"};
-		std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
-				3, filters);
-		std::cerr << file << std::endl;
+	const char* filters[] = {"*.nbe"};
+	const char *cfile = tinyfd_openFileDialog("Open Project",
+			path.c_str(), 1, filters, 0);
 
-		if (file == "")
-			return;
+	if (!cfile)
+		return;
 
-		FileFormat *writer = getFromExt(file, state);
-		if (writer) {
-			std::string after(file);
+	std::string file = cfile;
 
-			if (after.find('.') == std::string::npos) {
-				after += '.';
-				after += writer->getExtension();
-			}
-
-			std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"),
-					state->settings->getBool("installed"));
-			std::cerr << "Saving to " << dir + after << std::endl;
-			if (!writer->write(state->project, dir + after)) {
-				if (writer->error_code == EFFE_IO_ERROR) {
-					state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
-					L"Unable to open file to save to");
-				} else {
-					state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
-					L"Unknown reason");
-				}
-			}
-			delete writer;
-		} else {
-			state->device->getGUIEnvironment()->addMessageBox(L"Unable to save",
-			L"File format does not exist. (Try naming as .nbe, .lua or .cpp)");
-		}
-	} else if (type == EFPT_LOAD_PROJ) {
-		const char* filters[] = {"*.nbe"};
-		const char *cfile = tinyfd_openFileDialog("Open Project",
-				path.c_str(), 1, filters, 0);
-
-		if (!cfile)
-			return;
-
-		std::string file = cfile;
-
-		if (file == "")
-			return;
+	if (file == "")
+		return;
 
 
-		std::cerr << file.c_str() << std::endl;
+	std::cerr << file.c_str() << std::endl;
 
-		// Get file parser
-		FileFormat *parser = getFromExt(file, state);
-		if (!parser) {
-			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-					L"File format does not exist. (It is based on file extensions)");
-			return;
-		}
+	// Get file parser
+	FileFormat *parser = getFromExt(file, state);
+	if (!parser) {
+		state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+		L"File format does not exist. (It is based on file extensions)");
+		return;
+	}
 
-		// Get directory, and load#
-		std::cerr << "Reading from " << file << std::endl;
-		Project *tmp = parser->read(file);
-		if (tmp) {
-			if (state->project)
-				delete state->project;
+	// Get directory, and load#
+	std::cerr << "Reading from " << file << std::endl;
+	Project *tmp = parser->read(file);
+	if (tmp) {
+		if (state->project)
+			delete state->project;
 			state->project = tmp;
 			state->project->SelectNode(0);
 			state->Mode()->unload();
@@ -83,34 +45,105 @@ void FileDialog_show(EditorState *state, FileParserType type,
 			delete parser;
 			parser = NULL;
 			return;
-		} else {
-			switch(parser->error_code) {
-			case EFFE_IO_ERROR:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"Failed to open the file\n\t(Does it not exist, or is it readonly?)");
-				break;
-			case EFFE_READ_OLD_VERSION:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"This file is outdated and is not supported");
-				break;
-			case EFFE_READ_NEW_VERSION:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"This file was created with a new version of NBE\n\t(Update your copy)");
-				break;
-			case EFFE_READ_PARSE_ERROR:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"An error occurred while reading the file - it may be corrupted\n\t(This should never happen)");
-				break;
-			case EFFE_READ_WRONG_TYPE:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"The file is not in the correct format\n\t(Are you opening the wrong type of file?)");
-				break;
-			default:
-				state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
-						L"Unknown error");
-				break;
-			}
+	} else {
+		switch(parser->error_code) {
+		case EFFE_IO_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"Failed to open the file\n\t(Does it not exist, or is it readonly?)");
+			break;
+		case EFFE_READ_OLD_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"This file is outdated and is not supported");
+			break;
+		case EFFE_READ_NEW_VERSION:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"This file was created with a new version of NBE\n\t(Update your copy)");
+			break;
+		case EFFE_READ_PARSE_ERROR:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"An error occurred while reading the file - it may be corrupted\n\t(This should never happen)");
+			break;
+		case EFFE_READ_WRONG_TYPE:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"The file is not in the correct format\n\t(Are you opening the wrong type of file?)");
+			break;
+		default:
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to open",
+				L"Unknown error");
+			break;
 		}
+	}
+}
+
+void save_file(FileFormat *writer, EditorState *state, std::string file)
+{
+	if (!writer || !state)
+		return;
+
+	std::string after(file);
+
+	if (after.find('.') == std::string::npos) {
+		after += '.';
+		after += writer->getExtension();
+	}
+
+	std::cerr << "Saving to " << after << std::endl;
+
+	if (!writer->write(state->project, after)) {
+		if (writer->error_code == EFFE_IO_ERROR) {
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
+					L"Unable to open file to save to");
+		} else {
+			state->device->getGUIEnvironment()->addMessageBox(L"Unable to Save",
+					L"Unknown reason");
+		}
+	}
+
+	delete writer;
+}
+
+void FileDialog_save_project(EditorState *state)
+{
+	// Get path
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+
+	const char* filters[] = {"*.nbe"};
+	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
+			1, filters);
+	std::cerr << file << std::endl;
+
+	if (file == "")
+		return;
+
+	FileFormat *writer = getFromType(FILE_FORMAT_NBE, state);
+	save_file(writer, state, file);
+}
+
+void FileDialog_export(EditorState *state, int parser)
+{
+	// Get path
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+
+	const char* filters[] = {""};
+
+	if (parser == (int)FILE_FORMAT_LUA)
+		filters[0] = "*.lua";
+	else if (parser == (int)FILE_FORMAT_MTC)
+		filters[0] = "*.cpp";
+
+	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
+			1, filters);
+	std::cerr << file << std::endl;
+
+	if (file == "")
+		return;
+
+
+	FileFormat *writer = getFromType((FileFormatType)parser, state);
+	save_file(writer, state, file);
+}
+
+/*
 	} else if (type == EFPT_IMPORT) {
 		const char *filters[] = {"*.nbe"};
 		const char *cfile = tinyfd_openFileDialog("Import Nodes",
@@ -170,7 +203,6 @@ void FileDialog_show(EditorState *state, FileParserType type,
 	}
 }
 
-/*
 bool FileDialog::canClose()
 {
 	return true;

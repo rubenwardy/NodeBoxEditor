@@ -3,7 +3,9 @@
 #include "../common.hpp"
 #include "../EditorState.hpp"
 
-extern void FileDialog_show(EditorState *state, FileParserType type,
-		const wchar_t* title, const wchar_t* button);
+extern void FileDialog_open_project(EditorState *state);
+extern void FileDialog_save_project(EditorState *state);
+//extern void FileDialog_import(EditorState *state, FileFormatType parser);
+extern void FileDialog_export(EditorState *state, int parser);
 
 #endif
