@@ -2,6 +2,7 @@
 #include "../util/string.hpp"
 #include "ImageDialog.hpp"
 #include "../util/filesys.hpp"
+#include "../util/tinyfiledialogs.h"
 
 enum TEXTURE_DIALOG_GUI_IDS
 {
@@ -185,24 +186,40 @@ bool TextureDialog::OnEvent(const SEvent &event)
 
 			int count = 0;
 			Media *media = &state->project->media;
+			Media::Image *image = NULL;
 			std::map<std::string, Media::Image*>& images = media->getList();
 			for (std::map<std::string, Media::Image*>::const_iterator it = images.begin();
 					it != images.end();
 					++it) {
-				if (count == lb->getSelected()-1) {
-					Media::Image *image = it->second;
-					std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-								state->settings->getBool("installed")) + image->name;
-					std::cerr << "Exported image to " << path.c_str() << std::endl;
-					state->device->getVideoDriver()->writeImageToFile(image->get(),
-						path.c_str());
-					state->device->getGUIEnvironment()->addMessageBox(L"Saved Image to: ",
-						narrow_to_wide(path).c_str());
+				if (count == lb->getSelected() - 1) {
+					image = it->second;
 					break;
 				}
 				count++;
 			}
-			return false;
+
+			if (!image)
+				return true;
+
+			std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+					state->settings->getBool("installed"));
+			path += image->name;
+
+			const char *filters[] = {"*.png"};
+			const char *cfilename = tinyfd_saveFileDialog("Save Image", path.c_str(),
+					1, filters);
+			if (!cfilename)
+				return true;
+
+			std::string filename = cfilename;
+
+			if (filename == "")
+				return true;
+
+			state->device->getVideoDriver()->writeImageToFile(image->get(),
+					filename.c_str());
+
+			return true;
 		}} // end of switch
 	} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED && event.GUIEvent.Caller == lb) {
 		if (lb->getSelected() == 0) {
