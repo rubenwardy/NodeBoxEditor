@@ -41,6 +41,7 @@ set(NBGEN_SRC
 	src/MediaManager.cpp
 	src/Node.cpp
 	src/NodeBox.cpp
+	src/minetest.cpp
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp

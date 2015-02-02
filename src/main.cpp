@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
 	conf->set("driver", "opengl");
 	conf->set("hide_sidebar", "false");
 	conf->set("save_directory", "");
+	conf->set("minetest_root", "");
 	conf->set("always_show_position_handle", "false");
 #ifdef _WIN32
 	conf->set("vsync", "false");
