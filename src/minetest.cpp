@@ -14,55 +14,58 @@ Minetest::Minetest(Configuration *conf):
 	_conf(conf), minetest_dir(""), minetest_exe("")
 {}
 
+bool Minetest::findMinetestDir(std::string path)
+{
+	if (DirExists(path.c_str())) {
+		std::cerr << "Minetest found at " << path.c_str() << std::endl;
+		minetest_dir = path;
+
+		if (FileExists((path + "bin/minetest").c_str())) {
+			minetest_exe = path + "bin/minetest";
+		} else
+			std::cerr << "...but no executable!" << std::endl;
+		return true;
+	}
+	return false;
+}
+
 bool Minetest::findMinetest()
 {
-	std::cerr << "Searching for Minetest using minetest_root setting" << std::endl;
+	std::cerr << "Searching for Minetest using minetest_root setting.." << std::endl;
 	std::string path = _conf->get("minetest_root");
-	if (path != "") {
-		if (PathExists(path.c_str())) {
-			std::cerr << "Minetest found at " << path.c_str() << std::endl;
-			minetest_dir = path;
-			minetest_exe = minetest_dir + "bin/minetest";
-	#ifdef _WIN32
-			minetest_exe += ".exe";
-	#endif
-			if (!PathExists(minetest_exe.c_str()))
-				std::cerr << "Error! exe missing from Minetest/bin" << std::endl;
-
+	path = cleanDirectoryPath(path);
+	if (path != "/") {
+		if (findMinetestDir(path) && minetest_exe != "")
 			return true;
-		}
 	}
 
 #ifndef _WIN32
-	std::cerr << "Searching for Minetest in system-wide" << std::endl;
+	std::cerr << "Searching for Minetest in system-wide..." << std::endl;
 	path = getenv("HOME");
 	path += "/.minetest/";
-
-	if (PathExists(path.c_str())) {
-		std::cerr << "Minetest found at " << path.c_str() << std::endl;
-		minetest_dir = path;
-		if (PathExists("/usr/local/bin/minetest"))
-			minetest_exe = "/usr/local/bin/minetest";
-		else
-			minetest_exe = "/usr/bin/minetest";
-		return true;
+	if (findMinetestDir(path)) {
+		if (minetest_exe == "") {
+			if (FileExists("/usr/local/bin/minetest")) {
+				minetest_exe = "/usr/local/bin/minetest";
+				return true;
+			} else if (FileExists("/usr/bin/minetest")) {
+				minetest_exe = "/usr/bin/minetest";
+				return true;
+			} else
+				std::cerr << "Unable to find Minetest executable in system wide..." << std::endl;
+		}
 	}
 #endif
 
-	std::cerr << "Searching for Minetest relative to NBE save directory" << std::endl;
+	std::cerr << "Searching for Minetest relative to NBE save directory..." << std::endl;
 	path = getSaveLoadDirectory(_conf->get("save_directory"), _conf->getBool("installed"));
-	if (PathExists((path + "../minetest/").c_str())) {
-		std::cerr << "Minetest found at " << (path + "../minetest/").c_str() << std::endl;
-		minetest_dir = path + "../minetest/";
-		minetest_exe = minetest_dir + "bin/minetest";
-#ifdef _WIN32
-		minetest_exe += ".exe";
-#endif
-		if (!PathExists(minetest_exe.c_str()))
-			std::cerr << "Error! exe missing from Minetest/bin" << std::endl;
+	path = cleanDirectoryPath(path);
 
+	if (findMinetestDir(path + "../minetest/") && minetest_exe != "")
 		return true;
-	}
+
+	if (findMinetestDir(path + "minetest/") && minetest_exe != "")
+		return true;
 
 	std::cerr << "Minetest not found!" << std::endl;
 	return false;

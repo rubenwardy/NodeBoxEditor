@@ -32,13 +32,13 @@ int main(int argc, char *argv[]) {
 	bool editor_is_installed = false;
 #ifndef _WIN32
 	std::cerr << "Looking for the working directory..." << std::endl;
-	if (!PathExists("media/sky.jpg")) {
+	if (!FileExists("media/sky.jpg")) {
 		chdir("../");
-		if (!PathExists("media/sky.jpg")) {
+		if (!FileExists("media/sky.jpg")) {
 			chdir("share/nodeboxeditor");
-			if (!PathExists("media/sky.jpg")) {
+			if (!FileExists("media/sky.jpg")) {
 				chdir("/usr/local/share/nodeboxeditor");
-				if (!PathExists("media/sky.jpg")) {
+				if (!FileExists("media/sky.jpg")) {
 					std::cerr << "Can't find the working directory!" << std::endl;
 				} else {
 					std::cerr << "Is installed!";

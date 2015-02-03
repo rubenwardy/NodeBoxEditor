@@ -3,6 +3,17 @@
 #include "string.hpp"
 #include <stdlib.h>
 
+std::string cleanDirectoryPath(std::string &path)
+{
+	if (path == "")
+		return "";
+
+	std::string r(path);
+	if (*r.rbegin() != '/')
+		r += "/";
+	return r;
+}
+
 std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_installed)
 {
 	std::string dir = save_dir_setting;
@@ -13,13 +24,7 @@ std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_in
 	}
 #endif
 
-	if (dir.length() != 0) {
-		size_t pos = str_replace(dir, '\\', '/').find_last_of("/");
-		if(pos != dir.length() - 1) {
-			dir += "/";
-		}
-	}
-	return dir;
+	return cleanDirectoryPath(dir);
 }
 
 std::string getTmpDirectory(bool editor_is_installed)
@@ -37,9 +42,24 @@ std::string getTmpDirectory(bool editor_is_installed)
 #ifdef _WIN32
 #include <windows.h>
 
-bool PathExists(const char* path)
+bool FileExists(const char* path)
 {
-	return (GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES);
+	DWORD dwAttrib = GetFileAttributesA(path);
+
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+bool DirExists(const char* path)
+{
+	DWORD ftyp = GetFileAttributesA(path);
+	if (ftyp == INVALID_FILE_ATTRIBUTES)
+		return false;
+
+	if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+		return true;
+
+	return false;
 }
 
 bool CreateDir(std::string path)
@@ -65,10 +85,20 @@ std::vector<std::string> filesInDirectory(std::string path)
 #include <errno.h>
 #include <dirent.h>
 
-bool PathExists(const char* path)
+bool FileExists(const char* path)
 {
 	struct stat st;
-	return (stat(path, &st) == 0);
+	if (stat(path, &st) == -1)
+		return false;
+	return S_ISREG(st.st_mode);
+}
+
+bool DirExists(const char* path)
+{
+	struct stat st;
+	if (stat(path, &st) == -1)
+		return false;
+	return S_ISDIR(st.st_mode);
 }
 
 bool CreateDir(std::string path)

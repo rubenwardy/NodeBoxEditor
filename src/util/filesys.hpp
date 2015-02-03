@@ -11,9 +11,12 @@
 
 std::string getSaveLoadDirectory(std::string save_dir_setting, bool editor_is_installed);
 
+std::string cleanDirectoryPath(std::string &path);
+
 std::string getTmpDirectory(bool editor_is_installed);
 
-bool PathExists(const char* path);
+bool FileExists(const char* path);
+bool DirExists(const char* path);
 
 bool CreateDir(std::string path);
 
