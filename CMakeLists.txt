@@ -43,6 +43,7 @@ set(NBGEN_SRC
 	src/NodeBox.cpp
 	src/minetest.cpp
 	src/FileFormat/FileFormat.cpp
+	src/FileFormat/helpers.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp
 	src/FileFormat/CPP.cpp

@@ -45,7 +45,7 @@ void MenuState::init()
 	submenu = submenu->getSubMenu(3);
 	submenu->addItem(L"Standalone Lua File (.lua)", GUI_FILE_EXPORT_LUA);
 	submenu->addItem(L"Voxelands (.cpp)", GUI_FILE_EXPORT_CPP);
-	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD, false);
+	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD);
 	submenu->addItem(L"Textures to Folder", GUI_FILE_EXPORT_TEX);
 
 	// Edit
@@ -147,6 +147,9 @@ bool MenuState::OnEvent(const SEvent& event){
 				return true;
 			case GUI_FILE_EXPORT_CPP:
 				FileDialog_export(state, FILE_FORMAT_CPP);
+				return true;
+			case GUI_FILE_EXPORT_MOD:
+				FileDialog_export_mod(state);
 				return true;
 			case GUI_FILE_EXPORT_TEX:
 				FileDialog_export_textures(state);
