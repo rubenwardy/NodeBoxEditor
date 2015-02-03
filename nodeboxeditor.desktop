@@ -2,6 +2,8 @@
 Name=Node Box Editor
 GenericName=Minetest Node Box Editor
 Comment=Edit and create node boxes for Minetest
+GenericName[fr]=Éditeur de node boxes pour Minetest
+Comment[fr]=Créer et éditer des node boxes pour Minetest
 Exec=nodeboxeditor
 Icon=/usr/local/share/nodeboxeditor/media/icon.png
 Terminal=false
