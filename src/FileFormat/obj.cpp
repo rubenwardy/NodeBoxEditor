@@ -4,7 +4,7 @@
 #include "../util/string.hpp"
 #include <algorithm>
 
-extern void nodeBoxObj(int order, NodeBox *box, std::string &vertices, std::string &faces)
+void nodeBoxObj(int order, NodeBox *box, std::string &vertices, std::string &faces)
 {
 	std::ostringstream vert;
 	vert << "v " << -box->one.X << " " << box->one.Y << " " << box->one.Z << "\n";
