@@ -3,8 +3,10 @@
 #include "MenuState.hpp"
 #include "FileFormat/FileFormat.hpp"
 #include "FileFormat/NBE.hpp"
+#include "FileFormat/helpers.hpp"
 #include "dialogs/FileDialog.hpp"
 #include "dialogs/ImageDialog.hpp"
+#include "minetest.hpp"
 
 MenuState::MenuState(EditorState* state) :
 	state(state),
@@ -36,13 +38,14 @@ void MenuState::init()
 	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
 	submenu->addItem(L"Save Project As", GUI_FILE_SAVE_PROJECT);
 	submenu->addSeparator();
+	submenu->addItem(L"Run in Minetest", GUI_FILE_RUN_IN_MINETEST);
 	submenu->addItem(L"Export", -1, true, true);
 	submenu->addItem(L"Import Nodes", GUI_FILE_IMPORT);
 	submenu->addSeparator();
 	submenu->addItem(L"Exit", GUI_FILE_EXIT);
 
 	// File > Export
-	submenu = submenu->getSubMenu(3);
+	submenu = submenu->getSubMenu(4);
 	submenu->addItem(L"Standalone Lua File (.lua)", GUI_FILE_EXPORT_LUA);
 	submenu->addItem(L"Voxelands (.cpp)", GUI_FILE_EXPORT_CPP);
 	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD);
@@ -142,6 +145,16 @@ bool MenuState::OnEvent(const SEvent& event){
 				}
 				FileDialog_save_project(state);
 				return true;
+			case GUI_FILE_RUN_IN_MINETEST: {
+				Minetest mt(state->settings);
+				if (!mt.findMinetest()) {
+					state->device->getGUIEnvironment()->addMessageBox(L"Unable to find Minetest",
+							L"Minetest could not be found by NBE.\n\t(try setting 'minetest_root' in editor.conf)");
+					return true;
+				}
+				mt.runMod(state);
+				return true;
+			}
 			case GUI_FILE_EXPORT_LUA:
 				FileDialog_export(state, FILE_FORMAT_LUA);
 				return true;
@@ -210,7 +223,7 @@ bool MenuState::OnEvent(const SEvent& event){
 					// Get directory to save to
 					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
 
-					std::cerr << "Saving to " << dir + "exit.nbe" << std::endl;
+					std::cerr << "Saving to " << dir + "exit." << std::endl;
 					if (!writer.write(state->project, dir + "exit.nbe"))
 						std::cerr << "Failed to save file for unknown reason." << std::endl;
 				}

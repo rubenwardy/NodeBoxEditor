@@ -31,9 +31,12 @@ std::string getTmpDirectory(bool editor_is_installed)
 {
 #ifndef _WIN32
 	if (editor_is_installed) {
-		return std::string(getenv("HOME")) + "/.nbetmp/";
+		std::string res = std::string(getenv("HOME")) + "/.nbetmp/";
+		std::cerr << "Tmpdir requested. Gave " << res.c_str() << std::endl;
+		return res;
 	}
 #endif
+	std::cerr << "Tmpdir requested. Gave .tmp/" << std::endl;
 	return ".tmp/";
 }
 

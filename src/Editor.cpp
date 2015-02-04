@@ -5,7 +5,6 @@
 #include "modes/NodeEditor.hpp"
 #include <ctime>
 #include <time.h>
-#include "minetest.hpp"
 
 Editor::Editor() :
 	state(NULL),
@@ -72,9 +71,6 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	proj->AddNode(state, true, false);
 
 	proj->media.debug();
-
-	Minetest mt(conf);
-	mt.findMinetest();
 
 	// Load user interface
 	LoadScene();

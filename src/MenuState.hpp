@@ -4,42 +4,6 @@
 #include "EditorState.hpp"
 #include "dialogs/Dialog.hpp"
 
-
-// FILE
-// --> New Project
-// --> New Item
-// -----------------
-// --> Open Project
-// -----------------
-// --> Save Project
-// --> Export
-// --------------------
-// --> Exit
-//
-// EDIT
-// --> Undo
-// --> Redo
-// --------------------
-// --> Snapping
-// --> Limiting
-//
-// VIEW
-// --> Tiled View
-// --> Perspective View
-// --> Top View
-// --> Front View
-// --> Side View
-//
-// PROJECT
-// --> New Node box
-// --> Delete Node box
-// --------------------
-// --> [nodeboxes]
-//
-// HELP
-// --> Help Index
-// --> About
-
 #define SIDEBAR_MAX_IDS 20
 enum GUI_ID
 {
@@ -52,6 +16,7 @@ enum GUI_ID
 	GUI_FILE_EXPORT_LUA,
 	GUI_FILE_EXPORT_CPP,
 	GUI_FILE_EXPORT_MOD,
+	GUI_FILE_RUN_IN_MINETEST,
 	GUI_FILE_EXPORT_TEX,
 	GUI_FILE_EXIT,
 
