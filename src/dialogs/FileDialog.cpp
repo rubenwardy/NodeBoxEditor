@@ -181,6 +181,29 @@ void FileDialog_export(EditorState *state, int parser)
 	save_file(writer, state, file);
 }
 
+#include "../FileFormat/obj.hpp"
+#include <fstream>
+
+void FileDialog_export_obj(EditorState *state, Node *node)
+{
+	// Get path
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+
+	const char* filters[] = {"*.obj"};
+
+	std::string filename = tinyfd_saveFileDialog("Export Node to Mesh", path.c_str(),
+			1, filters);
+	if (filename == "")
+		return;
+
+	std::string res = nodeToObj(node, filenameWithoutExt(filename));
+	std::ofstream file(filename.c_str());
+	if (!file)
+		return;
+	file << res.c_str();
+	file.close();
+}
+
 void FileDialog_export_mod(EditorState *state)
 {
 	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
