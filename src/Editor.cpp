@@ -22,7 +22,8 @@ Editor::Editor() :
 	}
 }
 
-bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is_installed)
+bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
+		bool editor_is_installed)
 {
 	// Do Irrlicht Stuff
 	device = irr_device;
@@ -86,19 +87,29 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 
 		if (currentWindow == -1) {
 			bool newmoused = (state->mousedown && !click_handled);
-			viewportTick(VIEW_TL, rect<s32>(0,      0,      ResX/2, ResY/2), newmoused, !middle_click_handled);
-			viewportTick(VIEW_TR, rect<s32>(ResX/2, 0,      ResX,   ResY/2), newmoused, !middle_click_handled);
-			viewportTick(VIEW_BL, rect<s32>(0,      ResY/2, ResX/2, ResY  ), newmoused, !middle_click_handled);
-			viewportTick(VIEW_BR, rect<s32>(ResX/2, ResY/2, ResX,   ResY  ), newmoused, !middle_click_handled);
+			viewportTick(VIEW_TL, rect<s32>(0,      0,      ResX/2, ResY/2),
+					newmoused, !middle_click_handled);
+			viewportTick(VIEW_TR, rect<s32>(ResX/2, 0,      ResX,   ResY/2),
+					newmoused, !middle_click_handled);
+			viewportTick(VIEW_BL, rect<s32>(0,      ResY/2, ResX/2, ResY  ),
+					newmoused, !middle_click_handled);
+			viewportTick(VIEW_BR, rect<s32>(ResX/2, ResY/2, ResX,   ResY  ),
+					newmoused, !middle_click_handled);
 
 			// Draw separating lines
-			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
-			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2), vector2d<irr::s32>(ResX, ResY/2), SColor(175,255,255,255));
-			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2-1), vector2d<irr::s32>(ResX, ResY/2-1), SColor(175,255,255,255));
-			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
-			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
+			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width,
+					driver->getScreenSize().Height));
+			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2),
+					vector2d<irr::s32>(ResX, ResY/2), SColor(175,255,255,255));
+			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2-1),
+					vector2d<irr::s32>(ResX, ResY/2-1), SColor(175,255,255,255));
+			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0),
+					vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
+			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0),
+					vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
 		} else if (camera[currentWindow]) {
-			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY), (state->mousedown && !click_handled), !middle_click_handled);
+			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY),
+					(state->mousedown && !click_handled), !middle_click_handled);
 		}
 
 		if (state->menu) {
@@ -331,7 +342,8 @@ void Editor::recreateCameras()
 		if (type == VIEWT_PERS) {
 			vector3df oldrot = pivot->getRotation();
 			pivot->setRotation(vector3df(0, 0, 0));
-			camera[i] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2), vector3df(0, 0, 0));
+			camera[i] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2),
+					vector3df(0, 0, 0));
 			camera[i]->setParent(pivot);
 			camera[i]->setAspectRatio((float)ResX / (float)ResY);
 			pivot->setRotation(oldrot);
@@ -355,9 +367,6 @@ void Editor::recreateCameras()
 				break;
 			case VIEWT_BACK:
 				camera[i]->setPosition(vector3df(0, 0, 5));
-				break;
-			default:
-				std::cerr << "Viewport " << i << " has invalid type " << (int)type << std::endl;
 				break;
 			}
 			camera[i]->setProjectionMatrix(projMat, true);
@@ -444,7 +453,8 @@ const char* viewportTypeToSetting(ViewportType type)
 	}
 }
 
-void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned int y, const wchar_t* xlabel, const wchar_t* ylabel)
+void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x,
+		unsigned int y, const wchar_t* xlabel, const wchar_t* ylabel)
 {
 	static ITexture *axes = driver->getTexture("media/coordinates.png");
 	driver->draw2DImage(
@@ -466,7 +476,8 @@ void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned in
 }
 
 typedef rect<s32> rects32;
-void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit, bool middlehit)
+void Editor::viewportTick(Viewport viewport, rect<s32> rect,
+		bool mousehit, bool middlehit)
 {
 	// Init
 	IVideoDriver *driver = device->getVideoDriver();
@@ -504,15 +515,18 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit, bool
 		applyCameraOffsets(viewport);
 	}
 
-	if (middlehit && rect.isPointInside(state->mouse_position) && type != VIEWT_PERS) {
+	if (middlehit && rect.isPointInside(state->mouse_position)
+			&& type != VIEWT_PERS) {
 		viewport_drag = viewport;
 		viewport_drag_last = state->mouse_position;
 	}
 
 	// Draw text
-	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
+	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width,
+			driver->getScreenSize().Height));
 	{
-		static const wchar_t* labels[7] = {L"Perspective", L"Front", L"Left", L"Top", L"Back", L"Right", L"Bottom"};
+		static const wchar_t* labels[7] = {L"Perspective", L"Front", L"Left",
+				L"Top", L"Back", L"Right", L"Bottom"};
 
 		// Handle clicking
 		position2d<s32> labelpos(rect.LowerRightCorner.X - 86,
@@ -533,7 +547,8 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit, bool
 					int y = 0;
 					for (int i = 0; i < 7; i++) {
 						if (i != (int)type) {
-							int ty = rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?56:36)
+							int ty = rect.UpperLeftCorner.Y +
+									((rect.UpperLeftCorner.Y < 50)?56:36)
 									+ y * 20;
 							rects32 trect(rect.LowerRightCorner.X - 96,
 									ty,
@@ -580,7 +595,8 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit, bool
 		} else {
 			// Draw label
 			guienv->getSkin()->getFont()->draw(labels[(int)type],
-					core::rect<s32>(rect.LowerRightCorner.X - wcslen(labels[(int)type]) * 6 - 20, labelpos.Y, 200, 50),
+					core::rect<s32>(rect.LowerRightCorner.X - wcslen(labels[(int)type]) * 6
+					- 20, labelpos.Y, 200, 50),
 					video::SColor(255, 255, 255, 255));
 		}
 	}
