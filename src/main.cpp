@@ -85,7 +85,6 @@ int main(int argc, char *argv[]) {
 	else
 		if (!conf->load(std::string(getSaveLoadDirectory("", true)) + ".config/nodeboxeditor.conf"))
 			conf->load("editor.conf");
-	conf->set("installed", editor_is_installed?"true":"false");
 
 	// Set up irrlicht device
 	E_DRIVER_TYPE driv = irr::video::EDT_OPENGL;
@@ -126,7 +125,7 @@ int main(int argc, char *argv[]) {
 
 	// Editor
 	Editor* editor = new Editor();
-	editor->run(device, conf);
+	editor->run(device, conf, editor_is_installed);
 
 	if (!editor_is_installed)
 		conf->save("editor.conf");

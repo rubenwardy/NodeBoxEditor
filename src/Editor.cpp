@@ -41,7 +41,7 @@ void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned in
 		);
 }
 
-bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
+bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is_installed)
 {
 	// Do Irrlicht Stuff
 	device = irr_device;
@@ -58,6 +58,7 @@ bool Editor::run(IrrlichtDevice* irr_device,Configuration* conf)
 	// Project and state
 	Project *proj = new Project();
 	state = new EditorState(device, proj, conf);
+	state->isInstalled = editor_is_installed;
 
 	// Menu State
 	state->menu = new MenuState(state);

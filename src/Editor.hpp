@@ -9,7 +9,7 @@ class Editor : public IEventReceiver
 {
 public:
 	Editor();
-	bool run(IrrlichtDevice *irr_device, Configuration *conf);
+	bool run(IrrlichtDevice *irr_device, Configuration *conf, bool editor_is_installed);
 	virtual bool OnEvent(const SEvent &event);
 
 	EditorState *state;

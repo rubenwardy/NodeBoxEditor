@@ -148,7 +148,7 @@ bool MenuState::OnEvent(const SEvent& event){
 				return true;
 			case GUI_FILE_RUN_IN_MINETEST: {
 				Minetest mt(state->settings);
-				if (!mt.findMinetest()) {
+				if (!mt.findMinetest(state->isInstalled)) {
 					state->device->getGUIEnvironment()->addMessageBox(L"Unable to find Minetest",
 							L"Minetest could not be found by NBE.\n\t(try setting 'minetest_root' in editor.conf)");
 					return true;
@@ -225,7 +225,7 @@ bool MenuState::OnEvent(const SEvent& event){
 					NBEFileFormat writer(state);
 
 					// Get directory to save to
-					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+					std::string dir = getSaveLoadDirectory(state->settings->get("save_directory"), state->isInstalled);
 
 					std::cerr << "Saving to " << dir + "exit." << std::endl;
 					if (!writer.write(state->project, dir + "exit.nbe"))

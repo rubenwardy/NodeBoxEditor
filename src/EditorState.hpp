@@ -56,6 +56,8 @@ public:
 	MenuState *menu;
 
 	ViewportType getViewportType(Viewport id);
+
+	bool isInstalled;
 private:
 	int currentmode;
 	EditorMode *modes[5];

@@ -83,7 +83,7 @@ bool ImageDialog::OnEvent(const SEvent &event)
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
 		if (event.GUIEvent.Caller->getID() == EID_GUI_ID_BROWSE) {
 			std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-					state->settings->getBool("installed"));
+					state->isInstalled);
 			const char* filters[] = {"*.png", "*.jpg", "*.gif", "*.jpeg"};
 			const char *cfile = tinyfd_openFileDialog("Select Image",
 					path.c_str(), 1, filters, 0);

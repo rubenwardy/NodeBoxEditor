@@ -7,7 +7,8 @@
 
 void FileDialog_open_project(EditorState *state)
 {
-	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->isInstalled);
 
 	const char* filters[] = {"*.nbe"};
 	const char *cfile = tinyfd_openFileDialog("Open Project",
@@ -79,7 +80,7 @@ void FileDialog_open_project(EditorState *state)
 void FileDialog_import(EditorState *state)
 {
 	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-			state->settings->getBool("installed"));
+			state->isInstalled);
 
 	const char* filters[] = {"*.nbe"};
 	const char *cfile = tinyfd_openFileDialog("Import Nodes",
@@ -144,7 +145,8 @@ void FileDialog_import(EditorState *state)
 void FileDialog_save_project(EditorState *state)
 {
 	// Get path
-	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->isInstalled);
 
 	const char* filters[] = {"*.nbe"};
 	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
@@ -161,7 +163,8 @@ void FileDialog_save_project(EditorState *state)
 void FileDialog_export(EditorState *state, int parser)
 {
 	// Get path
-	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->isInstalled);
 
 	const char* filters[] = {""};
 
@@ -187,7 +190,8 @@ void FileDialog_export(EditorState *state, int parser)
 void FileDialog_export_obj(EditorState *state, Node *node)
 {
 	// Get path
-	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"), state->settings->getBool("installed"));
+	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
+			state->isInstalled);
 
 	const char* filters[] = {"*.obj"};
 
@@ -207,7 +211,7 @@ void FileDialog_export_obj(EditorState *state, Node *node)
 void FileDialog_export_mod(EditorState *state)
 {
 	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-			state->settings->getBool("installed"));
+			state->isInstalled);
 
 	const char *cdir = tinyfd_selectFolderDialog ("Select Folder", path.c_str());
 
@@ -229,7 +233,7 @@ void FileDialog_export_mod(EditorState *state)
 void FileDialog_export_textures(EditorState *state)
 {
 	std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-			state->settings->getBool("installed"));
+			state->isInstalled);
 
 	const char *cdir = tinyfd_selectFolderDialog ("Select Folder", path.c_str());
 

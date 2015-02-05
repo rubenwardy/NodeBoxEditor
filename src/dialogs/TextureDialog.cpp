@@ -202,7 +202,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 				return true;
 
 			std::string path = getSaveLoadDirectory(state->settings->get("save_directory"),
-					state->settings->getBool("installed"));
+					state->isInstalled);
 			path += image->name;
 
 			const char *filters[] = {"*.png"};

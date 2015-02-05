@@ -31,7 +31,7 @@ bool Minetest::findMinetestDir(std::string path)
 	return false;
 }
 
-bool Minetest::findMinetest()
+bool Minetest::findMinetest(bool editor_is_installed)
 {
 	std::cerr << "Searching for Minetest using minetest_root setting.." << std::endl;
 	std::string path = _conf->get("minetest_root");
@@ -63,7 +63,7 @@ bool Minetest::findMinetest()
 #endif
 
 	std::cerr << "Searching for Minetest relative to NBE save directory..." << std::endl;
-	path = getSaveLoadDirectory(_conf->get("save_directory"), _conf->getBool("installed"));
+	path = getSaveLoadDirectory(_conf->get("save_directory"), editor_is_installed);
 	path = cleanDirectoryPath(path);
 
 	if (findMinetestDir(path + "../minetest/") && minetest_exe != "")

@@ -7,7 +7,7 @@
 
 Project *NBEFileFormat::read(const std::string &filename, Project *project)
 {
-	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
+	std::string tmpdir = getTmpDirectory(state->isInstalled);
 	if (!CreateDir(tmpdir)) {
 		error_code = EFFE_IO_ERROR;
 		return NULL;
@@ -52,7 +52,7 @@ Project *NBEFileFormat::read(const std::string &filename, Project *project)
 
 bool NBEFileFormat::write(Project *project, const std::string &filename)
 {
-	std::string tmpdir = getTmpDirectory(state->settings->getBool("installed"));
+	std::string tmpdir = getTmpDirectory(state->isInstalled);
 	if (!CreateDir(tmpdir)) {
 		error_code = EFFE_IO_ERROR;
 		return false;
