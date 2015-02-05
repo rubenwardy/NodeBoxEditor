@@ -11,22 +11,28 @@ public:
 	Editor();
 	bool run(IrrlichtDevice *irr_device, Configuration *conf, bool editor_is_installed);
 	virtual bool OnEvent(const SEvent &event);
+private:
+	void recreateCameras();
+	void applyCameraOffsets(Viewport i);
+	void LoadScene();
+	void viewportTick(Viewport vp, rect<s32> rect, bool mousehit, bool middlehit);
+
 
 	EditorState *state;
 	irr::IrrlichtDevice *device;
 
-	void recreateCameras();
-private:
 	// Helper functions
 	int currentWindow;
 	ISceneNode *target;
 	ISceneNode *pivot;
 	ICameraSceneNode *camera[4];
+	vector3df viewport_offset[4];
+	Viewport viewport_drag;
+	vector2di viewport_drag_last;
 	IMeshSceneNode *plane;
-	void LoadScene();
-	void viewportTick(Viewport vp, rect<s32> rect, bool mousehit);
-	int viewport_contextmenu;
+	Viewport viewport_contextmenu;
 	bool click_handled;
+	bool middle_click_handled;
 };
 
 #endif

@@ -35,7 +35,8 @@ enum EAxis
 
 enum Viewport
 {
-	VIEW_TL = 0,
+	VIEW_NONE = -1,
+	VIEW_TL,
 	VIEW_TR,
 	VIEW_BL,
 	VIEW_BR

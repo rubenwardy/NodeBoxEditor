@@ -12,33 +12,14 @@ Editor::Editor() :
 	target(NULL),
 	pivot(NULL),
 	currentWindow(-1),
-	viewport_contextmenu(-1),
-	click_handled(false)
+	viewport_contextmenu(VIEW_NONE),
+	viewport_drag(VIEW_NONE),
+	click_handled(true),
+	middle_click_handled(true)
 {
 	for (int i = 0; i < 4; i++) {
 		camera[i] = NULL;
 	}
-}
-
-void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned int y, const wchar_t* xlabel, const wchar_t* ylabel)
-{
-	static ITexture *axes = driver->getTexture("media/coordinates.png");
-	driver->draw2DImage(
-			axes,
-			position2d<s32>(x, y),
-			rect<s32>(0, 0, 32, 32),
-			NULL, SColor(255, 255, 255, 255), true
-		);
-	font->draw(
-			ylabel,
-			core::rect<s32>(x - 2, y - 20, 300, 50),
-			video::SColor(255, 255, 255, 255)
-		);
-	font->draw(
-			xlabel,
-			core::rect<s32>(x + 40, y + 22, 300, 50),
-			video::SColor(255, 255, 255, 255)
-		);
 }
 
 bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is_installed)
@@ -105,10 +86,10 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 
 		if (currentWindow == -1) {
 			bool newmoused = (state->mousedown && !click_handled);
-			viewportTick(VIEW_TL, rect<s32>(0,	0,	ResX/2,	ResY/2	), newmoused);
-			viewportTick(VIEW_TR, rect<s32>(ResX/2,	0,	ResX,	ResY/2	), newmoused);
-			viewportTick(VIEW_BL, rect<s32>(0,	ResY/2,	ResX/2,	ResY	), newmoused);
-			viewportTick(VIEW_BR, rect<s32>(ResX/2,	ResY/2,	ResX,	ResY	), newmoused);
+			viewportTick(VIEW_TL, rect<s32>(0,      0,      ResX/2, ResY/2), newmoused, !middle_click_handled);
+			viewportTick(VIEW_TR, rect<s32>(ResX/2, 0,      ResX,   ResY/2), newmoused, !middle_click_handled);
+			viewportTick(VIEW_BL, rect<s32>(0,      ResY/2, ResX/2, ResY  ), newmoused, !middle_click_handled);
+			viewportTick(VIEW_BR, rect<s32>(ResX/2, ResY/2, ResX,   ResY  ), newmoused, !middle_click_handled);
 
 			// Draw separating lines
 			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
@@ -117,7 +98,7 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2, 0), vector2d<irr::s32>(ResX/2, ResY), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0), vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
 		} else if (camera[currentWindow]) {
-			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY), (state->mousedown && !click_handled));
+			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY), (state->mousedown && !click_handled), !middle_click_handled);
 		}
 
 		if (state->menu) {
@@ -134,11 +115,6 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 				state->project->GetCurrentNode()->position.Z
 			);
 			target->setPosition(pos);
-
-			camera[0]->setTarget(pos);
-			camera[1]->setTarget(pos);
-			camera[2]->setTarget(pos);
-			camera[3]->setTarget(pos);
 		}
 
 		guienv->drawAll();
@@ -182,6 +158,7 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 		last = now;
 
 		click_handled = true;
+		middle_click_handled = true;
 	}
 
 	return true;
@@ -189,27 +166,31 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf, bool editor_is
 
 bool Editor::OnEvent(const SEvent& event)
 {
-	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-			event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
-		state->mousedown = false;
-		click_handled = false;
-	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-			event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
-		state->mousedown = true;
-		click_handled = false;
-	} else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-			event.MouseInput.Event == EMIE_MOUSE_MOVED) {
-		state->mouse_position.X = event.MouseInput.X;
-		state->mouse_position.Y = event.MouseInput.Y;
+	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT) {
+		if (event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
+			state->mousedown = false;
+			click_handled = true;
+		} else if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN) {
+			state->mousedown = true;
+			click_handled = false;
+		} else if (event.MouseInput.Event == EMIE_MOUSE_MOVED) {
+			state->mouse_position.X = event.MouseInput.X;
+			state->mouse_position.Y = event.MouseInput.Y;
+		} else if (event.MouseInput.Event == EMIE_MMOUSE_LEFT_UP) {
+			viewport_drag = VIEW_NONE;
+			middle_click_handled = true;
+		} else if (event.MouseInput.Event == EMIE_MMOUSE_PRESSED_DOWN) {
+			middle_click_handled = false;
+		}
 	}
 
-	if (state->Mode()){
-		if (state->Mode()->OnEvent(event)){
+	if (state->Mode()) {
+		if (state->Mode()->OnEvent(event)) {
 			return true;
 		}
 	}
 
-	if (state->menu){
+	if (state->menu) {
 		if (state->menu->OnEvent(event)) {
 			return true;
 		}
@@ -222,10 +203,8 @@ bool Editor::OnEvent(const SEvent& event)
 			state->keys[event.KeyInput.Key] = EKS_UP;
 		}
 
-		if (
-			state->device->getGUIEnvironment()->getFocus() &&
-			state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX
-			)
+		if (state->device->getGUIEnvironment()->getFocus() &&
+				state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX)
 			return false;
 
 		switch (event.KeyInput.Key) {
@@ -338,7 +317,7 @@ void Editor::recreateCameras()
 	matrix4 projMat;
 	irr::f32 orth_w = (float)ResX / (float)ResY;
 	orth_w = 3 * orth_w;
-	projMat.buildProjectionMatrixOrthoLH(orth_w,3,1,100);
+	projMat.buildProjectionMatrixOrthoLH(orth_w, 3, 1, 100);
 
 	// Loop through cameras
 	for (int i = 0; i < 4; i++) {
@@ -377,13 +356,62 @@ void Editor::recreateCameras()
 			case VIEWT_BACK:
 				camera[i]->setPosition(vector3df(0, 0, 5));
 				break;
+			default:
+				std::cerr << "Viewport " << i << " has invalid type " << (int)type << std::endl;
+				break;
 			}
 			camera[i]->setProjectionMatrix(projMat, true);
 		}
+		applyCameraOffsets((Viewport)i);
 	}
 }
 
-const char* viewportToSetting(Viewport port) {
+void camSetPosTar(ICameraSceneNode *camera, vector3df position,
+		vector3df target, vector3df up=vector3df(0, 1, 0))
+{
+	camera->setPosition(position);
+	camera->updateAbsolutePosition();
+	camera->setTarget(target + position);
+	camera->updateAbsolutePosition();
+	camera->setUpVector(up);
+	camera->updateAbsolutePosition();
+}
+
+void Editor::applyCameraOffsets(Viewport viewport)
+{
+	int i = (int)viewport;
+	ViewportType type = state->getViewportType(viewport);
+	vector3df offset = viewport_offset[i];
+	switch(type) {
+	case VIEWT_TOP:
+		camSetPosTar(camera[i], vector3df(offset.X, 2, offset.Y),
+				vector3df(0, -100, 0), vector3df(0, 0, 1));
+		break;
+	case VIEWT_BOTTOM:
+		camSetPosTar(camera[i], vector3df(offset.X, -2, -offset.Y),
+				vector3df(0, 100, 0), vector3df(0, 0, -1));
+		break;
+	case VIEWT_LEFT:
+		camSetPosTar(camera[i], vector3df(-2, offset.Y, -offset.X),
+				vector3df(100, 0, 0));
+		break;
+	case VIEWT_RIGHT:
+		camSetPosTar(camera[i], vector3df(2, offset.Y, offset.X),
+				vector3df(-100, 0, 0));
+		break;
+	case VIEWT_FRONT:
+		camSetPosTar(camera[i], vector3df(-offset.X, offset.Y, 2),
+				vector3df(0, 0, -100));
+		break;
+	case VIEWT_BACK:
+		camSetPosTar(camera[i], vector3df(offset.X, offset.Y, -2),
+				vector3df(0, 0, 100));
+		break;
+	}
+}
+
+const char* viewportToSetting(Viewport port)
+{
 	switch (port) {
 	case VIEW_TL:
 		return "viewport_top_left";
@@ -395,7 +423,9 @@ const char* viewportToSetting(Viewport port) {
 		return "viewport_bottom_right";
 	}
 }
-const char* viewportTypeToSetting(ViewportType type) {
+
+const char* viewportTypeToSetting(ViewportType type)
+{
 	switch (type) {
 	case VIEWT_PERS:
 		return "pers";
@@ -414,8 +444,29 @@ const char* viewportTypeToSetting(ViewportType type) {
 	}
 }
 
+void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x, unsigned int y, const wchar_t* xlabel, const wchar_t* ylabel)
+{
+	static ITexture *axes = driver->getTexture("media/coordinates.png");
+	driver->draw2DImage(
+			axes,
+			position2d<s32>(x, y),
+			rect<s32>(0, 0, 32, 32),
+			NULL, SColor(255, 255, 255, 255), true
+		);
+	font->draw(
+			ylabel,
+			core::rect<s32>(x - 2, y - 20, 300, 50),
+			video::SColor(255, 255, 255, 255)
+		);
+	font->draw(
+			xlabel,
+			core::rect<s32>(x + 40, y + 22, 300, 50),
+			video::SColor(255, 255, 255, 255)
+		);
+}
+
 typedef rect<s32> rects32;
-void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
+void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit, bool middlehit)
 {
 	// Init
 	IVideoDriver *driver = device->getVideoDriver();
@@ -436,6 +487,28 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 	if (state->Mode())
 		state->Mode()->viewportTick(viewport, driver, rect);
 
+	if (viewport_drag == viewport) {
+		vector2di delta = state->mouse_position;
+		delta -= viewport_drag_last;
+		viewport_drag_last = state->mouse_position;
+		viewport_offset[(int)viewport].X -= delta.X * 0.01;
+		viewport_offset[(int)viewport].Y += delta.Y * 0.01;
+		if (viewport_offset[(int)viewport].X > 0.5)
+			viewport_offset[(int)viewport].X = 0.5;
+		if (viewport_offset[(int)viewport].X < -0.5)
+			viewport_offset[(int)viewport].X = -0.5;
+		if (viewport_offset[(int)viewport].Y > 0.5)
+			viewport_offset[(int)viewport].Y = 0.5;
+		if (viewport_offset[(int)viewport].Y < -0.5)
+			viewport_offset[(int)viewport].Y = -0.5;
+		applyCameraOffsets(viewport);
+	}
+
+	if (middlehit && rect.isPointInside(state->mouse_position) && type != VIEWT_PERS) {
+		viewport_drag = viewport;
+		viewport_drag_last = state->mouse_position;
+	}
+
 	// Draw text
 	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width, driver->getScreenSize().Height));
 	{
@@ -448,14 +521,14 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?25:5),
 					rect.LowerRightCorner.X - 5,
 					rect.UpperLeftCorner.Y + ((rect.UpperLeftCorner.Y < 50)?185:165));
-		bool context_is_open = (viewport_contextmenu == (int)viewport);
+		bool context_is_open = (viewport_contextmenu == viewport);
 		if (mousehit && !state->menu->dialog) {
 			if ((rects32(labelpos.X, labelpos.Y, labelpos.X + 90,
 					labelpos.Y + 25)).isPointInside(state->mouse_position)) {
-				viewport_contextmenu = (int)viewport;
+				viewport_contextmenu = viewport;
 			} else if (context_is_open) {
 				context_is_open = false;
-				viewport_contextmenu = -1;
+				viewport_contextmenu = VIEW_NONE;
 				if (backgroundrect.isPointInside(state->mouse_position)) {
 					int y = 0;
 					for (int i = 0; i < 7; i++) {
@@ -467,6 +540,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect, bool mousehit)
 									rect.LowerRightCorner.X - 5, ty + 20);
 							y++;
 							if (trect.isPointInside(state->mouse_position)) {
+								viewport_offset[(int)viewport] = vector3df(0, 0, 0);
 								state->settings->set(viewportToSetting(viewport),
 									viewportTypeToSetting((ViewportType)i));
 								recreateCameras();

@@ -321,8 +321,6 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 		// Snapping
 		wpos -= vector3df(node->position.X, node->position.Y, node->position.Z);
-		if (window == VIEW_TR)
-			wpos.Z -= 0.1;
 
 		if (editor->state->settings->getBool("snapping")) {
 			wpos.X = floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
