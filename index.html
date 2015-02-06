@@ -2,69 +2,93 @@
 <html>
 <head>
 	<title>Node Box Editor</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="nodeboxeditor, minetest, nodebox, editor, open source, tool">
+	<meta name="author" content="rubenwardy">
+	<meta name="viewport" content="width=device-width">
 	<style>
 		html, body {
 			font-family: "Arial", sans-serif;
+			font-size: 18px;
 			margin: 0;
 			padding: 0;
 			background: #333;
 			color: #d0d0d0;
 		}
-		
+
 		img {
 			max-width: 100%;
 			margin:  0;
 		}
-		
-		#header {
+
+		#rubenwardy {
+			position: fixed;
+			top: 0;
+			left: 0;
+			padding: 5px 10px 5px 10px;
+			text-decoration: none;
+			text-align: center;
+		}
+
+		#rubenwardy:hover {
+			background: #444;
+		}
+		#rubenwardy img {
+			display: block;
+			margin: auto auto 5px auto;
+			height: 65px;
+		}
+
+		header {
 			background: #3a3a3a;
 			display: block;
 			margin: 0 0 15px 0;
 			padding: 2em;
 			text-align: center;
 		}
-		
+
 		a {
 			color: #e0e0e0;
 		}
-		
+
 		h1 {
 			margin: 0;
 			padding: 0;
 			color: #f0f0f0;
 		}
-		
+
 		p {
 			margin-top: 0;
 		}
-		
-		article {
+
+		article, .screenshot {
+			display: block;
 			border-bottom: 1px solid #444;
 			padding: 0 0 10px 0;
 			margin: 0 0 15px 0;
 		}
-		
+
 		h2 {
 			margin: 10px 0 10px 0;
 			text-align: center;
 			color: #f0f0f0;
 		}
-		
+
 		h3 {
 			margin: 10px 0 10px 0;
 			color: #f0f0f0;
 		}
-		
+
 		article:last-child {
 			border: none;
 		}
-		
+
 		#page {
 			width: 80%;
 			max-width: 600px;
 			margin: auto auto 2em auto;
 		}
-		
+
 		.button {
 			background: #333;
 			color: #e0e0e0;
@@ -74,55 +98,70 @@
 			border: 1px solid #444;
 			border-radius: 4px;
 		}
-		
+
 		.button:hover {
 			border: 1px solid #555;
 			background: #3a3a3a;
 		}
+
+		@media all and (max-width: 780px) {
+			#rubenwardy {
+				position: static;
+				display: block;
+			}
+
+			#page {
+				width: auto;
+			}
+		}
 	</style>
 </head>
 <body>
-	<div id="header">
+	<header>
+		<a id="rubenwardy" href="http://rubenwardy.com/">
+			<img src="rubenwardy.jpg" alt="rubenwardy" />
+			rubenwardy</a>
 		<h1>Node Box Editor</h1>
-	</div>
-	<div id="page">
+	</header>
+	<main id="page">
 		<article>
+			<h2>About</h2>
 			<p>
 				Use this editor to easily build node boxes by dragging their edges.
 				This program supports all operating systems Minetest supports.
 			</p>
 			<p style="text-align: center">
-				<a href="https://forum.minetest.net/viewtopic.php?f=14&t=2840" class="button">Forum Topic</a>
+				<a href="https://forum.minetest.net/viewtopic.php?f=14&amp;t=2840" class="button">Forum Topic</a>
 				<a href="http://github.com/rubenwardy/NodeBoxEditor" class="button">GitHub</a>
 				<a href="https://www.dropbox.com/s/f7ukajwg3nh8ju9/NodeBoxEditor_0_7_WindowsBuild.zip?dl=1" class="button">Windows Build</a>
 			</p>
 		</article>
-		<article>
-			<a href="http://a.pomf.se/ndyske.png">
-				<img src="http://a.pomf.se/ndyske.png" alt="screenshot" />
-			</a>
-		</article>
+		<a class="screenshot" href="http://a.pomf.se/ndyske.png">
+			<img src="http://a.pomf.se/ndyske.png" alt="screenshot" />
+		</a>
 		<article>
 			<h2>Installation</h2>
-			
+
 			<h3>Windows</h3>
 			<p>
 				Download the Windows build using the button above.
 				Extract it to a location such as My Documents/nodeboxeditor,
 				to run it open the nodeboxeditor file in bin/
 			</p>
-			
+
 			<h3>Linux</h3>
 			<p>
 				It is recommended that you <a href="https://github.com/rubenwardy/NodeBoxEditor/blob/master/docs/developers.md">compile it yourself</a>.
 				However, there are builds available:
-				
+			</p>
+
 				<ul>
 					<li><a href="https://forum.minetest.net/viewtopic.php?p=155186#p155186">Arch Linux</a>, by Zatherz</li>
 					<li><a href="https://dl.dropboxusercontent.com/u/82342922/minetest/NodeBoxEditor-Ubuntu-1410-amd64.tar.xz">Ubuntu amd64</a>, by Calinou</li>
 					<li><a href="https://forum.minetest.net/viewtopic.php?p=155186#p155186">Debian/Ubuntu</a>, by Zatherz</li>
 				</ul>
-				
+
+			<p>
 				Please see the documentation on
 				<a href="https://github.com/rubenwardy/NodeBoxEditor/blob/master/docs/make_install.md">
 					make install
@@ -130,8 +169,8 @@
 				if you want to install it system wide.
 			</p>
 		</article>
-		
-		
+
+
 		<article>
 			<h2>Using the Editor</h2>
 
@@ -214,9 +253,7 @@
 			<li>Lua file (lua) - Exports code which could be installed as a mod. Use when you want to run in Minetest.</li>
 			<li>Minetest Classic (cpp) - Exports code to be used in Minetest Classic. Use when you want to run in Minetest Classic.</li>
 			</ul>
-
 		</article>
-	</div>
+	</main>
 </body>
 </html>
-
