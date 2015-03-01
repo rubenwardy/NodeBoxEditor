@@ -36,7 +36,8 @@ void MenuState::init()
 	submenu = menubar->getSubMenu(0);
 	//submenu->addItem(L"New", GUI_FILE_NEW_PROJECT);
 	submenu->addItem(L"Open Project", GUI_FILE_OPEN_PROJECT);
-	submenu->addItem(L"Save Project As", GUI_FILE_SAVE_PROJECT);
+	submenu->addItem(L"Save Project", GUI_FILE_SAVE_PROJECT);
+	submenu->addItem(L"Save Project As", GUI_FILE_SAVE_PROJECT_AS);
 	submenu->addSeparator();
 	submenu->addItem(L"Run in Minetest", GUI_FILE_RUN_IN_MINETEST);
 	submenu->addItem(L"Export", -1, true, true);
@@ -45,7 +46,7 @@ void MenuState::init()
 	submenu->addItem(L"Exit", GUI_FILE_EXIT);
 
 	// File > Export
-	submenu = submenu->getSubMenu(4);
+	submenu = submenu->getSubMenu(5);
 	submenu->addItem(L"Standalone Lua File (.lua)", GUI_FILE_EXPORT_LUA);
 	submenu->addItem(L"Voxelands (.cpp)", GUI_FILE_EXPORT_CPP);
 	submenu->addItem(L"Minetest Mod", GUI_FILE_EXPORT_MOD);
@@ -98,7 +99,8 @@ void MenuState::init()
 	sidebar->setNotClipped(true);
 }
 
-bool MenuState::OnEvent(const SEvent& event){
+bool MenuState::OnEvent(const SEvent& event)
+{
 	if (dialog)
 		return dialog->OnEvent(event);
 
@@ -138,6 +140,19 @@ bool MenuState::OnEvent(const SEvent& event){
 				FileDialog_open_project(state);
 				return true;
 			case GUI_FILE_SAVE_PROJECT:
+				if (!state->project) {
+					state->device->getGUIEnvironment()->addMessageBox(
+							L"Unable to save",
+							L"You have not yet opened a project.");
+					return true;
+				}
+				if (state->project->file != "") {
+					save_file(getFromType(FILE_FORMAT_NBE, state), state, state->project->file, false);
+				} else {
+					FileDialog_save_project(state);
+				}
+				return true;
+			case GUI_FILE_SAVE_PROJECT_AS:
 				if (!state->project) {
 					state->device->getGUIEnvironment()->addMessageBox(
 							L"Unable to save",
@@ -243,7 +258,11 @@ bool MenuState::OnEvent(const SEvent& event){
 						L"You have not yet opened a project.");
 				return true;
 			}
-			FileDialog_save_project(state);
+			if (state->project->file != "") {
+				save_file(getFromType(FILE_FORMAT_NBE, state), state, state->project->file, false);
+			} else {
+				FileDialog_save_project(state);
+			}
 			return true;
 		}
 	}

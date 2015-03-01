@@ -2,14 +2,14 @@
 #include "../util/string.hpp"
 #include "../util/filesys.hpp"
 
-void save_file(FileFormat *writer, EditorState *state, std::string file)
+void save_file(FileFormat *writer, EditorState *state, std::string file, bool check_ext)
 {
 	if (!writer || !state)
 		return;
 
 	std::string after(file);
 
-	if (after.find('.') == std::string::npos) {
+	if (check_ext && after.find('.') == std::string::npos) {
 		after += '.';
 		after += writer->getExtension();
 	}

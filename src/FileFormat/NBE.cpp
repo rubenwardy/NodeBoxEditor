@@ -17,6 +17,7 @@ Project *NBEFileFormat::read(const std::string &filename, Project *project)
 	} else {
 		merging = false;
 		project = new Project();
+		project->file = std::string(filename);
 	}
 	SimpleFileCombiner fc;
 	std::list<std::string> files = fc.read(filename.c_str(), tmpdir);
