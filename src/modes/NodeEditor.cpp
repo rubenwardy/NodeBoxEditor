@@ -222,9 +222,21 @@ void NodeEditor::updateProperties() {
 	try {
 		irr::core::stringc name = prop->getElementFromId(ENG_GUI_PROP_NAME)->getText();
 		node->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
+		int y = wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(), NULL);
+		if (state->settings->getBool("no_negative_node_y") && y < 0) {
+			std::list<Node*> & nodes = state->project->nodes;
+			for (std::list<Node*>::const_iterator it = nodes.begin();
+					it != nodes.end();
+					++it) {
+				(*it)->position.Y -= y; // Remember, y is negative
+			}
+			state->project->remesh();
+			y = 0;
+		}
+
 		node->position = vector3di(
 			wcstod(prop->getElementFromId(ENG_GUI_PROP_X)->getText(), NULL),
-			wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(), NULL),
+			y,
 			wcstod(prop->getElementFromId(ENG_GUI_PROP_Z)->getText(), NULL)
 		);
 		node->remesh();
