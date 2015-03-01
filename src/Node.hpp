@@ -30,6 +30,7 @@ public:
 	void remesh(NodeBox *box);
 	void setAllTextures(Media::Image *def);
 	void rotate(EAxis axis);
+	void flip(EAxis axis);
 	void hide();
 
 	void setTexture(CubeSide face, Media::Image *image);

@@ -431,3 +431,46 @@ void NodeBox::rotate(EAxis axis)
 		two.Z = tmp;
 	}
 }
+
+void NodeBox::flip(EAxis axis)
+{
+	switch (axis) {
+	case EAX_X: {
+		f32 tmp = one.X;
+		one.X = -two.X;
+		two.X = -tmp;
+		break;
+	}
+	case EAX_Y: {
+		f32 tmp = one.Y;
+		one.Y = -two.Y;
+		two.Y = -tmp;
+		break;
+	}
+	case EAX_Z: {
+		f32 tmp = one.Z;
+		one.Z = -two.Z;
+		two.Z = -tmp;
+		break;
+	}};
+
+	// Check relative sizes
+	if (one.X > two.X) {
+		std::cerr << "This shouldn't happen! (X)" << std::endl;
+		f32 tmp = one.X;
+		one.X = two.X;
+		two.X = tmp;
+	}
+	if (one.Y > two.Y) {
+		std::cerr << "This shouldn't happen! (Y)" << std::endl;
+		f32 tmp = one.Y;
+		one.Y = two.Y;
+		two.Y = tmp;
+	}
+	if (one.Z > two.Z) {
+		std::cerr << "This shouldn't happen! (Z)" << std::endl;
+		f32 tmp = one.Z;
+		one.Z = two.Z;
+		two.Z = tmp;
+	}
+}

@@ -126,11 +126,22 @@ void Node::hide()
 	}
 }
 
-void Node::rotate(EAxis axis) {
+void Node::rotate(EAxis axis)
+{
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
 		(*it)->rotate(axis);
+	}
+	remesh();
+}
+
+void Node::flip(EAxis axis)
+{
+	for (std::vector<NodeBox*>::iterator it = boxes.begin();
+			it != boxes.end();
+			++it) {
+		(*it)->flip(axis);
 	}
 	remesh();
 }

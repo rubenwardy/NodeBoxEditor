@@ -47,6 +47,7 @@ public:
 	void moveNodeBox(EditorState* editor, CDRType type, vector3df position);
 	void buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6]);
 	void rotate(EAxis axis);
+	void flip(EAxis axis);
 };
 
 #endif

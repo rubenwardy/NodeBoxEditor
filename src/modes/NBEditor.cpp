@@ -7,7 +7,7 @@
 
 // The gui id numbers for this mode
 // NOTE: the maximum that can be here is 20
-//       see in MenuState.h to raise limit
+//       see in MenuState.hpp to raise the limit
 enum NODEBOX_EDITOR_GUI_IDS {
 	ENB_GUI_MAIN_LISTBOX = GUI_SIDEBAR + 1,
 	ENB_GUI_MAIN_MSG,
@@ -21,6 +21,9 @@ enum NODEBOX_EDITOR_GUI_IDS {
 	ENB_GUI_PROP_NAME,
 	ENB_GUI_PROP_UPDATE,
 	ENB_GUI_PROP_REVERT,
+	ENB_GUI_FLP_X,
+	ENB_GUI_FLP_Y,
+	ENB_GUI_FLP_Z,
 	ENB_GUI_ROT_X,
 	ENB_GUI_ROT_Y,
 	ENB_GUI_ROT_Z
@@ -58,7 +61,7 @@ void NBEditor::load()
 				false, true, sidebar, ENB_GUI_MAIN_MSG);
 
 
-		IGUIListBox *lb = guienv->addListBox(rect<s32>(20, 35, 230, 133),
+		IGUIListBox *lb = guienv->addListBox(rect<s32>(10, 35+20, 227, 133+20),
 				sidebar, ENB_GUI_MAIN_LISTBOX, true);
 
 		if (lb) {
@@ -71,27 +74,46 @@ void NBEditor::load()
 			b2->setNotClipped(true);
 		}
 
+
+		// Rotate X
+		static ITexture *flp_x = state->device->getVideoDriver()->getTexture("media/flip_x.png");
+		IGUIButton *btn = guienv->addButton(rect<s32>(10, 20, 120+32 - (32+5)*3, 52), sidebar, ENB_GUI_FLP_X, L"", L"Rotate node through X axis");
+		btn->setImage(flp_x);
+		btn->setUseAlphaChannel(true);
+
+		// Rotate Y
+		static ITexture *flp_y = state->device->getVideoDriver()->getTexture("media/flip_y.png");
+		btn = guienv->addButton(rect<s32>(121 - (32+5)*2, 20, 120+32 - (32+5)*2, 32+20), sidebar, ENB_GUI_FLP_Y, L"", L"Rotate node through Y axis");
+		btn->setImage(flp_y);
+		btn->setUseAlphaChannel(true);
+
+		// Rotate Z
+		static ITexture *flp_z = state->device->getVideoDriver()->getTexture("media/flip_z.png");
+		btn = guienv->addButton(rect<s32>(121 - (32+5), 20, 120+32 - (32+5), 32+20), sidebar, ENB_GUI_FLP_Z, L"", L"Rotate node through Z axis");
+		btn->setImage(flp_z);
+		btn->setUseAlphaChannel(true);
+
 		// Rotate X
 		static ITexture *rot_x = state->device->getVideoDriver()->getTexture("media/rotate_x.png");
-		IGUIButton *btn = guienv->addButton(rect<s32>(120, 0, 120+32, 32), sidebar, ENB_GUI_ROT_X, L"", L"Rotate node through X axis");
+		btn = guienv->addButton(rect<s32>(121, 20, 120+32, 32+20), sidebar, ENB_GUI_ROT_X, L"", L"Rotate node through X axis");
 		btn->setImage(rot_x);
 		btn->setUseAlphaChannel(true);
 
 		// Rotate Y
 		static ITexture *rot_y = state->device->getVideoDriver()->getTexture("media/rotate_y.png");
-		btn = guienv->addButton(rect<s32>(120 + (32+5)*1, 0, 120+32 + (32+5)*1, 32), sidebar, ENB_GUI_ROT_Y, L"", L"Rotate node through Y axis");
+		btn = guienv->addButton(rect<s32>(121 + (32+5)*1, 20, 120+32 + (32+5)*1, 32+20), sidebar, ENB_GUI_ROT_Y, L"", L"Rotate node through Y axis");
 		btn->setImage(rot_y);
 		btn->setUseAlphaChannel(true);
 
-		// Rotate Z|
+		// Rotate Z
 		static ITexture *rot_z = state->device->getVideoDriver()->getTexture("media/rotate_z.png");
-		btn = guienv->addButton(rect<s32>(120 + (32+5)*2, 0, 120+32 + (32+5)*2, 32), sidebar, ENB_GUI_ROT_Z, L"", L"Rotate node through Z axis");
+		btn = guienv->addButton(rect<s32>(121 + (32+5)*2, 20, 120+32 + (32+5)*2, 32+20), sidebar, ENB_GUI_ROT_Z, L"", L"Rotate node through Z axis");
 		btn->setImage(rot_z);
 		btn->setUseAlphaChannel(true);
 
 		// Create nodebox properties
 		t = guienv->addStaticText(L"Properties",
-				rect<s32>(0, 170, 120, 190),
+				rect<s32>(0, 170+20, 120, 190+20),
 				false, true, sidebar, ENB_GUI_PROP);
 		t->setVisible(false);
 
@@ -449,7 +471,24 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 					node->rotate(EAX_Z);
 				break;
 			}
+			case ENB_GUI_FLP_X: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->flip(EAX_X);
+				break;
 			}
+			case ENB_GUI_FLP_Y: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->flip(EAX_Y);
+				break;
+			}
+			case ENB_GUI_FLP_Z: {
+				Node* node = state->project->GetCurrentNode();
+				if (node)
+					node->flip(EAX_Z);
+				break;
+			}}
 		} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED) {
 			Node* node = state->project->GetCurrentNode();
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
