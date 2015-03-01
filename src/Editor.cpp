@@ -207,11 +207,36 @@ bool Editor::OnEvent(const SEvent& event)
 		}
 	}
 
-	if (event.EventType == EET_KEY_INPUT_EVENT && event.KeyInput.Key < NUMBER_OF_KEYS) {
+	if (event.EventType == EET_KEY_INPUT_EVENT &&
+			event.KeyInput.Key < NUMBER_OF_KEYS) {
 		if (event.KeyInput.PressedDown) {
 			state->keys[event.KeyInput.Key] = EKS_DOWN;
 		} else {
 			state->keys[event.KeyInput.Key] = EKS_UP;
+		}
+
+		if (event.KeyInput.PressedDown &&
+				event.KeyInput.Key == KEY_KEY_W &&
+				state->keys[164] == EKS_DOWN) {
+			if (currentWindow == -1) {
+				IVideoDriver *driver = state->device->getVideoDriver();
+				int ResX = driver->getScreenSize().Width;
+				if (!state->settings->getBool("hide_sidebar"))
+					ResX -= 256;
+				int ResY = driver->getScreenSize().Height;
+
+				if (state->mouse_position.X > ResX / 2)
+					if (state->mouse_position.Y > ResY / 2)
+						currentWindow = 3;
+					else
+						currentWindow = 1;
+				else
+					if (state->mouse_position.Y > ResY / 2)
+						currentWindow = 2;
+					else
+						currentWindow = 0;
+			} else
+				currentWindow = -1;
 		}
 
 		if (state->device->getGUIEnvironment()->getFocus() &&
