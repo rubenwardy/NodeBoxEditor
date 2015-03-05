@@ -88,6 +88,18 @@ void Node::deleteNodebox(int id)
 		_selected = boxes.size() - 1;
 }
 
+void Node::cloneNodebox(int id)
+{
+	NodeBox *nb = GetNodeBox(id);
+	if (!nb)
+		return;
+
+	NodeBox *new_nb = addNodeBox();
+	new_nb->one = nb->one;
+	new_nb->two = nb->two;
+	new_nb->buildNode(state, position, device, images);
+}
+
 void Node::setTexture(CubeSide face, Media::Image *image)
 {
 	if (image) {

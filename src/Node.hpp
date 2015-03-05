@@ -23,6 +23,7 @@ public:
 	NodeBox* GetNodeBox(int id);
 	NodeBox* addNodeBox();
 	void deleteNodebox(int id);
+	void cloneNodebox(int id);
 	void select(int id) { _selected = id; }
 
 	// Node bulk updaters

@@ -68,10 +68,13 @@ void NBEditor::load()
 			lb->setVisible(false);
 			IGUIButton* b1 = guienv->addButton(rect<s32>(0, 100, 50, 125),
 					lb, GUI_PROJ_NEW_BOX, L"+", L"Add a node box");
-			IGUIButton* b2 = guienv->addButton(rect<s32>(60, 100, 110,125),
+			IGUIButton* b2 = guienv->addButton(rect<s32>(60, 100, 110, 125),
 					lb, GUI_PROJ_DELETE_BOX, L"-", L"Delete node box");
+			IGUIButton* b3 = guienv->addButton(rect<s32>(120, 100, 170, 125),
+					lb, GUI_PROJ_CLONE, L"Clone", L"Duplicate node box");
 			b1->setNotClipped(true);
 			b2->setNotClipped(true);
+			b3->setNotClipped(true);
 		}
 
 
@@ -443,6 +446,15 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 				IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
 				if (node && node->GetNodeBox(lb->getSelected())){
 					node->deleteNodebox(lb->getSelected());
+					load_ui();
+				}
+				break;
+			}
+			case GUI_PROJ_CLONE: {
+				Node* node = state->project->GetCurrentNode();
+				IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENB_GUI_MAIN_LISTBOX);
+				if (node && node->GetNodeBox(lb->getSelected())){
+					node->cloneNodebox(lb->getSelected());
 					load_ui();
 				}
 				break;
