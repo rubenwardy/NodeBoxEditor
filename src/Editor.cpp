@@ -161,7 +161,7 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 		// Do sleep
 		unsigned int now = std::clock();
 		if (dosleep) {
-			u32 sleeptime = int(double(1000) / double(65)) - (now - last);
+			u32 sleeptime = int(double(1000) / double(60)) - (now - last);
 			if (sleeptime > 0 && sleeptime < 200)
 				device->sleep(sleeptime);
 		}

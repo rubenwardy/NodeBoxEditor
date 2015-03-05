@@ -22,8 +22,16 @@ bool Minetest::findMinetestDir(std::string path)
 		std::cerr << "Minetest found at " << path.c_str() << std::endl;
 		minetest_dir = path;
 
-		if (FileExists((path + "bin/minetest").c_str())) {
-			minetest_exe = path + "bin/minetest";
+		if (FileExists((path + "bin" DIR_DELIM "minetest"
+#if _WIN32
+			".exe"
+#endif
+			).c_str())) {
+			minetest_exe = path + "bin" DIR_DELIM "minetest"
+#if _WIN32
+			".exe"
+#endif
+			;
 		} else
 			std::cerr << "...but no executable!" << std::endl;
 		return true;
@@ -66,10 +74,16 @@ bool Minetest::findMinetest(bool editor_is_installed)
 	path = getSaveLoadDirectory(_conf->get("save_directory"), editor_is_installed);
 	path = cleanDirectoryPath(path);
 
-	if (findMinetestDir(path + "../minetest/") && minetest_exe != "")
+	if (findMinetestDir(path + ".." DIR_DELIM "minetest" DIR_DELIM) && minetest_exe != "")
 		return true;
 
-	if (findMinetestDir(path + "minetest/") && minetest_exe != "")
+	if (findMinetestDir(path + "minetest" DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	if (findMinetestDir(path + ".." DIR_DELIM "Minetest" DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	if (findMinetestDir(path + "Minetest" DIR_DELIM) && minetest_exe != "")
 		return true;
 
 	std::cerr << "Minetest not found!" << std::endl;
@@ -127,7 +141,7 @@ bool Minetest::runMod(EditorState *state, const std::string &world)
 	std::string mod_to = worlddir + "worldmods" DIR_DELIM + modname;
 	CreateDir(mod_to);
 	mod_to = cleanDirectoryPath(mod_to);
-	export_textures(mod_to + "textures/", state);
+	export_textures(mod_to + "textures" DIR_DELIM, state);
 	FileFormat *writer = getFromType(FILE_FORMAT_LUA, state);
 	save_file(writer, state, mod_to + "init.lua");
 
