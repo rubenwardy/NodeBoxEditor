@@ -149,12 +149,18 @@ void FileDialog_save_project(EditorState *state)
 			state->isInstalled);
 
 	const char* filters[] = {"*.nbe"};
-	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
+	const char *cfile = tinyfd_saveFileDialog("Save Project", path.c_str(),
 			1, filters);
-	std::cerr << file << std::endl;
+
+	if (!cfile)
+		return;
+
+	std::string file = cfile;
 
 	if (file == "")
 		return;
+	
+	std::cerr << file << std::endl;
 
 	FileFormat *writer = getFromType(FILE_FORMAT_NBE, state);
 	save_file(writer, state, file);
@@ -173,12 +179,18 @@ void FileDialog_export(EditorState *state, int parser)
 	else if (parser == (int)FILE_FORMAT_CPP)
 		filters[0] = "*.cpp";
 
-	std::string file = tinyfd_saveFileDialog("Save Project", path.c_str(),
+	const char *cfile = tinyfd_saveFileDialog("Save Project", path.c_str(),
 			1, filters);
-	std::cerr << file << std::endl;
+
+	if (!cfile)
+		return;
+
+	std::string file = cfile;
 
 	if (file == "")
 		return;
+
+	std::cerr << file << std::endl;
 
 	FileFormat *writer = getFromType((FileFormatType)parser, state);
 	save_file(writer, state, file);
@@ -195,8 +207,14 @@ void FileDialog_export_obj(EditorState *state, Node *node)
 
 	const char* filters[] = {"*.obj"};
 
-	std::string filename = tinyfd_saveFileDialog("Export Node to Mesh", path.c_str(),
-			1, filters);
+	const char *cfile = tinyfd_saveFileDialog("Export Node to Mesh", path.c_str(),
+			1, filters);	
+
+	if (!cfile)
+		return;
+
+	std::string filename = cfile;
+
 	if (filename == "")
 		return;
 
