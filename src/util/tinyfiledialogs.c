@@ -278,6 +278,7 @@ char const * tinyfd_saveFileDialog (
 	ofn.lCustData       = 0L ;
 	ofn.lpfnHook        = NULL ;
 	ofn.lpTemplateName  = NULL ;
+	ofn.Flags |= OFN_NOCHANGEDIR;
 
 	if ( GetSaveFileName ( & ofn ) == 0 )
     {
@@ -357,6 +358,8 @@ char const * tinyfd_openFileDialog (
 	{
 		ofn.Flags |= OFN_ALLOWMULTISELECT;
 	}
+
+	ofn.Flags |= OFN_NOCHANGEDIR;
 
 	if ( GetOpenFileName ( & ofn ) == 0 )
     {

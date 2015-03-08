@@ -127,15 +127,14 @@ bool ImageDialog::OnEvent(const SEvent &event)
 					return true;
 				} else if (!state->project->media.add(path.c_str(), shortname, image, cb->isChecked())) {
 					state->device->getGUIEnvironment()->addMessageBox(L"Unable to import",
-							L"Failed to add the image\n\t(Has an image with the same name already been added?)");
+							L"Failed to add the image\n\t(Unknown reason)");
 					return true;
 				}
 				state->project->remesh();
-				if (node) {
+				if (node)
 					TextureDialog::show(state, node, face);
-				} else {
+				else
 					close();
-				}
 				return true;
 			} else {
 				state->device->getGUIEnvironment()->addMessageBox(L"Unable to import",

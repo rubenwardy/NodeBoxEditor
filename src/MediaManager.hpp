@@ -37,6 +37,7 @@ public:
 	};
 
 	Media() { std::cerr << "Media Manager created!" << std::endl; }
+	Media(const Media &old) { std::cerr << "Media Manager copied! (This shouldn't happen)" << std::endl; }
 	~Media();
 	bool import(std::string filepath, std::string filename, IVideoDriver* driver);
 	bool add(std::string filepath, std::string filename, IImage *image, bool overwrite = false);

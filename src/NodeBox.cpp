@@ -152,7 +152,7 @@ void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
 	two = new_two;
 }
 
-ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
+ITexture* darken(IVideoDriver* driver, IImage* image, float amt, const char *name)
 {
 	if(image == NULL)
 		return NULL;
@@ -171,7 +171,7 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
 		}
 	}
 
-	ITexture *retval = driver->addTexture("media/texture_box.png", image2);
+	ITexture *retval = driver->addTexture(name, image2);
 	image2->drop();
 	return retval;
 }
@@ -179,14 +179,13 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt)
 void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6])
 {
 	video::IVideoDriver* driver = device->getVideoDriver();
-	Media::Image *def = new Media::Image("default", driver->createImageFromFile("media/texture_box.png"));
+	static Media::Image *def = new Media::Image("default", driver->createImageFromFile("media/texture_box.png"));
+	
 	Media::Image *copied[6];
 	for (int i = 0; i < 6; i++) {
 		copied[i] = images[i];
-		if (!copied[i]) {
+		if (!copied[i])
 			copied[i] = def;
-			def->grab();
-		}
 	}
 	ISceneManager* smgr = device->getSceneManager();
 	if (model) {
@@ -250,11 +249,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer->BoundingBox.reset(0,0,0);
 	ITexture *texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5, copied[ECS_RIGHT]->name.c_str());
 	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5);
+		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5, copied[ECS_RIGHT]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_FRONT]->get());
+		texture = driver->addTexture(copied[ECS_FRONT]->name.c_str(), copied[ECS_FRONT]->get());
 	SMaterial mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer->Material = mat;
@@ -273,11 +272,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer2->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
+		texture = darken(driver, copied[ECS_BACK]->get(), 0.5, copied[ECS_BACK]->name.c_str());
 	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.5);
+		texture = darken(driver, copied[ECS_BACK]->get(), 0.5, copied[ECS_BACK]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_BACK]->get());
+		texture = driver->addTexture(copied[ECS_BACK]->name.c_str(), copied[ECS_BACK]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer2->Material = mat;
@@ -296,11 +295,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer3->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7, copied[ECS_LEFT]->name.c_str());
 	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7, copied[ECS_LEFT]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_LEFT]->get());
+		texture = driver->addTexture(copied[ECS_LEFT]->name.c_str(), copied[ECS_LEFT]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer3->Material = mat;
@@ -319,11 +318,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7, copied[ECS_RIGHT]->name.c_str());
 	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7);
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7, copied[ECS_RIGHT]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_RIGHT]->get());
+		texture = driver->addTexture(copied[ECS_RIGHT]->name.c_str(), copied[ECS_RIGHT]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer4->Material = mat;
@@ -342,9 +341,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer5->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "1")
-		texture = darken(driver, copied[ECS_TOP]->get(), 0.7);
+		texture = darken(driver, copied[ECS_TOP]->get(), 0.7, copied[ECS_TOP]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_TOP]->get());
+		texture = driver->addTexture(copied[ECS_TOP]->name.c_str(), copied[ECS_TOP]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer5->Material = mat;
@@ -362,11 +361,11 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer6->Vertices[3] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, topl.Y);
 	buffer6->BoundingBox.reset(0,0,0);
 	if (lighting == "2")
-		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4);
+		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4, copied[ECS_BOTTOM]->name.c_str());
 	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4);
+		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4, copied[ECS_BOTTOM]->name.c_str());
 	else
-		texture = driver->addTexture("media/texture_box.png", copied[ECS_BOTTOM]->get());
+		texture = driver->addTexture(copied[ECS_BOTTOM]->name.c_str(), copied[ECS_BOTTOM]->get());
 	mat = SMaterial();
 	mat.setTexture(0, texture);
 	buffer6->Material = mat;
