@@ -10,8 +10,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 #
 set(NBE_MAJOR_VERSION 0)
 set(NBE_MINOR_VERSION 8)
-set(NBE_PATCH_VERSION 0)
-set(NBE_DESCR_VERSION "0.8 - Glass")
+set(NBE_PATCH_VERSION 1)
+set(NBE_DESCR_VERSION "0.8.1 - Glass")
 configure_file(
 	"${PROJECT_SOURCE_DIR}/src/conf_cmake.hpp.in"
 	"${PROJECT_BINARY_DIR}/conf_cmake.hpp"
