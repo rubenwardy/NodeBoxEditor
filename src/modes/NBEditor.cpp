@@ -326,7 +326,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		target -= offset.UpperLeftCorner;
 
 		// Get the ray
-		line3d<irr::f32> ray = smgr->getSceneCollisionManager()
+		line3d<f32> ray = smgr->getSceneCollisionManager()
 				->getRayFromScreenCoordinates(target, smgr->getActiveCamera());
 
 		// Contains the output values
@@ -345,12 +345,16 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 				editor->state->plane_tri, wpos, tmpTri, tmpNode);
 
 		// Snapping
-		wpos -= vector3df(node->position.X, node->position.Y, node->position.Z);
+		wpos -= vector3df(
+			(f32)node->position.X, 
+			(f32)node->position.Y, 
+			(f32)node->position.Z
+		);
 
 		if (editor->state->settings->getBool("snapping")) {
-			wpos.X = floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
-			wpos.Y = floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
-			wpos.Z = floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
+			wpos.X = (f32)floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
+			wpos.Y = (f32)floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
+			wpos.Z = (f32)floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
 		}
 
 		// Do node limiting
@@ -539,7 +543,7 @@ bool NBEditor::OnEvent(const irr::SEvent &event) {
 			Node* node = state->project->GetCurrentNode();
 			if (node) {
 				int idx = node->GetId();
-				if (lb && idx < node->boxes.size() - 1){
+				if (lb && idx < (int)node->boxes.size() - 1){
 					node->select(idx + 1);
 				}
 			}
@@ -575,15 +579,19 @@ void NBEditor::updateProperties()
 	try {
 		irr::core::stringc name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
 		nb->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
-		nb->one.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL);
-		nb->one.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL);
-		nb->one.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(), NULL);
-		nb->two.X = wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(), NULL);
-		nb->two.Y = wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(), NULL);
-		nb->two.Z = wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(), NULL);
+		nb->one = vector3df(
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL), 
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL), 
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(), NULL)
+		);
+		nb->two = vector3df(
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(), NULL), 
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(), NULL), 
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(), NULL)
+		);
 		node->remesh();
 		load_ui();
-	} catch (void* e) {
+	} catch(void* e) {
 		state->device->getGUIEnvironment()->addMessageBox(L"Update failed",
 				L"Please check that the properties contain only numbers.");
 	}

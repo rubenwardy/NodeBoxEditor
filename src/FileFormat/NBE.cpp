@@ -295,14 +295,14 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 			node->addNodeBox();
 			node->GetCurrentNodeBox()->name = s[0];
 			node->GetCurrentNodeBox()->one = vector3df(
-				atof(s[1].c_str()),
-				atof(s[2].c_str()),
-				atof(s[3].c_str())
+				(f32)atof(s[1].c_str()),
+				(f32)atof(s[2].c_str()),
+				(f32)atof(s[3].c_str())
 			);
 			node->GetCurrentNodeBox()->two = vector3df(
-				atof(s[4].c_str()),
-				atof(s[5].c_str()),
-				atof(s[6].c_str())
+				(f32)atof(s[4].c_str()),
+				(f32)atof(s[5].c_str()),
+				(f32)atof(s[6].c_str())
 			);
 			node->remesh();
 		} else if (lower.find("end node") == 0){

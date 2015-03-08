@@ -50,7 +50,7 @@ NodeBox* Node::GetCurrentNodeBox()
 
 NodeBox* Node::GetNodeBox(int id)
 {
-	if (id < 0 || id > boxes.size()) {
+	if (id < 0 || id > (int)boxes.size()) {
 		return NULL;
 	}
 
@@ -84,7 +84,7 @@ void Node::deleteNodebox(int id)
 
 	delete boxes[id];
 	boxes.erase(boxes.begin() + id);
-	if (GetId() >= boxes.size())
+	if (GetId() >= (int)boxes.size())
 		_selected = boxes.size() - 1;
 }
 

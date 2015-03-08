@@ -187,20 +187,20 @@ bool NodeEditor::OnEvent(const irr::SEvent &event)
 		if (event.KeyInput.Key == KEY_INSERT){
 			state->project->AddNode(state);
 			load_ui();
-		}else if (event.KeyInput.Key == KEY_DELETE){
+		} else if (event.KeyInput.Key == KEY_DELETE){
 			if (state->project->GetCurrentNode()){
 				state->project->DeleteNode(state->project->GetSelectedNodeId());
 				load_ui();
 				return true;
 			}
-		}else if (event.KeyInput.Key == KEY_DOWN){
+		} else if (event.KeyInput.Key == KEY_DOWN){
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			int idx = state->project->GetSelectedNodeId();
-			if (lb && idx < state->project->GetNodeCount()-1){
+			if (lb && idx < (int)state->project->GetNodeCount() - 1){
 				state->project->SelectNode(idx + 1);
 				load_ui();
 			}
-		}else if (event.KeyInput.Key == KEY_UP){
+		} else if (event.KeyInput.Key == KEY_UP){
 			IGUIListBox* lb = (IGUIListBox*) state->menu->sidebar->getElementFromId(ENG_GUI_MAIN_LISTBOX);
 			int idx = state->project->GetSelectedNodeId();
 			if (lb && idx > 0){
@@ -222,7 +222,7 @@ void NodeEditor::updateProperties() {
 	try {
 		irr::core::stringc name = prop->getElementFromId(ENG_GUI_PROP_NAME)->getText();
 		node->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
-		int y = wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(), NULL);
+		int y = (int)wcstod(prop->getElementFromId(ENG_GUI_PROP_Y)->getText(), NULL);
 		if (state->settings->getBool("no_negative_node_y") && y < 0) {
 			std::list<Node*> & nodes = state->project->nodes;
 			for (std::list<Node*>::const_iterator it = nodes.begin();

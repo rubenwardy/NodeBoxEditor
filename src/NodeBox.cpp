@@ -152,7 +152,7 @@ void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
 	two = new_two;
 }
 
-ITexture* darken(IVideoDriver* driver, IImage* image, float amt, const char *name)
+ITexture* darken(IVideoDriver* driver, IImage* image, f32 amt, const char *name)
 {
 	if(image == NULL)
 		return NULL;
@@ -164,9 +164,9 @@ ITexture* darken(IVideoDriver* driver, IImage* image, float amt, const char *nam
 	for(u32 y=0; y<dim.Height; y++) {
 		for(u32 x=0; x<dim.Width; x++) {
 			video::SColor c = image2->getPixel(x,y);
-			c.setRed(amt * (float)c.getRed());
-			c.setGreen(amt * (float)c.getGreen());
-			c.setBlue(amt* (float)c.getBlue());
+			c.setRed((u32)(amt * c.getRed() + 0.5f));
+			c.setGreen((u32)(amt * c.getGreen() + 0.5f));
+			c.setBlue((u32)(amt * c.getBlue() + 0.5f));
 			image2->setPixel(x, y, c);
 		}
 	}
@@ -233,14 +233,14 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	// Init mesh
 	SMesh * cubeMesh = new SMesh();
 
-#define x0 -0.5
-#define x1 0.5
+#define x0 -0.5f
+#define x1 0.5f
 
 	std::string lighting = editor->settings->get("lighting");
 
 	// Front face
-	vector2df topl((one.X+0.5), (-two.Y+0.5));
-	vector2df btmr((two.X+0.5), (-one.Y+0.5));
+	vector2df topl((one.X + 0.5f), (-two.Y + 0.5f));
+	vector2df btmr((two.X + 0.5f), (-one.Y + 0.5f));
 	buffer->Vertices.set_used(4);
 	buffer->Vertices[0] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, btmr.Y);
 	buffer->Vertices[1] = video::S3DVertex(x1,x0,x0, 1,-1,-1, cubeColour, btmr.X, btmr.Y);
@@ -248,10 +248,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer->Vertices[3] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, topl.X, topl.Y);
 	buffer->BoundingBox.reset(0,0,0);
 	ITexture *texture = NULL;
-	if (lighting == "2")
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5, copied[ECS_RIGHT]->name.c_str());
-	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5, copied[ECS_RIGHT]->name.c_str());
+	if (lighting == "1" || lighting == "2")
+		texture = darken(driver, copied[ECS_FRONT]->get(), 0.5f, copied[ECS_RIGHT]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_FRONT]->name.c_str(), copied[ECS_FRONT]->get());
 	SMaterial mat = SMaterial();
@@ -262,8 +260,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Back face
-	topl = vector2df((-two.X + 0.5), (-two.Y + 0.5));
-	btmr = vector2df((-one.X + 0.5), (-one.Y + 0.5));
+	topl = vector2df((-two.X + 0.5f), (-two.Y + 0.5f));
+	btmr = vector2df((-one.X + 0.5f), (-one.Y + 0.5f));
 	buffer2->Vertices.set_used(4);
 	buffer2->Vertices[0] = video::S3DVertex(x1,x0,x1, 1, -1, 1, cubeColour, topl.X, btmr.Y);
 	buffer2->Vertices[1] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, btmr.X, btmr.Y);
@@ -271,10 +269,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer2->Vertices[3] = video::S3DVertex(x1,x1,x1, 1, 1, 1, cubeColour, topl.X, topl.Y);
 	buffer2->BoundingBox.reset(0,0,0);
 	texture = NULL;
-	if (lighting == "2")
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.5, copied[ECS_BACK]->name.c_str());
-	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_BACK]->get(), 0.5, copied[ECS_BACK]->name.c_str());
+	if (lighting == "1" || lighting == "2")
+		texture = darken(driver, copied[ECS_BACK]->get(), 0.5f, copied[ECS_BACK]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_BACK]->name.c_str(), copied[ECS_BACK]->get());
 	mat = SMaterial();
@@ -285,8 +281,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Left face
-	topl = vector2df((-two.Z + 0.5), (-two.Y + 0.5));
-	btmr = vector2df((-one.Z + 0.5), (-one.Y + 0.5));
+	topl = vector2df((-two.Z + 0.5f), (-two.Y + 0.5f));
+	btmr = vector2df((-one.Z + 0.5f), (-one.Y + 0.5f));
 	buffer3->Vertices.set_used(4);
 	buffer3->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
 	buffer3->Vertices[1] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, btmr.X, btmr.Y);
@@ -294,10 +290,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer3->Vertices[3] = video::S3DVertex(x0,x1,x1, -1, 1, 1, cubeColour, topl.X, topl.Y);
 	buffer3->BoundingBox.reset(0,0,0);
 	texture = NULL;
-	if (lighting == "2")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7, copied[ECS_LEFT]->name.c_str());
-	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7, copied[ECS_LEFT]->name.c_str());
+	if (lighting == "1" || lighting == "2")
+		texture = darken(driver, copied[ECS_LEFT]->get(), 0.7f, copied[ECS_LEFT]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_LEFT]->name.c_str(), copied[ECS_LEFT]->get());
 	mat = SMaterial();
@@ -308,8 +302,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Right face
-	topl = vector2df((one.Z + 0.5), (-two.Y + 0.5));
-	btmr = vector2df((two.Z + 0.5), (-one.Y + 0.5));
+	topl = vector2df((one.Z + 0.5f), (-two.Y + 0.5f));
+	btmr = vector2df((two.Z + 0.5f), (-one.Y + 0.5f));
 	buffer4->Vertices.set_used(4);
 	buffer4->Vertices[0] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, topl.X, btmr.Y);
 	buffer4->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, btmr.X, btmr.Y);
@@ -317,10 +311,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer4->Vertices[3] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, topl.X, topl.Y);
 	buffer4->BoundingBox.reset(0,0,0);
 	texture = NULL;
-	if (lighting == "2")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7, copied[ECS_RIGHT]->name.c_str());
-	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7, copied[ECS_RIGHT]->name.c_str());
+	if (lighting == "1" || lighting == "2")
+		texture = darken(driver, copied[ECS_RIGHT]->get(), 0.7f, copied[ECS_RIGHT]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_RIGHT]->name.c_str(), copied[ECS_RIGHT]->get());
 	mat = SMaterial();
@@ -331,8 +323,8 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Top face
-	topl = vector2df((one.X + 0.5), (-two.Z + 0.5));
-	btmr = vector2df((two.X + 0.5), (-one.Z + 0.5));
+	topl = vector2df((one.X + 0.5f), (-two.Z + 0.5f));
+	btmr = vector2df((two.X + 0.5f), (-one.Z + 0.5f));
 	buffer5->Vertices.set_used(4);
 	buffer5->Vertices[0] = video::S3DVertex(x0,x1,x0, -1, 1,-1, cubeColour, topl.X, btmr.Y);
 	buffer5->Vertices[1] = video::S3DVertex(x1,x1,x0,  1, 1,-1, cubeColour, btmr.X, btmr.Y);
@@ -341,7 +333,7 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	buffer5->BoundingBox.reset(0,0,0);
 	texture = NULL;
 	if (lighting == "1")
-		texture = darken(driver, copied[ECS_TOP]->get(), 0.7, copied[ECS_TOP]->name.c_str());
+		texture = darken(driver, copied[ECS_TOP]->get(), 0.7f, copied[ECS_TOP]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_TOP]->name.c_str(), copied[ECS_TOP]->get());
 	mat = SMaterial();
@@ -352,18 +344,16 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 
 
 	// Bottom face
-	topl = vector2df((-one.X + 0.5), (-one.Z + 0.5));
-	btmr = vector2df((-two.X + 0.5), (-two.Z + 0.5));
+	topl = vector2df((-one.X + 0.5f), (-one.Z + 0.5f));
+	btmr = vector2df((-two.X + 0.5f), (-two.Z + 0.5f));
 	buffer6->Vertices.set_used(4);
 	buffer6->Vertices[0] = video::S3DVertex(x0,x0,x1, -1,-1, 1, cubeColour, topl.X, btmr.Y);
 	buffer6->Vertices[1] = video::S3DVertex(x1,x0,x1,  1,-1, 1, cubeColour, btmr.X, btmr.Y);
 	buffer6->Vertices[2] = video::S3DVertex(x1,x0,x0,  1,-1,-1, cubeColour, btmr.X, topl.Y);
 	buffer6->Vertices[3] = video::S3DVertex(x0,x0,x0, -1,-1,-1, cubeColour, topl.X, topl.Y);
 	buffer6->BoundingBox.reset(0,0,0);
-	if (lighting == "2")
-		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4, copied[ECS_BOTTOM]->name.c_str());
-	else if (lighting == "1")
-		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4, copied[ECS_BOTTOM]->name.c_str());
+	if (lighting == "1" || lighting == "2")
+		texture = darken(driver, copied[ECS_BOTTOM]->get(), 0.4f, copied[ECS_BOTTOM]->name.c_str());
 	else
 		texture = driver->addTexture(copied[ECS_BOTTOM]->name.c_str(), copied[ECS_BOTTOM]->get());
 	mat = SMaterial();

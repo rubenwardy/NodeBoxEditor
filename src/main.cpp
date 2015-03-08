@@ -91,11 +91,17 @@ int main(int argc, char *argv[]) {
 	E_DRIVER_TYPE driv = irr::video::EDT_OPENGL;
 
 	const std::string confDriver = str_to_lower(conf->get("driver"));
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
 	if (confDriver == "directx8") {
 		driv = EDT_DIRECT3D8;
-	} else if (confDriver == "directx9") {
+	} else
+#endif
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
+	if (confDriver == "directx9") {
 		driv = EDT_DIRECT3D9;
-	} else if (confDriver == "software") {
+	} else
+#endif
+	if (confDriver == "software") {
 		driv = EDT_SOFTWARE;
 	}
 

@@ -121,9 +121,9 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 
 		if (state->project && state->project->GetCurrentNode()) {
 			vector3df pos = vector3df(
-				state->project->GetCurrentNode()->position.X,
-				state->project->GetCurrentNode()->position.Y,
-				state->project->GetCurrentNode()->position.Z
+				(f32)state->project->GetCurrentNode()->position.X,
+				(f32)state->project->GetCurrentNode()->position.Y,
+				(f32)state->project->GetCurrentNode()->position.Z
 			);
 			target->setPosition(pos);
 		}
@@ -351,7 +351,7 @@ void Editor::recreateCameras()
 
 	// reset matrix
 	matrix4 projMat;
-	irr::f32 orth_w = (float)ResX / (float)ResY;
+	irr::f32 orth_w = ResX / (irr::f32)ResY;
 	orth_w = 3 * orth_w;
 	projMat.buildProjectionMatrixOrthoLH(orth_w, 3, 1, 100);
 
@@ -376,10 +376,10 @@ void Editor::recreateCameras()
 			camera[i] = smgr->addCameraSceneNode(target);
 			switch(type) {
 			case VIEWT_TOP:
-				camera[i]->setPosition(vector3df(0, 2, -0.01));
+				camera[i]->setPosition(vector3df(0, 2, -0.01f));
 				break;
 			case VIEWT_BOTTOM:
-				camera[i]->setPosition(vector3df(0, -2, -0.01));
+				camera[i]->setPosition(vector3df(0, -2, -0.01f));
 				break;
 			case VIEWT_LEFT:
 				camera[i]->setPosition(vector3df(-5, 0, 0));
@@ -455,6 +455,8 @@ const char* viewportToSetting(Viewport port)
 		return "viewport_bottom_left";
 	case VIEW_BR:
 		return "viewport_bottom_right";
+	default:
+		return "viewport_top_left";
 	}
 }
 
@@ -475,6 +477,8 @@ const char* viewportTypeToSetting(ViewportType type)
 		return "left";
 	case VIEWT_BOTTOM:
 		return "bottom";
+	default:
+		return "pers";
 	}
 }
 
@@ -527,8 +531,8 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect,
 		vector2di delta = state->mouse_position;
 		delta -= viewport_drag_last;
 		viewport_drag_last = state->mouse_position;
-		viewport_offset[(int)viewport].X -= delta.X * 0.01;
-		viewport_offset[(int)viewport].Y += delta.Y * 0.01;
+		viewport_offset[(int)viewport].X -= (f32)delta.X * 0.01f;
+		viewport_offset[(int)viewport].Y += (f32)delta.Y * 0.01f;
 		if (viewport_offset[(int)viewport].X > 0.5)
 			viewport_offset[(int)viewport].X = 0.5;
 		if (viewport_offset[(int)viewport].X < -0.5)
