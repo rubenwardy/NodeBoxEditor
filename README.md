@@ -24,6 +24,7 @@ Contributors:
 * Traxie21: small changed textures for node.
 * jmf: Fixed small compile bug fixes.
 * ShadowNinja: Unlimited node boxes, code style, refactoring and small fixes.
+* Krock/SmallJoker: Fixed warnings, fixed conf_cmake.hpp and Windows builds.
 
 Building
 --------
