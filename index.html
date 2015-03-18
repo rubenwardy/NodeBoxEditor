@@ -133,7 +133,7 @@
 			<p style="text-align: center">
 				<a href="https://forum.minetest.net/viewtopic.php?f=14&amp;t=2840" class="button">Forum Topic</a>
 				<a href="http://github.com/rubenwardy/NodeBoxEditor" class="button">GitHub</a>
-				<a href="https://www.dropbox.com/s/f7ukajwg3nh8ju9/NodeBoxEditor_0_7_WindowsBuild.zip?dl=1" class="button">Windows Build</a>
+				<a href="https://github.com/rubenwardy/NodeBoxEditor/releases/download/v0.8.1/NodeBoxEditor_0_8_1_WindowsBuild.zip" class="button">Windows Build</a>
 			</p>
 		</article>
 		<a class="screenshot" href="http://a.pomf.se/ndyske.png">
@@ -178,9 +178,11 @@
 
 			<h3>Editor</h3>
 
-			<p>Use WASD to move the perspective view.</p>
 			<ul>
-			<li>Use the options under view to pick which viewport to show.</li>
+			<li>Use WASD to move the perspective view.</li>
+			<li>Hold the middle mouse button over a viewport and drag to move it.</li>
+			<li>Press Alt+W to expand a viewport while hovering over it...</li>
+			<li>...or use the options under view to pick which viewport to show.</li>
 			<li>Use the mode icon on the top left of the screen to change modes / tools.</li>
 			<li>Click the icon to pop out a list of modes / tools.</li>
 			<li>Click an icon to select the corresponding mode.</li>
@@ -193,7 +195,9 @@
 			<li>File<ul>
 			<li>Open Project - discard the current project and open a new one.</li>
 			<li>Save Project - save the current project.</li>
-			<li>Export - export the project to Lua, or other formats supported.</li>
+			<li>Save Project As - save the current project to a new file.</li>
+			<li><a href="#run-in-minetest">Run in Minetest</a></li>
+			<li>Export - An export list will drop down giving options</li>
 			<li>Exit - exit the editor.</li>
 			</ul>
 			</li>
@@ -253,6 +257,17 @@
 			<li>Lua file (lua) - Exports code which could be installed as a mod. Use when you want to run in Minetest.</li>
 			<li>Minetest Classic (cpp) - Exports code to be used in Minetest Classic. Use when you want to run in Minetest Classic.</li>
 			</ul>
+			
+			<h3 id="run-in-minetest">Run in Minetest</h3>
+			
+			<p>When you click this, the editor will try to find the Minetest root folder.
+			If it doesn't, you'll need to change a setting in editor.conf</p>
+			
+<pre><code>
+minetest_root = c://Games/Minetest/
+minetest_root = /home/rubenwardy/Game/Minetest/
+# Do not include bin/minetest or bin/minetest.exe in the root.
+</code></pre>
 		</article>
 	</main>
 </body>
