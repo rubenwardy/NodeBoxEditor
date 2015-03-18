@@ -9,6 +9,13 @@ limiting = true
 # Should be absolute path.
 save_directory =
 
+# The editor should attempt to find Minetest automatically
+# If it fails, enter an absolute path to the minetest root folder, eg:
+#     c://Games/Minetest/
+#     /home/rubenwardy/Game/Minetest/
+# Do not include bin/minetest or bin/minetest.exe in the root.
+minetest_root = 
+
 # The view of each viewport
 # can be: pers, front, back, top, bottom, left, right
 viewport_top_left = pers
