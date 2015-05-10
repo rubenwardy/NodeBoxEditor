@@ -3,4 +3,8 @@
 
 #define EDITOR_TEXT_VERSION "@NBE_DESCR_VERSION@"
 
+#if @DEBUG@
+#define _DEBUG
+#endif
+
 #endif

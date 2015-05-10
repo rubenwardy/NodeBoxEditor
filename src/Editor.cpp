@@ -3,6 +3,7 @@
 #include "modes/NBEditor.hpp"
 #include "modes/TextureEditor.hpp"
 #include "modes/NodeEditor.hpp"
+#include "util/string.hpp"
 #include <ctime>
 #include <time.h>
 
@@ -21,6 +22,22 @@ Editor::Editor() :
 		camera[i] = NULL;
 	}
 }
+
+#ifdef _DEBUG
+#include <sstream>
+void debugRenderINT(int id, IrrlichtDevice *device, std::string name, int content)
+{
+		int ResX = device->getVideoDriver()->getScreenSize().Width;
+		int ResY = device->getVideoDriver()->getScreenSize().Height;
+		std::ostringstream os;
+		os << name;
+		os << ": ";
+		os << content;
+		device->getGUIEnvironment()->getSkin()->getFont()->
+				draw(narrow_to_wide(os.str()).c_str(),
+				rect<s32>(80, ResY - id*20 - 10, ResX - 200, ResY - id*20), SColor(255, 255, 255, 255));
+}
+#endif
 
 bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 		bool editor_is_installed)
@@ -132,6 +149,12 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 
 		if (state->menu->dialog)
 			state->menu->dialog->draw(driver);
+
+#ifdef _DEBUG
+		debugRenderINT(1, device, "MaterialRenders", driver->getMaterialRendererCount());
+		debugRenderINT(2, device, "Triangles", driver->getPrimitiveCountDrawn());
+		debugRenderINT(3, device, "Textures", driver->getTextureCount());
+#endif
 
 		driver->endScene();
 

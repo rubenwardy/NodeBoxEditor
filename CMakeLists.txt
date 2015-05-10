@@ -12,10 +12,16 @@ set(NBE_MAJOR_VERSION 0)
 set(NBE_MINOR_VERSION 8)
 set(NBE_PATCH_VERSION 1)
 set(NBE_DESCR_VERSION "0.8.1 - Glass")
+set(DEBUG "" CACHE BOOL "Is debug mode (optional)")
+if(DEBUG)
+	message("-- Is debug")
+	set(CMAKE_BUILD_TYPE debug)
+endif(DEBUG)
 configure_file(
 	"${PROJECT_SOURCE_DIR}/src/conf_cmake.hpp.in"
 	"${PROJECT_BINARY_DIR}/conf_cmake.hpp"
 )
+
 
 #
 # Source files

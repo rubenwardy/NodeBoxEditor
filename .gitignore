@@ -2,7 +2,8 @@
 bin
 
 # Build system
-CMake*
+CMakeCache.txt
+CMakeFiles
 cmake*
 Makefile
 
