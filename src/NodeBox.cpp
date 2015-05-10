@@ -186,6 +186,17 @@ ITexture* darken(IVideoDriver* driver, IImage* image, f32 amt, const char *name)
 	return retval;
 }
 
+void NodeBox::removeMesh(IVideoDriver *driver)
+{
+	if (model) {
+		for (int i = 0; i < model->getMaterialCount(); i++)
+			driver->removeTexture(model->getMaterial(i).getTexture(0));
+
+		model->remove();
+		model = NULL;
+	}
+}
+
 void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6])
 {
 	if (!rebuild_needed)
@@ -203,13 +214,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 			copied[i] = def;
 	}
 	ISceneManager* smgr = device->getSceneManager();
-	if (model) {
-		for (int i = 0; i < model->getMaterialCount(); i++)
-			driver->removeTexture(model->getMaterial(i).getTexture(0));
 
-		model->remove();
-		model = NULL;
-	}
+	removeMesh(driver);
+
 	vector3df position = vector3df(
 			nd_position.X + one.X + ((two.X - one.X) / 2),
 			nd_position.Y + one.Y + ((two.Y - one.Y) / 2),
@@ -437,6 +444,7 @@ void NodeBox::rotate(EAxis axis)
 		one.Z = two.Z;
 		two.Z = tmp;
 	}
+	rebuild_needed = true;
 }
 
 void NodeBox::flip(EAxis axis)
@@ -480,4 +488,5 @@ void NodeBox::flip(EAxis axis)
 		one.Z = two.Z;
 		two.Z = tmp;
 	}
+	rebuild_needed = true;
 }

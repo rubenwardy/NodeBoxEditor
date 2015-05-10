@@ -38,6 +38,7 @@ Node::~Node()
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
+		(*it)->removeMesh(state->device->getVideoDriver());
 		delete *it;
 	}
 	boxes.clear();
@@ -82,6 +83,7 @@ void Node::deleteNodebox(int id)
 		return;
 	}
 
+	boxes[id]->removeMesh(state->device->getVideoDriver());
 	delete boxes[id];
 	boxes.erase(boxes.begin() + id);
 	if (GetId() >= (int)boxes.size())

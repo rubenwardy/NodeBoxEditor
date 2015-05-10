@@ -16,11 +16,7 @@ public:
 		name(name), one(one), two(two), model(NULL), rebuild_needed(true)
 	{}
 
-	~NodeBox()
-	{
-		if (model)
-			model->remove();
-	}
+	void removeMesh(IVideoDriver *driver);
 
 	irr::core::vector3df one;
 	irr::core::vector3df two;
