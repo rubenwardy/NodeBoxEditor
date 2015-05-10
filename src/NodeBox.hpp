@@ -13,7 +13,7 @@ public:
 	NodeBox() {};
 
 	NodeBox(const std::string & name, const vector3df & one, const vector3df & two) :
-		name(name), one(one), two(two), model(NULL)
+		name(name), one(one), two(two), model(NULL), rebuild_needed(true)
 	{}
 
 	~NodeBox()
@@ -24,6 +24,7 @@ public:
 
 	irr::core::vector3df one;
 	irr::core::vector3df two;
+	bool rebuild_needed;
 	std::string name;
 	irr::scene::IMeshSceneNode* model;
 

@@ -1,6 +1,9 @@
 #include "NodeBox.hpp"
 
-void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df position, bool both){
+void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df position, bool both)
+{
+	vector3df before_one = one;
+	vector3df before_two = two;
 	switch(type) {
 	case CDR_X_P:
 		if (both) {
@@ -81,9 +84,13 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df pos
 		one.Z = position.Z;
 		break;
 	}
+
+	if (before_one != one || before_two != two)
+		rebuild_needed = true;
 }
 
-void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position){
+void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
+{
 	vector3df new_one = one;
 	vector3df new_two = two;
 	vector3df move_dist = vector3df(0,0,0);
@@ -124,7 +131,7 @@ void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
 		}
 	}
 
-	if (move_dist.Y != 0){
+	if (move_dist.Y != 0) {
 		if (
 				(new_one.Y + move_dist.Y <= 0.5 &&
 				new_one.Y + move_dist.Y >= -0.5 &&
@@ -150,11 +157,14 @@ void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
 
 	one = new_one;
 	two = new_two;
+
+	if (move_dist != vector3df(0, 0, 0))
+		rebuild_needed = true;
 }
 
 ITexture* darken(IVideoDriver* driver, IImage* image, f32 amt, const char *name)
 {
-	if(image == NULL)
+	if (image == NULL)
 		return NULL;
 
 	core::dimension2d<u32> dim = image->getDimension();
@@ -178,9 +188,14 @@ ITexture* darken(IVideoDriver* driver, IImage* image, f32 amt, const char *name)
 
 void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6])
 {
+	if (!rebuild_needed)
+		return;
+
+	rebuild_needed = false;
+
 	video::IVideoDriver* driver = device->getVideoDriver();
 	static Media::Image *def = new Media::Image("default", driver->createImageFromFile("media/texture_box.png"));
-	
+
 	Media::Image *copied[6];
 	for (int i = 0; i < 6; i++) {
 		copied[i] = images[i];
