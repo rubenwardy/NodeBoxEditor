@@ -204,6 +204,9 @@ void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevi
 	}
 	ISceneManager* smgr = device->getSceneManager();
 	if (model) {
+		for (int i = 0; i < model->getMaterialCount(); i++)
+			driver->removeTexture(model->getMaterial(i).getTexture(0));
+
 		model->remove();
 		model = NULL;
 	}
