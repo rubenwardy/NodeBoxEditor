@@ -38,6 +38,7 @@ void drawIconAt(const wchar_t* label, int x, int y, Media::Image *image, IVideoD
 		ITexture *texture = driver->addTexture("tmpicon.png", image->get());
 		driver->draw2DImage(texture, rect<s32>(x, y, x + 64, y + 64),
 				rect<s32>(0, 0, texture->getSize().Width, texture->getSize().Height));
+		driver->removeTexture(texture);
 	}
 	font->draw(label, rect<s32>(x + 10, y + 68, 64, 25), SColor(255, 255, 255, 255));
 }
