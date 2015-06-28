@@ -78,6 +78,8 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 
 	Media::Image *image = node->getTexture(face);
 	if (image) {
+		if (the_image)
+			driver->removeTexture(the_image);
 		the_image = driver->addTexture("tmpicon.png", image->get());
 	}
 
@@ -130,6 +132,9 @@ bool TextureDialog::canClose()
 
 bool TextureDialog::close()
 {
+	IVideoDriver *driver = state->device->getVideoDriver();
+	if (the_image)
+		driver->removeTexture(the_image);
 	win->remove();
 	state->menu->dialog = NULL;
 	delete this;
@@ -140,6 +145,8 @@ bool TextureDialog::OnEvent(const SEvent &event)
 {
 	if (event.EventType != EET_GUI_EVENT)
 		return false;
+
+	IVideoDriver *driver = state->device->getVideoDriver();
 
 	if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
 		switch (event.GUIEvent.Caller->getID()) {
@@ -223,6 +230,8 @@ bool TextureDialog::OnEvent(const SEvent &event)
 		}} // end of switch
 	} else if (event.GUIEvent.EventType == EGET_LISTBOX_CHANGED && event.GUIEvent.Caller == lb) {
 		if (lb->getSelected() == 0) {
+			if (the_image)
+				driver->removeTexture(the_image);
 			the_image = NULL;
 			return true;
 		}
@@ -234,6 +243,8 @@ bool TextureDialog::OnEvent(const SEvent &event)
 				it != images.end();
 				++it) {
 			if (count == lb->getSelected()-1) {
+				if (the_image)
+					driver->removeTexture(the_image);
 				the_image = state->device->getVideoDriver()->addTexture("tmpicon.png", it->second->get());
 				break;
 			}
