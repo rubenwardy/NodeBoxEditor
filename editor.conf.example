@@ -5,6 +5,9 @@ snapping = true
 # limiting stops node boxes going out of node bounds
 limiting = true
 
+# If true, positions in nodebox properties are shown as multiples of 1/16
+fractional_positions = false
+
 # Directory to save projects and export to.
 # Should be absolute path.
 save_directory =
@@ -14,7 +17,7 @@ save_directory =
 #     c://Games/Minetest/
 #     /home/rubenwardy/Game/Minetest/
 # Do not include bin/minetest or bin/minetest.exe in the root.
-minetest_root = 
+minetest_root =
 
 # The view of each viewport
 # can be: pers, front, back, top, bottom, left, right

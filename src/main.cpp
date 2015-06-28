@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
 	}
 	conf->set("snapping", "true");
 	conf->set("limiting", "true");
+	conf->set("fractional_positions", "false");
 	conf->set("driver", "opengl");
 	conf->set("hide_sidebar", "false");
 	conf->set("save_directory", "");

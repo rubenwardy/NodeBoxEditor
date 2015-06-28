@@ -19,6 +19,7 @@ enum NODEBOX_EDITOR_GUI_IDS {
 	ENB_GUI_PROP_Y2,
 	ENB_GUI_PROP_Z2,
 	ENB_GUI_PROP_NAME,
+	ENB_GUI_PROP_DECIMALS,
 	ENB_GUI_PROP_UPDATE,
 	ENB_GUI_PROP_REVERT,
 	ENB_GUI_FLP_X,
@@ -128,13 +129,19 @@ void NBEditor::load()
 
 		// Add positioning
 		addXYZ(t, guienv, vector2di(10, 60),  ENB_GUI_PROP_X1);
-		addXYZ(t, guienv, vector2di(10, 160), ENB_GUI_PROP_X2); // 60
+		addXYZ(t, guienv, vector2di(10, 140), ENB_GUI_PROP_X2);
+
+		// Add show decimals checkbox
+		bool fp = state->settings->getBool("fractional_positions");
+		guienv->addCheckBox(fp, rect<s32>(30, 215, 200, 245), t,
+				ENB_GUI_PROP_DECIMALS, L"As fractions of 16")->setNotClipped(true);
 
 		// Add buttons
-		guienv->addButton(rect<s32>(30, 250, 100, 280), t, ENB_GUI_PROP_UPDATE,
+		guienv->addButton(rect<s32>(30, 250, 100, 250+30), t, ENB_GUI_PROP_UPDATE,
 				L"Update", L"")->setNotClipped(true);
-		guienv->addButton(rect<s32>(110, 250, 180, 280), t, ENB_GUI_PROP_REVERT,
+		guienv->addButton(rect<s32>(110, 250, 180, 250+30), t, ENB_GUI_PROP_REVERT,
 				L"Revert", L"")->setNotClipped(true);
+
 	}
 	load_ui();
 }
@@ -179,23 +186,30 @@ void NBEditor::fillProperties()
 	IGUIStaticText *sidebar = state->menu->sidebar;
 	Node *node = state->project->GetCurrentNode();
 
-	if (!sidebar || !node) {
+	if (!sidebar || !node)
 		return;
-	}
 
 	NodeBox *nb = node->GetCurrentNodeBox();
 
-	if (!nb) {
+	if (!nb)
 		return;
-	}
 
 	sidebar->getElementFromId(ENB_GUI_PROP)->setVisible(true);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_X1, nb->one.X);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Y1, nb->one.Y);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Z1, nb->one.Z);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_X2, nb->two.X);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Y2, nb->two.Y);
-	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Z2, nb->two.Z);
+
+	vector3df one = nb->one;
+	vector3df two = nb->two;
+
+	if (state->settings->getBool("fractional_positions")) {
+		one *= 16;
+		two *= 16;
+	}
+
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_X1, one.X);
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Y1, one.Y);
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Z1, one.Z);
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_X2, two.X);
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Y2, two.Y);
+	fillTB(sidebar, ENB_GUI_PROP, ENB_GUI_PROP_Z2, two.Z);
 
 	IGUIElement* element = sidebar->getElementFromId(ENB_GUI_PROP)
 			->getElementFromId(ENB_GUI_PROP_NAME);
@@ -346,8 +360,8 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 		// Snapping
 		wpos -= vector3df(
-			(f32)node->position.X, 
-			(f32)node->position.Y, 
+			(f32)node->position.X,
+			(f32)node->position.Y,
 			(f32)node->position.Z
 		);
 
@@ -382,6 +396,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		}
 
 		// Call required function
+		editor->fillProperties();
 		if (actualType < CDR_XZ) {
 			box->resizeNodeBoxFace(editor->state, actualType, wpos,
 				editor->state->keys[KEY_LCONTROL] == EKS_DOWN);
@@ -435,7 +450,16 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 bool NBEditor::OnEvent(const irr::SEvent &event) {
 	if (event.EventType == EET_GUI_EVENT) {
-		if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
+		if (event.GUIEvent.EventType == EGET_CHECKBOX_CHANGED) {
+			switch (event.GUIEvent.Caller->getID()) {
+			case ENB_GUI_PROP_DECIMALS: {
+				bool fp = state->settings->getBool("fractional_positions");
+				state->settings->set("fractional_positions",
+						fp?"false":"true");
+				fillProperties();
+				return true;
+			}}
+		} else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED) {
 			switch (event.GUIEvent.Caller->getID()) {
 			case GUI_PROJ_NEW_BOX: {
 				Node* node = state->project->GetCurrentNode();
@@ -579,16 +603,27 @@ void NBEditor::updateProperties()
 	try {
 		irr::core::stringc name = prop->getElementFromId(ENB_GUI_PROP_NAME)->getText();
 		nb->name = str_replace(std::string(name.c_str(), name.size()), ' ', '_');
-		nb->one = vector3df(
-			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL), 
-			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL), 
+		vector3df one(
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X1)->getText(), NULL),
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y1)->getText(), NULL),
 			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Z1)->getText(), NULL)
 		);
-		nb->two = vector3df(
-			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(), NULL), 
-			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(), NULL), 
+		vector3df two(
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_X2)->getText(), NULL),
+			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Y2)->getText(), NULL),
 			(f32)wcstod(prop->getElementFromId(ENB_GUI_PROP_Z2)->getText(), NULL)
 		);
+
+		if (state->settings->getBool("fractional_positions")) {
+			one /= 16;
+			two /= 16;
+		}
+
+		if (one != nb->one || two != nb->two) {
+			nb->one = one;
+			nb->two = two;
+			nb->rebuild_needed = true;
+		}
 		node->remesh();
 		load_ui();
 	} catch(void* e) {

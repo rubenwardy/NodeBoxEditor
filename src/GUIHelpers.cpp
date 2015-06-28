@@ -41,6 +41,6 @@ void addBox(IGUIElement* parent, IGUIEnvironment* guienv, vector2di pos, int ind
 
 void addXYZ(IGUIElement* parent,IGUIEnvironment* guienv, vector2di pos, int startIndex){
 	addBox(parent, guienv, vector2di(pos.X, pos.Y),      startIndex,     L"X");  // 0,0
-	addBox(parent, guienv, vector2di(pos.X, pos.Y + 30), startIndex + 1, L"Y");  // 80, 0
-	addBox(parent, guienv, vector2di(pos.X, pos.Y + 60), startIndex + 2, L"Z");  // 160, 0
+	addBox(parent, guienv, vector2di(pos.X, pos.Y + 25), startIndex + 1, L"Y");  // 80, 0
+	addBox(parent, guienv, vector2di(pos.X, pos.Y + 50), startIndex + 2, L"Z");  // 160, 0
 }

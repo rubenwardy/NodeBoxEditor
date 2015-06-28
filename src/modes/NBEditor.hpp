@@ -5,7 +5,6 @@
 
 class EditorState;
 class NBEditor;
-
 class CDR
 {
 public:
@@ -24,6 +23,7 @@ public:
 class EditorMode;
 class NBEditor :public EditorMode
 {
+	friend class CDR;
 public:
 	NBEditor(EditorState* st);
 
