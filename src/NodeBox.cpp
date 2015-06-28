@@ -1,6 +1,7 @@
 #include "NodeBox.hpp"
 
-void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df position, bool both)
+void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type,
+		vector3df position, bool both)
 {
 	vector3df before_one = one;
 	vector3df before_two = two;
@@ -197,10 +198,15 @@ void NodeBox::removeMesh(IVideoDriver *driver)
 	}
 }
 
-void NodeBox::buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6])
+void NodeBox::buildNode(EditorState* editor, vector3di nd_position,
+		IrrlichtDevice* device, Media::Image* images[6], bool force)
 {
-	if (!rebuild_needed)
+	std::cerr << "Buildnode: " << (force?"true":"false") << std::endl;
+
+	if (!rebuild_needed && !force)
 		return;
+
+	std::cerr << "Rebuilding nodebox mesh..." << std::endl;
 
 	rebuild_needed = false;
 

@@ -113,12 +113,12 @@ void Node::setTexture(CubeSide face, Media::Image *image)
 }
 
 // Build node models
-void Node::remesh()
+void Node::remesh(bool force)
 {
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
-		(*it)->buildNode(state, position, device, images);
+		(*it)->buildNode(state, position, device, images, force);
 	}
 }
 

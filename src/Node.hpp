@@ -27,7 +27,7 @@ public:
 	void select(int id) { _selected = id; }
 
 	// Node bulk updaters
-	void remesh(); // creates the node mesh
+	void remesh(bool force = false); // creates the node mesh
 	void remesh(NodeBox *box);
 	void setAllTextures(Media::Image *def);
 	void rotate(EAxis axis);

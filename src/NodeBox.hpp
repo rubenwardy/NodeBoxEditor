@@ -32,6 +32,7 @@ public:
 			one.Z + ((two.Z - one.Z) / 2)
 		);
 	}
+
 	irr::core::vector3df GetScale()
 	{
 		return vector3df(
@@ -40,9 +41,12 @@ public:
 			(two.Z - one.Z) / 2
 		);
 	}
-	void resizeNodeBoxFace(EditorState* editor, CDRType type, vector3df position, bool both);
+
+	void resizeNodeBoxFace(EditorState* editor, CDRType type,
+			vector3df position, bool both);
 	void moveNodeBox(EditorState* editor, CDRType type, vector3df position);
-	void buildNode(EditorState* editor, vector3di nd_position, IrrlichtDevice* device, Media::Image* images[6]);
+	void buildNode(EditorState* editor, vector3di nd_position,
+			IrrlichtDevice* device, Media::Image* images[6], bool force = false);
 	void rotate(EAxis axis);
 	void flip(EAxis axis);
 };

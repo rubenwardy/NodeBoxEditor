@@ -153,7 +153,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 		case ETD_GUI_ID_APPLY: {
 			if (lb->getSelected() == 0) {
 				node->setTexture(face, NULL);
-				node->remesh();
+				node->remesh(true);
 				return true;
 			}
 
@@ -165,7 +165,7 @@ bool TextureDialog::OnEvent(const SEvent &event)
 					++it) {
 				if (count == lb->getSelected()-1) {
 					node->setTexture(face, it->second);
-					node->remesh();
+					node->remesh(true);
 					break;
 				}
 				count++;
