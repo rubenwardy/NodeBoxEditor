@@ -6,6 +6,7 @@
 #include "util/string.hpp"
 #include <ctime>
 #include <time.h>
+#include <math.h>
 
 Editor::Editor() :
 	state(NULL),
@@ -198,7 +199,8 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 	return true;
 }
 
-int Editor::getViewportAt(vector2di pos) {
+EViewport Editor::getViewportAt(vector2di pos)
+{
 	if (currentWindow == -1) {
 		IVideoDriver *driver = state->device->getVideoDriver();
 		int ResX = driver->getScreenSize().Width;
@@ -208,16 +210,16 @@ int Editor::getViewportAt(vector2di pos) {
 
 		if (pos.X > ResX / 2)
 			if (pos.Y > ResY / 2)
-				return 3;
+				return VIEW_BR;
 			else
-				return 1;
+				return VIEW_TR;
 		else
 			if (pos.Y > ResY / 2)
-				return 2;
+				return VIEW_BL;
 			else
-				return 0;
+				return VIEW_TL;
 	} else
-		return currentWindow;
+		return (EViewport)currentWindow;
 }
 
 bool Editor::OnEvent(const SEvent& event)
@@ -262,23 +264,28 @@ bool Editor::OnEvent(const SEvent& event)
 	// EViewport Zoom
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_MOUSE_WHEEL) {
-		int vp = getViewportAt(state->mouse_position);
-		viewport_offset[vp].Z += event.MouseInput.Wheel;
-		std::cerr << vp << ": " << viewport_offset[vp].Z << std::endl;
+		EViewport vp = getViewportAt(state->mouse_position);
+		viewport_offset[(int)vp].Z += event.MouseInput.Wheel;
+		if (viewport_offset[(int)vp].Z > 64)
+			viewport_offset[(int)vp].Z = 64;
+		if (viewport_offset[(int)vp].Z < -25)
+			viewport_offset[(int)vp].Z = -25;
+		applyCameraOffsets(vp);
 	}
 
 	//
 	// Key events
 	//
-	else if (event.EventType == EET_KEY_INPUT_EVENT) {
+	else if (event.EventType == EET_KEY_INPUT_EVENT &&
+			!event.KeyInput.PressedDown) {
 		// alt+W functionality
-		if (event.KeyInput.PressedDown &&
-				event.KeyInput.Key == KEY_KEY_W &&
+		if (event.KeyInput.Key == KEY_KEY_W &&
 				state->keys[164] == EKS_DOWN) {
 			if (currentWindow == -1) {
-				currentWindow = getViewportAt(state->mouse_position);
+				currentWindow = (int)getViewportAt(state->mouse_position);
 			} else
 				currentWindow = -1;
+			return true;
 		}
 
 		// Don't do shortcuts if in text box
@@ -385,23 +392,7 @@ void Editor::LoadScene()
 
 void Editor::recreateCameras()
 {
-	// Irrlicht
-	IVideoDriver *driver = device->getVideoDriver();
 	ISceneManager *smgr = device->getSceneManager();
-
-	// Get screen sizes
-	int ResX = driver->getScreenSize().Width;
-	if (!state->settings->getBool("hide_sidebar"))
-		ResX -= 256;
-	int ResY = driver->getScreenSize().Height;
-
-	// reset matrix
-	matrix4 projMat;
-	irr::f32 orth_w = ResX / (irr::f32)ResY;
-	orth_w = 3 * orth_w;
-	projMat.buildProjectionMatrixOrthoLH(orth_w, 3, 1, 100);
-
-	// Loop through cameras
 	for (int i = 0; i < 4; i++) {
 		// Delete old camera
 		if (camera[i]) {
@@ -416,32 +407,11 @@ void Editor::recreateCameras()
 			camera[i] = smgr->addCameraSceneNode(NULL, vector3df(0, 0, -2),
 					vector3df(0, 0, 0));
 			camera[i]->setParent(pivot);
-			camera[i]->setAspectRatio((float)ResX / (float)ResY);
 			pivot->setRotation(oldrot);
-		} else {
+		} else
 			camera[i] = smgr->addCameraSceneNode(target);
-			switch(type) {
-			case VIEWT_TOP:
-				camera[i]->setPosition(vector3df(0, 2, -0.01f));
-				break;
-			case VIEWT_BOTTOM:
-				camera[i]->setPosition(vector3df(0, -2, -0.01f));
-				break;
-			case VIEWT_LEFT:
-				camera[i]->setPosition(vector3df(-5, 0, 0));
-				break;
-			case VIEWT_RIGHT:
-				camera[i]->setPosition(vector3df(5, 0, 0));
-				break;
-			case VIEWT_FRONT:
-				camera[i]->setPosition(vector3df(0, 0, -5));
-				break;
-			case VIEWT_BACK:
-				camera[i]->setPosition(vector3df(0, 0, 5));
-				break;
-			}
-			camera[i]->setProjectionMatrix(projMat, true);
-		}
+
+		// Set position and zoom of camera
 		applyCameraOffsets((EViewport)i);
 	}
 }
@@ -487,6 +457,28 @@ void Editor::applyCameraOffsets(EViewport viewport)
 		camSetPosTar(camera[i], vector3df(-offset.X, offset.Y, 2),
 				vector3df(0, 0, -100));
 		break;
+	}
+
+	// Get screen sizes
+	IVideoDriver *driver = device->getVideoDriver();
+	int ResX = driver->getScreenSize().Width;
+	if (!state->settings->getBool("hide_sidebar"))
+		ResX -= 256;
+	int ResY = driver->getScreenSize().Height;
+
+	// Set zooms
+	float zoom = pow(2, -0.1 * offset.Z) + 0.1;
+	if (type == VIEWT_PERS) {
+		vector3df oldrot = pivot->getRotation();
+		pivot->setRotation(vector3df(0, 0, 0));
+		camera[i]->setPosition(vector3df(0, 0, -2.0 * zoom - 1.2));
+		camera[i]->setAspectRatio((float)ResX / (float)ResY);
+		pivot->setRotation(oldrot);
+	} else {
+		matrix4 projMat;
+		irr::f32 orth_w = 3 * ResX / (irr::f32)ResY;
+		projMat.buildProjectionMatrixOrthoLH(zoom * orth_w, zoom * 3, 1, 100);
+		camera[i]->setProjectionMatrix(projMat, true);
 	}
 }
 
