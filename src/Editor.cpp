@@ -457,12 +457,12 @@ void Editor::applyCameraOffsets(Viewport viewport)
 				vector3df(-100, 0, 0));
 		break;
 	case VIEWT_FRONT:
-		camSetPosTar(camera[i], vector3df(-offset.X, offset.Y, 2),
-				vector3df(0, 0, -100));
-		break;
-	case VIEWT_BACK:
 		camSetPosTar(camera[i], vector3df(offset.X, offset.Y, -2),
 				vector3df(0, 0, 100));
+		break;
+	case VIEWT_BACK:
+		camSetPosTar(camera[i], vector3df(-offset.X, offset.Y, 2),
+				vector3df(0, 0, -100));
 		break;
 	}
 }
