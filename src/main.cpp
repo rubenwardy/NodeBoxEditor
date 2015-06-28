@@ -16,7 +16,50 @@
 #ifndef _WIN32
 #include <stdlib.h>
 #include <unistd.h>
-#endif
+
+void findWorkingDirectory(bool &editor_is_installed)
+{
+	std::cerr << "Looking for the working directory..." << std::endl;
+	if (FileExists("media/sky.jpg"))
+		return;
+
+	chdir("../");
+	if (FileExists("media/sky.jpg"))
+		return;
+
+	chdir("share/nodeboxeditor");
+	if (FileExists("media/sky.jpg")) {
+		std::cerr << "Is installed!";
+		editor_is_installed = true;
+		return;
+	}
+
+	chdir("/usr/local/share/nodeboxeditor");
+	if (FileExists("media/sky.jpg")) {
+		std::cerr << "Is installed!";
+		editor_is_installed = true;
+		return;
+	}
+
+	char buff[PATH_MAX];
+	ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
+	if (len != -1) {
+		buff[len] = '\0';
+		std::string path(buff);
+		path = pathWithoutFilename(path);
+		std::cerr << path << std::endl;
+		chdir(path.c_str());
+		if (FileExists("media/sky.jpg"))
+			return;
+
+		chdir("../");
+		if (FileExists("media/sky.jpg"))
+			return;
+	}
+
+	std::cerr << "Can't find the working directory!" << std::endl;
+}
+#endif // ifndef _WIN32
 
 int main(int argc, char *argv[]) {
 	std::cerr <<
@@ -35,25 +78,7 @@ int main(int argc, char *argv[]) {
 	// Find the working directory
 	bool editor_is_installed = false;
 #ifndef _WIN32
-	std::cerr << "Looking for the working directory..." << std::endl;
-	if (!FileExists("media/sky.jpg")) {
-		chdir("../");
-		if (!FileExists("media/sky.jpg")) {
-			chdir("share/nodeboxeditor");
-			if (!FileExists("media/sky.jpg")) {
-				chdir("/usr/local/share/nodeboxeditor");
-				if (!FileExists("media/sky.jpg")) {
-					std::cerr << "Can't find the working directory!" << std::endl;
-				} else {
-					std::cerr << "Is installed!";
-					editor_is_installed = true;
-				}
-			} else {
-				std::cerr << "Is installed!";
-				editor_is_installed = true;
-			}
-		}
-	}
+	findWorkingDirectory(editor_is_installed);
 #endif
 
 	// Settings
