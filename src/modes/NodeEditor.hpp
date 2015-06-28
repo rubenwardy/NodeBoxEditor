@@ -14,7 +14,7 @@ public:
 	virtual void unload();
 	virtual void update(double dtime);
 	virtual void draw(irr::video::IVideoDriver* driver);
-	virtual void viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset);
+	virtual void viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
 	virtual irr::video::ITexture* icon();
 

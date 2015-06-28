@@ -13,9 +13,9 @@ public:
 	virtual bool OnEvent(const SEvent &event);
 private:
 	void recreateCameras();
-	void applyCameraOffsets(Viewport i);
+	void applyCameraOffsets(EViewport i);
 	void LoadScene();
-	void viewportTick(Viewport vp, rect<s32> rect, bool mousehit, bool middlehit);
+	void viewportTick(EViewport vp, rect<s32> rect, bool mousehit, bool middlehit);
 	int getViewportAt(vector2di pos);
 
 
@@ -28,10 +28,10 @@ private:
 	ISceneNode *pivot;
 	ICameraSceneNode *camera[4];
 	vector3df viewport_offset[4];
-	Viewport viewport_drag;
+	EViewport viewport_drag;
 	vector2di viewport_drag_last;
 	IMeshSceneNode *plane;
-	Viewport viewport_contextmenu;
+	EViewport viewport_contextmenu;
 	bool click_handled;
 	bool middle_click_handled;
 };

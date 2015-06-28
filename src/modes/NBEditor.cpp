@@ -35,11 +35,11 @@ NBEditor::NBEditor(EditorState* st) :
 	prop_needs_update(false)
 {
 	for (int i = 0; i < 4; i++) {
-		cdrs[i*5]     = CDR((Viewport)i, CDR_L);
-		cdrs[i*5 + 1] = CDR((Viewport)i, CDR_R);
-		cdrs[i*5 + 2] = CDR((Viewport)i, CDR_U);
-		cdrs[i*5 + 3] = CDR((Viewport)i, CDR_D);
-		cdrs[i*5 + 4] = CDR((Viewport)i, CDR_M);
+		cdrs[i*5]     = CDR((EViewport)i, CDR_L);
+		cdrs[i*5 + 1] = CDR((EViewport)i, CDR_R);
+		cdrs[i*5 + 2] = CDR((EViewport)i, CDR_U);
+		cdrs[i*5 + 3] = CDR((EViewport)i, CDR_D);
+		cdrs[i*5 + 4] = CDR((EViewport)i, CDR_M);
 	}
 }
 
@@ -265,7 +265,7 @@ void NBEditor::draw(irr::video::IVideoDriver* driver)
 }
 
 
-void NBEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
+void NBEditor::viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
 {
 	for (int i = 0; i < 20; i++) {
 		if (cdrs[i].window == window) {
@@ -274,11 +274,11 @@ void NBEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, r
 	}
 }
 
-CDRType CDR::getActualType(EditorState* state)
+ECDR_DIR CDR::getActualType(EditorState* state)
 {
-	ViewportType vpt = state->getViewportType(window);
+	EViewportType vpt = state->getEViewportType(window);
 
-	static CDRType crosstable[15] = {
+	static ECDR_DIR crosstable[15] = {
 		CDR_X_N, CDR_X_P, CDR_Y_P, CDR_Y_N, CDR_XY,	// front / back
 		CDR_Z_N, CDR_Z_P, CDR_Y_P, CDR_Y_N, CDR_ZY,	// left / right
 		CDR_X_N, CDR_X_P, CDR_Z_P, CDR_Z_N, CDR_XZ	// top / bottom
@@ -287,7 +287,7 @@ CDRType CDR::getActualType(EditorState* state)
 	if (vpt == VIEWT_PERS)
 		return CDR_NONE;
 	else
-		return crosstable[(CDRType)( ( ((int)vpt - 1) % 3) * 5 + type)];
+		return crosstable[(ECDR_DIR)( ( ((int)vpt - 1) % 3) * 5 + type)];
 }
 
 void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
@@ -296,7 +296,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		return;
 	}
 
-	CDRType actualType = getActualType(editor->state);
+	ECDR_DIR actualType = getActualType(editor->state);
 	if (actualType == CDR_NONE)
 		return;
 

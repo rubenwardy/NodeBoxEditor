@@ -125,7 +125,7 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 			driver->draw2DLine(vector2d<irr::s32>(ResX/2+1, 0),
 					vector2d<irr::s32>(ResX/2+1, ResY), SColor(175,255,255,255));
 		} else if (camera[currentWindow]) {
-			viewportTick((Viewport)currentWindow, rect<s32>(0, 0, ResX, ResY),
+			viewportTick((EViewport)currentWindow, rect<s32>(0, 0, ResX, ResY),
 					(state->mousedown && !click_handled), !middle_click_handled);
 		}
 
@@ -259,7 +259,7 @@ bool Editor::OnEvent(const SEvent& event)
 	if (state->menu && state->menu->OnEvent(event))
 		return true;
 
-	// Viewport Zoom
+	// EViewport Zoom
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
 			event.MouseInput.Event == EMIE_MOUSE_WHEEL) {
 		int vp = getViewportAt(state->mouse_position);
@@ -409,7 +409,7 @@ void Editor::recreateCameras()
 			camera[i] = NULL;
 		}
 
-		ViewportType type = state->getViewportType((Viewport)i);
+		EViewportType type = state->getEViewportType((EViewport)i);
 		if (type == VIEWT_PERS) {
 			vector3df oldrot = pivot->getRotation();
 			pivot->setRotation(vector3df(0, 0, 0));
@@ -442,7 +442,7 @@ void Editor::recreateCameras()
 			}
 			camera[i]->setProjectionMatrix(projMat, true);
 		}
-		applyCameraOffsets((Viewport)i);
+		applyCameraOffsets((EViewport)i);
 	}
 }
 
@@ -457,10 +457,10 @@ void camSetPosTar(ICameraSceneNode *camera, vector3df position,
 	camera->updateAbsolutePosition();
 }
 
-void Editor::applyCameraOffsets(Viewport viewport)
+void Editor::applyCameraOffsets(EViewport viewport)
 {
 	int i = (int)viewport;
-	ViewportType type = state->getViewportType(viewport);
+	EViewportType type = state->getEViewportType(viewport);
 	vector3df offset = viewport_offset[i];
 	switch(type) {
 	case VIEWT_TOP:
@@ -490,7 +490,7 @@ void Editor::applyCameraOffsets(Viewport viewport)
 	}
 }
 
-const char* viewportToSetting(Viewport port)
+const char* viewportToSetting(EViewport port)
 {
 	switch (port) {
 	case VIEW_TL:
@@ -506,7 +506,7 @@ const char* viewportToSetting(Viewport port)
 	}
 }
 
-const char* viewportTypeToSetting(ViewportType type)
+const char* viewportTypeToSetting(EViewportType type)
 {
 	switch (type) {
 	case VIEWT_PERS:
@@ -551,14 +551,14 @@ void drawCoord(IGUIFont* font, IVideoDriver *driver, unsigned int x,
 }
 
 typedef rect<s32> rects32;
-void Editor::viewportTick(Viewport viewport, rect<s32> rect,
+void Editor::viewportTick(EViewport viewport, rect<s32> rect,
 		bool mousehit, bool middlehit)
 {
 	// Init
 	IVideoDriver *driver = device->getVideoDriver();
 	ISceneManager *smgr = device->getSceneManager();
 	IGUIEnvironment *guienv = device->getGUIEnvironment();
-	ViewportType type = state->getViewportType(viewport);
+	EViewportType type = state->getEViewportType(viewport);
 
 	// Draw camera
 	smgr->setActiveCamera(camera[(int)viewport]);
@@ -632,7 +632,7 @@ void Editor::viewportTick(Viewport viewport, rect<s32> rect,
 							if (trect.isPointInside(state->mouse_position)) {
 								viewport_offset[(int)viewport] = vector3df(0, 0, 0);
 								state->settings->set(viewportToSetting(viewport),
-									viewportTypeToSetting((ViewportType)i));
+									viewportTypeToSetting((EViewportType)i));
 								recreateCameras();
 								break;
 							}

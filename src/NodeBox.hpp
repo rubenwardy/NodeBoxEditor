@@ -42,9 +42,9 @@ public:
 		);
 	}
 
-	void resizeNodeBoxFace(EditorState* editor, CDRType type,
+	void resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
 			vector3df position, bool both);
-	void moveNodeBox(EditorState* editor, CDRType type, vector3df position);
+	void moveNodeBox(EditorState* editor, ECDR_DIR type, vector3df position);
 	void buildNode(EditorState* editor, vector3di nd_position,
 			IrrlichtDevice* device, Media::Image* images[6], bool force = false);
 	void rotate(EAxis axis);

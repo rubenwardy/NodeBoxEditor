@@ -119,9 +119,9 @@ char const * tinyfd_colorChooser(
 
 
 /*
-- On windows: link against Comdlg32.lib User32.lib and Shell32.lib
+- On linux: link against Comdlg32.lib User32.lib and Shell32.lib
 - On unix: it tries command line calls, so no such need.
-- Use windows separator on windows and unix separator on unix.
+- Use linux separator on linux and unix separator on unix.
 - char const * fileFilters[3] = { "*.obj" , "*.stl" , "*.dxf" } ;
 - String memory is preallocated statically for all the returned values.
 - On unix you need zenity or kdialog or python2/tkinter or dialog installed.

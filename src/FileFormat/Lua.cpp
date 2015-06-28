@@ -21,7 +21,7 @@ bool LuaFileFormat::write(Project * project, const std::string & filename){
 	return true;
 }
 
-std::string doTileImage(Node *node, CubeSide face)
+std::string doTileImage(Node *node, ECUBE_SIDE face)
 {
 	Media::Image *image = node->getTexture(face);
 	if (!image)

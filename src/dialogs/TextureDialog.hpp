@@ -5,15 +5,15 @@
 class TextureDialog : public Dialog
 {
 public:
-	TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface);
-	static bool show(EditorState *pstate, Node *pnode, CubeSide pface);
+	TextureDialog(EditorState *pstate, Node *pnode, ECUBE_SIDE pface);
+	static bool show(EditorState *pstate, Node *pnode, ECUBE_SIDE pface);
 	virtual bool canClose();
 	virtual bool close();
 	virtual bool OnEvent(const SEvent &event);
 	virtual void draw(IVideoDriver *driver);
 private:
 	Node *node;
-	CubeSide face;
+	ECUBE_SIDE face;
 	IGUIWindow *win;
 	IGUIListBox *lb;
 	ITexture *the_image;

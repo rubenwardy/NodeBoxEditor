@@ -11,7 +11,7 @@ enum IMAGE_DIALOG_GUI_IDS
 	EID_GUI_ID_OVERWRITE
 };
 
-ImageDialog::ImageDialog(EditorState *mstate, Node *tnode, CubeSide tface):
+ImageDialog::ImageDialog(EditorState *mstate, Node *tnode, ECUBE_SIDE tface):
 	Dialog(mstate),
 	node(tnode),
 	face(tface)
@@ -29,7 +29,7 @@ ImageDialog::ImageDialog(EditorState *mstate, Node *tnode, CubeSide tface):
 }
 
 
-bool ImageDialog::show(EditorState *mstate, Node *node, CubeSide face)
+bool ImageDialog::show(EditorState *mstate, Node *node, ECUBE_SIDE face)
 {
 	// Check if last can close.
 	if (mstate->menu->dialog != NULL) {

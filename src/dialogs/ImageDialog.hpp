@@ -5,8 +5,8 @@
 class ImageDialog : public Dialog
 {
 public:
-	ImageDialog(EditorState *mstate, Node *tnode, CubeSide tface);
-	static bool show(EditorState *mstate, Node *node, CubeSide face);
+	ImageDialog(EditorState *mstate, Node *tnode, ECUBE_SIDE tface);
+	static bool show(EditorState *mstate, Node *node, ECUBE_SIDE face);
 	void doSave(const SEvent &event);
 	void doOpen(const SEvent &event);
 	virtual bool canClose();
@@ -15,7 +15,7 @@ public:
 private:
 	IGUIWindow *win;
 	Node *node;
-	CubeSide face;
+	ECUBE_SIDE face;
 };
 
 #endif

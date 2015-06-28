@@ -13,7 +13,7 @@ enum TEXTURE_DIALOG_GUI_IDS
 	ETD_GUI_ID_EXPORT
 };
 
-const char* getCubeSideName(CubeSide face)
+const char* getECUBE_SIDEName(ECUBE_SIDE face)
 {
 	switch (face) {
 	case ECS_TOP:
@@ -29,12 +29,12 @@ const char* getCubeSideName(CubeSide face)
 	case ECS_BACK:
 		return "back";
 	default:
-		std::cerr << "Error in getCubeSideName() - Unknown cubeside given" << std::endl;
+		std::cerr << "Error in getECUBE_SIDEName() - Unknown cubeside given" << std::endl;
 		return ":/";
 	}
 }
 
-TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
+TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, ECUBE_SIDE pface):
 	Dialog(pstate),
 	node(pnode),
 	face(pface),
@@ -47,7 +47,7 @@ TextureDialog::TextureDialog(EditorState *pstate, Node *pnode, CubeSide pface):
 
 	// Window and basic items
 	win = guienv->addWindow(rect<s32>(340, 50, 340 + 74 * 3 + 10, 50 + 74 * 3 + 10), true,
-			narrow_to_wide(std::string(getCubeSideName(face)) + " texture").c_str());
+			narrow_to_wide(std::string(getECUBE_SIDEName(face)) + " texture").c_str());
 	guienv->addButton(rect<s32>(155, 30, 74*3, 55), win, ETD_GUI_ID_APPLY,   L"Apply",  L"Apply this texture selection to the node face");
 	guienv->addButton(rect<s32>(155, 60, 74*3, 85), win, ETD_GUI_ID_IMPORT,  L"Import", L"Import images from files");
 	guienv->addButton(rect<s32>(84,  60, 150,  85), win, ETD_GUI_ID_ACTIONS, L"Actions");
@@ -104,7 +104,7 @@ void TextureDialog::draw(IVideoDriver *driver)
 }
 
 
-bool TextureDialog::show(EditorState *mstate, Node *pnode, CubeSide pface)
+bool TextureDialog::show(EditorState *mstate, Node *pnode, ECUBE_SIDE pface)
 {
 	// Check if last can close.
 	if (mstate->menu->dialog != NULL) {

@@ -102,7 +102,7 @@ void Node::cloneNodebox(int id)
 	new_nb->buildNode(state, position, device, images);
 }
 
-void Node::setTexture(CubeSide face, Media::Image *image)
+void Node::setTexture(ECUBE_SIDE face, Media::Image *image)
 {
 	if (image) {
 		if (images[face])

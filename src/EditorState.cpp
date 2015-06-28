@@ -50,7 +50,7 @@ void EditorState::SelectMode(int id)
 	}
 }
 
-ViewportType stringToType(std::string input, ViewportType def)
+EViewportType stringToType(std::string input, EViewportType def)
 {
 	if (input == "pers")
 		return VIEWT_PERS;
@@ -70,7 +70,7 @@ ViewportType stringToType(std::string input, ViewportType def)
 		return def;
 }
 
-ViewportType EditorState::getViewportType(Viewport id)
+EViewportType EditorState::getEViewportType(EViewport id)
 {
 	switch (id) {
 	case VIEW_TL:

@@ -10,13 +10,13 @@ class CDR
 {
 public:
 	CDR() : visible(false) {}
-	CDR(Viewport win, CDR_TYPE typ) : window(win), type(typ), visible(false) {}
+	CDR(EViewport win, ECDR typ) : window(win), type(typ), visible(false) {}
 
 	void update(NBEditor* editor, bool drag, rect<s32> offset);
-	CDRType getActualType(EditorState* state);
+	ECDR_DIR getActualType(EditorState* state);
 
-	Viewport window;
-	CDR_TYPE type;
+	EViewport window;
+	ECDR type;
 	vector2d<irr::s32> position;
 	bool visible;
 };
@@ -32,7 +32,7 @@ public:
 	virtual void unload();
 	virtual void update(double dtime);
 	virtual void draw(irr::video::IVideoDriver* driver);
-	virtual void viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset);
+	virtual void viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset);
 	virtual bool OnEvent(const irr::SEvent &event);
 	virtual irr::video::ITexture* icon();
 	void triggerCDRmoved() { prop_needs_update = true; }

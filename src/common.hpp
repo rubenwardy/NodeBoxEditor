@@ -9,14 +9,7 @@ using namespace gui;
 using namespace video;
 
 // Enums
-enum FileParserType
-{
-	EFPT_SAVE_PROJ,
-	EFPT_LOAD_PROJ,
-	EFPT_IMPORT
-};
-
-enum CubeSide
+enum ECUBE_SIDE
 {
 	ECS_TOP = 0,
 	ECS_BOTTOM,
@@ -33,7 +26,7 @@ enum EAxis
 	EAX_Z
 };
 
-enum Viewport
+enum EViewport
 {
 	VIEW_NONE = -1,
 	VIEW_TL,
@@ -42,7 +35,7 @@ enum Viewport
 	VIEW_BR
 };
 
-enum ViewportType
+enum EViewportType
 {
 	VIEWT_PERS = 0,
 	VIEWT_FRONT,
@@ -53,7 +46,7 @@ enum ViewportType
 	VIEWT_BOTTOM
 };
 
-enum CDR_TYPE
+enum ECDR
 {
 	CDR_L = 0,
 	CDR_R,
@@ -62,7 +55,7 @@ enum CDR_TYPE
 	CDR_M
 };
 
-enum CDRType
+enum ECDR_DIR
 {
 	CDR_NONE = 0,
 	CDR_X_P,

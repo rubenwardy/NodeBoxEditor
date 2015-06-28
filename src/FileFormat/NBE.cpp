@@ -123,7 +123,7 @@ bool NBEFileFormat::readProjectFile(Project *project, const std::string & filena
 	return true;
 }
 
-const char* getLabelForCubeSide(CubeSide face)
+const char* getLabelForECUBE_SIDE(ECUBE_SIDE face)
 {
 	switch(face) {
 	case (ECS_TOP):
@@ -141,7 +141,7 @@ const char* getLabelForCubeSide(CubeSide face)
 	}
 }
 
-CubeSide cubeSideFromString(std::string input)
+ECUBE_SIDE cubeSideFromString(std::string input)
 {
 	if (input == "left") {
 		return ECS_LEFT;
@@ -185,9 +185,9 @@ bool NBEFileFormat::writeProjectFile(Project *project, const std::string &filena
 		file << "POSITION " << pos.X << ' ' << pos.Y << ' ' << pos.Z << '\n';
 
 		for (int i = 0; i < 6; i++) {
-			Media::Image* image = node->getTexture((CubeSide)i);
+			Media::Image* image = node->getTexture((ECUBE_SIDE)i);
 			if (image) {
-				file << "TEXTURE " << getLabelForCubeSide((CubeSide)i) << " " << image->name.c_str() << "\n";
+				file << "TEXTURE " << getLabelForECUBE_SIDE((ECUBE_SIDE)i) << " " << image->name.c_str() << "\n";
 			}
 		}
 

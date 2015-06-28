@@ -1,6 +1,6 @@
 #include "NodeBox.hpp"
 
-void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type,
+void NodeBox::resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
 		vector3df position, bool both)
 {
 	vector3df before_one = one;
@@ -90,7 +90,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor, CDRType type,
 		rebuild_needed = true;
 }
 
-void NodeBox::moveNodeBox(EditorState* editor, CDRType type, vector3df position)
+void NodeBox::moveNodeBox(EditorState* editor, ECDR_DIR type, vector3df position)
 {
 	vector3df new_one = one;
 	vector3df new_two = two;

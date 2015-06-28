@@ -69,7 +69,7 @@ void TextureEditor::draw(irr::video::IVideoDriver* driver)
 }
 
 
-void TextureEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
+void TextureEditor::viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
 {}
 
 bool iconClicked(int x, int y, vector2di mouse)

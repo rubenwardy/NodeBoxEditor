@@ -6,7 +6,8 @@
 #include "MenuState.hpp"
 
 #define NUMBER_OF_KEYS 252
-enum KeyState{
+enum EKeyState
+{
 	EKS_UP = false,
 	EKS_DOWN = true
 };
@@ -50,12 +51,12 @@ public:
 	// Input
 	bool mousedown;
 	vector2di mouse_position;
-	KeyState keys[NUMBER_OF_KEYS];
+	EKeyState keys[NUMBER_OF_KEYS];
 
 	Configuration *settings;
 	MenuState *menu;
 
-	ViewportType getViewportType(Viewport id);
+	EViewportType getEViewportType(EViewport id);
 
 	bool isInstalled;
 private:
@@ -73,7 +74,7 @@ public:
 	virtual void unload() = 0;
 	virtual void update(double dtime) = 0;
 	virtual void draw(irr::video::IVideoDriver* driver) = 0;
-	virtual void viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset) = 0;
+	virtual void viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset) = 0;
 	virtual bool OnEvent(const irr::SEvent &event) = 0;
 	virtual irr::video::ITexture* icon() = 0;
 

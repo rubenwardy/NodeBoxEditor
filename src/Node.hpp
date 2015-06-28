@@ -34,8 +34,8 @@ public:
 	void flip(EAxis axis);
 	void hide();
 
-	void setTexture(CubeSide face, Media::Image *image);
-	Media::Image *getTexture(CubeSide face) { return images[face]; }
+	void setTexture(ECUBE_SIDE face, Media::Image *image);
+	Media::Image *getTexture(ECUBE_SIDE face) { return images[face]; }
 
 	vector3di position;
 	std::string name;

@@ -131,7 +131,7 @@ void NodeEditor::draw(irr::video::IVideoDriver* driver)
 {}
 
 
-void NodeEditor::viewportTick(Viewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
+void NodeEditor::viewportTick(EViewport window, irr::video::IVideoDriver* driver, rect<s32> offset)
 {}
 
 
