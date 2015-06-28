@@ -20,11 +20,14 @@ https://www.gnu.org/licenses/gpl-3.0.txt
 
 Contributors:
 
-* Kaeza: small linux based fixes, and the start of the CMAKELISTS.txt (now modified)
+* Kaeza: small Linux based fixes, and the start of the CMakeLists.txt (now modified)
 * Traxie21: small changed textures for node.
 * jmf: Fixed small compile bug fixes.
 * ShadowNinja: Unlimited node boxes, code style, refactoring and small fixes.
 * Krock/SmallJoker: Fixed warnings, fixed conf_cmake.hpp and Windows builds.
+* asl97: Fixed a memory leak.
+
+If I forgot anyone, please let me know.
 
 Building
 --------
