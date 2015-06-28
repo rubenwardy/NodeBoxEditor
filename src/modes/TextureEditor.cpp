@@ -40,7 +40,7 @@ void drawIconAt(const wchar_t* label, int x, int y, Media::Image *image, IVideoD
 				rect<s32>(0, 0, texture->getSize().Width, texture->getSize().Height));
 		driver->removeTexture(texture);
 	}
-	font->draw(label, rect<s32>(x + 10, y + 68, 64, 25), SColor(255, 255, 255, 255));
+	font->draw(label, rect<s32>(x, y + 68, 64, 25), SColor(255, 255, 255, 255));
 }
 
 void TextureEditor::draw(irr::video::IVideoDriver* driver)
@@ -53,18 +53,18 @@ void TextureEditor::draw(irr::video::IVideoDriver* driver)
 	if (!node)
 		return;
 
-	unsigned int start_x = driver->getScreenSize().Width - 256;
-	drawIconAt(L"Left", start_x + 96, 70, node->getTexture(ECS_LEFT),
+	unsigned int start_x = driver->getScreenSize().Width - 258;
+	drawIconAt(L"Left (X-)", start_x + 96, 70, node->getTexture(ECS_LEFT),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
-	drawIconAt(L"Top", start_x + 16, 170, node->getTexture(ECS_TOP),
+	drawIconAt(L"Top (Y+)", start_x + 16, 170, node->getTexture(ECS_TOP),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
-	drawIconAt(L"Front", start_x + 96, 170, node->getTexture(ECS_FRONT),
+	drawIconAt(L"Front (Z-)", start_x + 96, 170, node->getTexture(ECS_FRONT),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
-	drawIconAt(L"Bottom", start_x + 180, 170, node->getTexture(ECS_BOTTOM),
+	drawIconAt(L"Bottom (Y-)", start_x + 180, 170, node->getTexture(ECS_BOTTOM),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
-	drawIconAt(L"Right", start_x + 96, 270, node->getTexture(ECS_RIGHT),
+	drawIconAt(L"Right (X+)", start_x + 96, 270, node->getTexture(ECS_RIGHT),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
-	drawIconAt(L"Back", start_x + 96, 370, node->getTexture(ECS_BACK),
+	drawIconAt(L"Back (Z+)", start_x + 96, 370, node->getTexture(ECS_BACK),
 			driver, state->device->getGUIEnvironment()->getSkin()->getFont());
 }
 
