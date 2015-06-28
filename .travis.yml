@@ -8,19 +8,3 @@ before_install:
 script: cmake . && make
 notifications:
   email: false
-
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "c9fu1SYadL7BRWTvz1cpENNWi94tBYaMeu4iqEBahiiyyPIr/77FZLqPw6q8Jv8slcEMm2axr2+v6XH3xQrW1bvmEFOhr9oRZRJ/QB8YbdbjbNYUs5WpH4cFinUF1DTCebltxFTyY7srrw0S+yIQUSILB99Cfor8bWr5WVVmUwI="
-
-addons:
-  coverity_scan:
-    project:
-      name: "rubenwardy/NodeBoxEditor"
-      description: "NBE"
-    notification_email: rubenwardy@gmail.com
-    build_command_prepend: "make clean"
-    build_command:   "cmake . && make -j3"
-    branch_pattern: coverity_scan

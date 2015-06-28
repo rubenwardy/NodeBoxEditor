@@ -201,12 +201,8 @@ void NodeBox::removeMesh(IVideoDriver *driver)
 void NodeBox::buildNode(EditorState* editor, vector3di nd_position,
 		IrrlichtDevice* device, Media::Image* images[6], bool force)
 {
-	std::cerr << "Buildnode: " << (force?"true":"false") << std::endl;
-
 	if (!rebuild_needed && !force)
 		return;
-
-	std::cerr << "Rebuilding nodebox mesh..." << std::endl;
 
 	rebuild_needed = false;
 

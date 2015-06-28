@@ -198,8 +198,31 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 	return true;
 }
 
+int Editor::getViewportAt(vector2di pos) {
+	if (currentWindow == -1) {
+		IVideoDriver *driver = state->device->getVideoDriver();
+		int ResX = driver->getScreenSize().Width;
+		if (!state->settings->getBool("hide_sidebar"))
+			ResX -= 256;
+		int ResY = driver->getScreenSize().Height;
+
+		if (pos.X > ResX / 2)
+			if (pos.Y > ResY / 2)
+				return 3;
+			else
+				return 1;
+		else
+			if (pos.Y > ResY / 2)
+				return 2;
+			else
+				return 0;
+	} else
+		return currentWindow;
+}
+
 bool Editor::OnEvent(const SEvent& event)
 {
+	// Store mouse state in EditorState
 	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT) {
 		if (event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP) {
 			state->mousedown = false;
@@ -218,54 +241,52 @@ bool Editor::OnEvent(const SEvent& event)
 		}
 	}
 
-	if (state->Mode()) {
-		if (state->Mode()->OnEvent(event)) {
-			return true;
-		}
-	}
-
-	if (state->menu) {
-		if (state->menu->OnEvent(event)) {
-			return true;
-		}
-	}
-
+	// Store keystates in EditorState
 	if (event.EventType == EET_KEY_INPUT_EVENT &&
 			event.KeyInput.Key < NUMBER_OF_KEYS) {
-		if (event.KeyInput.PressedDown) {
+		// Set key states
+		if (event.KeyInput.PressedDown)
 			state->keys[event.KeyInput.Key] = EKS_DOWN;
-		} else {
+		else
 			state->keys[event.KeyInput.Key] = EKS_UP;
-		}
+	}
 
+	// Pass event to EditorMode
+	if (state->Mode() && state->Mode()->OnEvent(event))
+		return true;
+
+	// Pass event to MenuState
+	if (state->menu && state->menu->OnEvent(event))
+		return true;
+
+	// Viewport Zoom
+	if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
+			event.MouseInput.Event == EMIE_MOUSE_WHEEL) {
+		int vp = getViewportAt(state->mouse_position);
+		viewport_offset[vp].Z += event.MouseInput.Wheel;
+		std::cerr << vp << ": " << viewport_offset[vp].Z << std::endl;
+	}
+
+	//
+	// Key events
+	//
+	else if (event.EventType == EET_KEY_INPUT_EVENT) {
+		// alt+W functionality
 		if (event.KeyInput.PressedDown &&
 				event.KeyInput.Key == KEY_KEY_W &&
 				state->keys[164] == EKS_DOWN) {
 			if (currentWindow == -1) {
-				IVideoDriver *driver = state->device->getVideoDriver();
-				int ResX = driver->getScreenSize().Width;
-				if (!state->settings->getBool("hide_sidebar"))
-					ResX -= 256;
-				int ResY = driver->getScreenSize().Height;
-
-				if (state->mouse_position.X > ResX / 2)
-					if (state->mouse_position.Y > ResY / 2)
-						currentWindow = 3;
-					else
-						currentWindow = 1;
-				else
-					if (state->mouse_position.Y > ResY / 2)
-						currentWindow = 2;
-					else
-						currentWindow = 0;
+				currentWindow = getViewportAt(state->mouse_position);
 			} else
 				currentWindow = -1;
 		}
 
-		if (state->device->getGUIEnvironment()->getFocus() &&
-				state->device->getGUIEnvironment()->getFocus()->getType() == EGUIET_EDIT_BOX)
+		// Don't do shortcuts if in text box
+		IGUIElement *el = state->device->getGUIEnvironment()->getFocus();
+		if (el && el->getType() == EGUIET_EDIT_BOX)
 			return false;
 
+		// Do shortcuts
 		switch (event.KeyInput.Key) {
 		case KEY_KEY_S:
 			pivot->setRotation(vector3df(pivot->getRotation().X - 1,
@@ -296,27 +317,29 @@ bool Editor::OnEvent(const SEvent& event)
 				state->SelectMode(2);
 			break;
 		}
+		return false;
 	}
-	if (event.EventType == EET_GUI_EVENT) {
-		if (event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
-			IGUIContextMenu* menu = (IGUIContextMenu*)event.GUIEvent.Caller;
-			switch (menu->getItemCommandId(menu->getSelectedItem())) {
-			case GUI_VIEW_SP_ALL:
-				currentWindow = -1;
-				break;
-			case GUI_VIEW_SP_PER:
-				currentWindow = 0;
-				break;
-			case GUI_VIEW_SP_TOP:
-				currentWindow = 1;
-				break;
-			case GUI_VIEW_SP_FRT:
-				currentWindow = 2;
-				break;
-			case GUI_VIEW_SP_RHT:
-				currentWindow = 3;
-				break;
-			}
+
+	// Handle menubar events
+	if (event.EventType == EET_GUI_EVENT &&
+			event.GUIEvent.EventType == EGET_MENU_ITEM_SELECTED) {
+		IGUIContextMenu* menu = (IGUIContextMenu*)event.GUIEvent.Caller;
+		switch (menu->getItemCommandId(menu->getSelectedItem())) {
+		case GUI_VIEW_SP_ALL:
+			currentWindow = -1;
+			break;
+		case GUI_VIEW_SP_PER:
+			currentWindow = 0;
+			break;
+		case GUI_VIEW_SP_TOP:
+			currentWindow = 1;
+			break;
+		case GUI_VIEW_SP_FRT:
+			currentWindow = 2;
+			break;
+		case GUI_VIEW_SP_RHT:
+			currentWindow = 3;
+			break;
 		}
 	}
 	return false;

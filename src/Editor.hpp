@@ -16,6 +16,7 @@ private:
 	void applyCameraOffsets(Viewport i);
 	void LoadScene();
 	void viewportTick(Viewport vp, rect<s32> rect, bool mousehit, bool middlehit);
+	int getViewportAt(vector2di pos);
 
 
 	EditorState *state;
