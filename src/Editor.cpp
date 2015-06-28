@@ -182,6 +182,35 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 			state->Mode()->update(dtime);
 		}
 
+		// Do perspective camera rotate
+		IGUIElement *el = state->device->getGUIEnvironment()->getFocus();
+		if (!el || el->getType() != EGUIET_EDIT_BOX) {
+			vector3df delta(0, 0, 0);
+
+#			define ROT_SP_X 0.5
+#			define ROT_SP_Y 0.5
+#			define ANG_MAX 89
+
+			if (state->keys[KEY_KEY_W])
+				delta.X += ROT_SP_X * dtime;
+
+			if (state->keys[KEY_KEY_S])
+				delta.X -= ROT_SP_X * dtime;
+
+			if (state->keys[KEY_KEY_A])
+				delta.Y += ROT_SP_Y * dtime;
+
+			if (state->keys[KEY_KEY_D])
+				delta.Y -= ROT_SP_Y * dtime;
+
+			delta += pivot->getRotation();
+			if (delta.X > ANG_MAX)
+				delta.X = ANG_MAX;
+			if (delta.X < -ANG_MAX)
+				delta.X = -ANG_MAX;
+			pivot->setRotation(delta);
+		}
+
 		// Do sleep
 		unsigned int now = std::clock();
 		if (dosleep) {
@@ -295,22 +324,6 @@ bool Editor::OnEvent(const SEvent& event)
 
 		// Do shortcuts
 		switch (event.KeyInput.Key) {
-		case KEY_KEY_S:
-			pivot->setRotation(vector3df(pivot->getRotation().X - 1,
-					pivot->getRotation().Y, pivot->getRotation().Z));
-			break;
-		case KEY_KEY_W:
-			pivot->setRotation(vector3df(pivot->getRotation().X + 1,
-					pivot->getRotation().Y, pivot->getRotation().Z));
-			break;
-		case KEY_KEY_A:
-			pivot->setRotation(vector3df(pivot->getRotation().X,
-					pivot->getRotation().Y + 1, pivot->getRotation().Z));
-			break;
-		case KEY_KEY_D:
-			pivot->setRotation(vector3df(pivot->getRotation().X,
-					pivot->getRotation().Y - 1, pivot->getRotation().Z));
-			break;
 		case KEY_KEY_B:
 			if (!event.KeyInput.PressedDown)
 				state->SelectMode(0);
