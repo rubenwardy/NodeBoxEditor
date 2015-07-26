@@ -1,6 +1,6 @@
-#include "Project.hpp"
-#include "Node.hpp"
-#include "util/string.hpp"
+#include "project.hpp"
+#include "node.hpp"
+#include "../util/string.hpp"
 
 Project::Project() :
 	name("test"),

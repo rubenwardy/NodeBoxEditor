@@ -2,10 +2,10 @@
 #define NODE_HPP_INCLUDED
 
 #include <vector>
-#include "common.hpp"
-#include "EditorState.hpp"
-#include "NodeBox.hpp"
-#include "MediaManager.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
+#include "nodebox.hpp"
+#include "media.hpp"
 
 class EditorState;
 class NodeBox;

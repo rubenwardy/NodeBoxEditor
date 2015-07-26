@@ -1,6 +1,6 @@
 #ifndef MEDIAMANAGER_HPP_INCLUDED
 #define MEDIAMANAGER_HPP_INCLUDED
-#include "common.hpp"
+#include "../common.hpp"
 #include <assert.h>
 #include <map>
 

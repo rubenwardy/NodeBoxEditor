@@ -2,8 +2,8 @@
 #include <vector>
 #include "../GUIHelpers.hpp"
 #include "../util/string.hpp"
-#include "../Node.hpp"
-#include "../NodeBox.hpp"
+#include "../project/node.hpp"
+#include "../project/nodebox.hpp"
 
 // The gui id numbers for this mode
 // NOTE: the maximum that can be here is 20

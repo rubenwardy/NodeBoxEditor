@@ -1,5 +1,5 @@
 #include "Editor.hpp"
-#include "Node.hpp"
+#include "project/node.hpp"
 #include "modes/NBEditor.hpp"
 #include "modes/TextureEditor.hpp"
 #include "modes/NodeEditor.hpp"

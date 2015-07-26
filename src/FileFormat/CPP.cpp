@@ -4,8 +4,8 @@
 #include <list>
 #include <stdexcept>
 #include "../common.hpp"
-#include "../Project.hpp"
-#include "../Node.hpp"
+#include "../project/project.hpp"
+#include "../project/node.hpp"
 #include "CPP.hpp"
 
 bool CPPFileFormat::write(Project * project, const std::string & filename){

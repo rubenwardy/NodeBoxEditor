@@ -3,10 +3,10 @@
 
 #include <string>
 #include <list>
-#include "common.hpp"
-#include "EditorState.hpp"
-#include "MediaManager.hpp"
-#include "Node.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
+#include "media.hpp"
+#include "node.hpp"
 
 class Node;
 class EditorState;

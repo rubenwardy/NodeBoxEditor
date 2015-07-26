@@ -1,6 +1,6 @@
 #include "NodeEditor.hpp"
 #include <list>
-#include "../Node.hpp"
+#include "../project/node.hpp"
 #include "../GUIHelpers.hpp"
 #include "../util/string.hpp"
 

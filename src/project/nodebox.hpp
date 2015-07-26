@@ -2,9 +2,9 @@
 #define NODEBOX_HPP_INCLUDED
 
 #include <string>
-#include "common.hpp"
-#include "EditorState.hpp"
-#include "MediaManager.hpp"
+#include "../common.hpp"
+#include "../EditorState.hpp"
+#include "media.hpp"
 
 class EditorState;
 class NodeBox

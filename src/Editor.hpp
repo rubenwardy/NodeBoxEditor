@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 #include "EditorState.hpp"
-#include "Project.hpp"
+#include "project/project.hpp"
 
 class Editor : public IEventReceiver
 {

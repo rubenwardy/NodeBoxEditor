@@ -2,7 +2,7 @@
 #define EDITORSTATE_HPP_INCLUDED
 #include "common.hpp"
 #include "Configuration.hpp"
-#include "Project.hpp"
+#include "project/project.hpp"
 #include "MenuState.hpp"
 
 #define NUMBER_OF_KEYS 252

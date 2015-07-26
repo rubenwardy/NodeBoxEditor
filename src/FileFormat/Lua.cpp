@@ -4,8 +4,8 @@
 #include <list>
 #include <stdexcept>
 #include "../common.hpp"
-#include "../Project.hpp"
-#include "../Node.hpp"
+#include "../project/project.hpp"
+#include "../project/node.hpp"
 #include "Lua.hpp"
 #include <sstream>
 #include "../util/filesys.hpp"

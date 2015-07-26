@@ -33,23 +33,28 @@ set(NBE_SRC
 	src/EditorState.cpp
 	src/MenuState.cpp
 	src/Editor.cpp
+	src/minetest.cpp
+
+	src/project/project.cpp
+	src/project/media.cpp
+	src/project/node.cpp
+	src/project/nodebox.cpp
+
 	src/modes/NBEditor.cpp
 	src/modes/NodeEditor.cpp
 	src/modes/TextureEditor.cpp
+
 	src/dialogs/FileDialog.cpp
 	src/dialogs/TextureDialog.cpp
 	src/dialogs/ImageDialog.cpp
-	src/Project.cpp
-	src/MediaManager.cpp
-	src/Node.cpp
-	src/NodeBox.cpp
-	src/minetest.cpp
+
 	src/FileFormat/FileFormat.cpp
 	src/FileFormat/helpers.cpp
 	src/FileFormat/NBE.cpp
 	src/FileFormat/Lua.cpp
 	src/FileFormat/CPP.cpp
 	src/FileFormat/obj.cpp
+
 	src/util/string.cpp
 	src/util/filesys.cpp
 	src/util/SimpleFileCombiner.cpp

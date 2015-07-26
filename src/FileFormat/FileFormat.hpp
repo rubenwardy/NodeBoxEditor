@@ -1,7 +1,7 @@
 #ifndef FILEFORMAT_HPP_INCLUDED
 #define FILEFORMAT_HPP_INCLUDED
 #include <string>
-#include "../Project.hpp"
+#include "../project/project.hpp"
 #include "../EditorState.hpp"
 
 enum FileFormatError

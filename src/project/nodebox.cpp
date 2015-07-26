@@ -1,4 +1,4 @@
-#include "NodeBox.hpp"
+#include "nodebox.hpp"
 
 void NodeBox::resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
 		vector3df position, bool both)

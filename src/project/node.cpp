@@ -1,5 +1,5 @@
-#include "util/string.hpp"
-#include "Node.hpp"
+#include "../util/string.hpp"
+#include "node.hpp"
 
 Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	device(device),
