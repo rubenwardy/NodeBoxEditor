@@ -228,54 +228,56 @@ void NBEditor::unload()
 
 
 void NBEditor::update(double dtime)
-{}
-
-
-void NBEditor::draw(irr::video::IVideoDriver* driver)
 {
-	if (wasmd && !state->mousedown) {
-		current = -1;
-	}
-
-	static irr::video::ITexture *scale = driver->getTexture("media/gui_scale.png");
-
-	for (int i = 0; i < 20; i++) {
-		if (cdrs[i].visible) {
-			rect<s32> drawarea = rect<s32>(
-					cdrs[i].position.X - 5,
-					cdrs[i].position.Y - 5,
-					cdrs[i].position.X + 5,
-					cdrs[i].position.Y + 5
-			);
-
-			if (!wasmd && state->mousedown &&
-					drawarea.isPointInside(state->mouse_position)) {
-				current = i;
-			}
-
-			SColor color = SColor(255, 255, 255, 255);
-
-			if (current == i) {
-				color = SColor(255, 0, 0, 255);
-			} else if (state->keys[KEY_LCONTROL] == EKS_DOWN) {
-				color = SColor(255, 255, 255, 0);
-			}
-
-			driver->draw2DImage(
-				scale,
-				drawarea.UpperLeftCorner,
-				rect<s32>(0, 0, 10, 10),
-				NULL, color, true
-			);
-
-			cdrs[i].visible = false;
-		}
-	}
-
 	if (state->menu->dialog)
 		current = -1;
 
 	wasmd = state->mousedown;
+}
+
+
+void NBEditor::drawViewport(irr::video::IVideoDriver *driver, EViewport viewport,
+		rect<s32> area)
+{
+	if (wasmd && !state->mousedown)
+		current = -1;
+
+	static irr::video::ITexture *scale = driver->getTexture("media/gui_scale.png");
+
+	for (int i = 0; i < 20; i++) {
+		if (cdrs[i].visible && cdrs[i].window == viewport) {
+			if (area.isPointInside(cdrs[i].position)) {
+				rect<s32> drawarea = rect<s32>(
+						cdrs[i].position.X - 5,
+						cdrs[i].position.Y - 5,
+						cdrs[i].position.X + 5,
+						cdrs[i].position.Y + 5
+				);
+
+				if (!wasmd && state->mousedown &&
+						drawarea.isPointInside(state->mouse_position)) {
+					current = i;
+				}
+
+				SColor color = SColor(255, 255, 255, 255);
+
+				if (current == i) {
+					color = SColor(255, 0, 0, 255);
+				} else if (state->keys[KEY_LCONTROL] == EKS_DOWN) {
+					color = SColor(255, 255, 255, 0);
+				}
+
+				driver->draw2DImage(
+					scale,
+					drawarea.UpperLeftCorner,
+					rect<s32>(0, 0, 10, 10),
+					NULL, color, true
+				);
+
+				cdrs[i].visible = false;
+			} // end if point is inside
+		} // end if cdr is to be drawn
+	} // end for
 }
 
 

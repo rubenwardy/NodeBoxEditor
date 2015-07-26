@@ -115,8 +115,6 @@ bool Editor::run(IrrlichtDevice* irr_device, Configuration* conf,
 					newmoused, !middle_click_handled);
 
 			// Draw separating lines
-			driver->setViewPort(rect<s32>(0, 0, driver->getScreenSize().Width,
-					driver->getScreenSize().Height));
 			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2),
 					vector2d<irr::s32>(ResX, ResY/2), SColor(175,255,255,255));
 			driver->draw2DLine(vector2d<irr::s32>(0, ResY/2-1),
@@ -577,6 +575,11 @@ void Editor::viewportTick(EViewport viewport, rect<s32> rect,
 	// Callbacks
 	if (state->Mode())
 		state->Mode()->viewportTick(viewport, driver, rect);
+
+	driver->setViewPort(rects32(0, 0, driver->getScreenSize().Width,
+			driver->getScreenSize().Height));
+	if (state->Mode())
+		state->Mode()->drawViewport(driver, viewport, rect);
 
 	if (viewport_drag == viewport) {
 		vector2di delta = state->mouse_position;
