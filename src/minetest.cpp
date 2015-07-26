@@ -59,7 +59,7 @@ bool Minetest::findMinetest(bool editor_is_installed)
 				minetest_exe = "/usr/bin/minetest";
 				return true;
 			} else
-				std::cerr << "Unable to find Minetest executable in system wide..." << std::endl;
+				std::cerr << "~/.minetest/ exists, but no exe in /usr/bin/ or /usr/local/bin/" << std::endl;
 		}
 	}
 #endif
@@ -68,16 +68,36 @@ bool Minetest::findMinetest(bool editor_is_installed)
 	path = getSaveLoadDirectory(_conf->get("save_directory"), editor_is_installed);
 	path = cleanDirectoryPath(path);
 
-	if (findMinetestDir(path + ".." + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
-		return true;
-
+	// minetest/
 	if (findMinetestDir(path + "minetest" + DIR_DELIM) && minetest_exe != "")
 		return true;
 
+	// ../minetest
+	if (findMinetestDir(path + ".." + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	// Minetest/
+	if (findMinetestDir(path + "Minetest" + DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	// ../Minetest/
 	if (findMinetestDir(path + ".." + DIR_DELIM + "Minetest" + DIR_DELIM) && minetest_exe != "")
 		return true;
 
-	if (findMinetestDir(path + "Minetest" + DIR_DELIM) && minetest_exe != "")
+	// games/minetest/
+	if (findMinetestDir(path + "games" + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	// ../games/minetest/
+	if (findMinetestDir(path + ".." + DIR_DELIM + "games" + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	// apps/minetest/
+	if (findMinetestDir(path + "apps" + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
+		return true;
+
+	// ../apps/minetest/
+	if (findMinetestDir(path + ".." + DIR_DELIM + "apps" + DIR_DELIM + "minetest" + DIR_DELIM) && minetest_exe != "")
 		return true;
 
 	std::cerr << "Minetest not found!" << std::endl;
