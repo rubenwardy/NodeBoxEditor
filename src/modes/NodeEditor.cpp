@@ -51,6 +51,14 @@ void NodeEditor::load()
 		// Add positioning
 		addXYZ(t, guienv, vector2di(10, 60), ENG_GUI_PROP_X);
 
+		// Add snap res
+		guienv->addStaticText(L"Snap res:", rect<s32>(10, 140, 70, 160),
+				false, true, t)->setNotClipped(true);
+		guienv->addEditBox(L"", rect<s32>(70, 140, 210, 160), true,
+				t, ENG_GUI_PROP_SNAP_RES)->setNotClipped(true);
+		guienv->addStaticText(L"(set to -1 to use project default)",
+				rect<s32>(10, 165, 240, 185), false, true, t)->setNotClipped(true);
+
 		// Add buttons
 		guienv->addButton(rect<s32>(30, 250, 100, 280), t,
 				ENG_GUI_PROP_UPDATE, L"Update", L"")
@@ -106,6 +114,9 @@ void NodeEditor::fillProperties(){
 	fillTB(sidebar, ENG_GUI_PROP, ENG_GUI_PROP_X, node->position.X);
 	fillTB(sidebar, ENG_GUI_PROP, ENG_GUI_PROP_Y, node->position.Y);
 	fillTB(sidebar, ENG_GUI_PROP, ENG_GUI_PROP_Z, node->position.Z);
+
+
+	fillTB(sidebar, ENG_GUI_PROP, ENG_GUI_PROP_SNAP_RES, node->snap_res);
 
 	IGUIElement* element = sidebar->getElementFromId(ENG_GUI_PROP)
 			->getElementFromId(ENG_GUI_PROP_NAME);
@@ -239,6 +250,9 @@ void NodeEditor::updateProperties() {
 			y,
 			wcstod(prop->getElementFromId(ENG_GUI_PROP_Z)->getText(), NULL)
 		);
+		node->snap_res = wcstod(prop->getElementFromId(ENG_GUI_PROP_SNAP_RES)->getText(), NULL);
+		if (node->snap_res < 0)
+			node->snap_res = -1;
 		node->remesh();
 		load_ui();
 	} catch(void* e) {
