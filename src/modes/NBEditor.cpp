@@ -367,12 +367,6 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 			(f32)node->position.Z
 		);
 
-		if (editor->state->settings->getBool("snapping")) {
-			wpos.X = (f32)floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
-			wpos.Y = (f32)floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
-			wpos.Z = (f32)floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
-		}
-
 		// Do node limiting
 		if (editor->state->settings->getBool("limiting")) {
 			// X Axis
@@ -400,10 +394,23 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		// Call required function
 		editor->fillProperties();
 		if (actualType < CDR_XZ) {
+			if (editor->state->settings->getBool("snapping")) {
+				wpos.X = (f32)floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
+				wpos.Y = (f32)floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
+				wpos.Z = (f32)floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
+
+				// (X + 0.5)   round relative to (-0.5, -0.5, -0.5)
+				//             ie: (-0.5, -0.5, -0.5) goes to (0, 0, 0)
+				// * 16        round to the nearest 16th
+				// + 0.5       do rounding, rather than flooring
+				// / 16 - 0.5  go back to normal coordinates
+			}
+
 			box->moveFace(editor->state, actualType, wpos,
 				editor->state->keys[KEY_LCONTROL] == EKS_DOWN);
 		} else {
-			box->move(editor->state, actualType, wpos);
+			box->move(editor->state, actualType, wpos,
+				editor->state->settings->getBool("snapping"));
 		}
 		node->remesh(box);
 
