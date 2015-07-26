@@ -91,7 +91,7 @@ void NodeBox::moveFace(EditorState* editor, ECDR_DIR type,
 }
 
 void NodeBox::move(EditorState* editor, ECDR_DIR type, vector3df position,
-		bool do_snap)
+		const int snap_res)
 {
 	vector3df new_one = one;
 	vector3df new_two = two;
@@ -157,11 +157,11 @@ void NodeBox::move(EditorState* editor, ECDR_DIR type, vector3df position,
 		}
 	}
 
-	if (do_snap) {
+	if (snap_res > 0) {
 		vector3df snapped_one(
-			(f32)floor((new_one.X + 0.5) * 16 + 0.5) / 16 - 0.5,
-			(f32)floor((new_one.Y + 0.5) * 16 + 0.5) / 16 - 0.5,
-			(f32)floor((new_one.Z + 0.5) * 16 + 0.5) / 16 - 0.5);
+			(f32)floor((new_one.X + 0.5) * snap_res + 0.5) / snap_res - 0.5,
+			(f32)floor((new_one.Y + 0.5) * snap_res + 0.5) / snap_res - 0.5,
+			(f32)floor((new_one.Z + 0.5) * snap_res + 0.5) / snap_res - 0.5);
 		new_two += snapped_one - new_one;
 		new_one = snapped_one;
 	}

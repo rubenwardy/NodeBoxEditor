@@ -6,7 +6,8 @@ Node::Node(IrrlichtDevice* device, EditorState* state, unsigned int id) :
 	state(state),
 	_selected(-1),
 	_nid(id),
-	_box_count(0)
+	_box_count(0),
+	snap_res(-1)
 {
 	for (int i = 0; i < 6; i++) {
 		images[i] = NULL;

@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	conf->set("snapping", "true");
+	conf->set("default_snap_res", "16");
 	conf->set("limiting", "true");
 	conf->set("fractional_positions", "false");
 	conf->set("driver", "opengl");

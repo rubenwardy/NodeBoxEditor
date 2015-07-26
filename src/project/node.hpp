@@ -40,6 +40,7 @@ public:
 	vector3di position;
 	std::string name;
 	std::vector<NodeBox*> boxes;
+	int snap_res;
 private:
 	// Data
 	int _selected;

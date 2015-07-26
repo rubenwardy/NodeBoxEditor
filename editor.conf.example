@@ -2,6 +2,9 @@
 # snap to pixels
 snapping = true
 
+# The resolution the nodebox snaps to (can be overriden per node)
+default_snap_res = 16
+
 # limiting stops node boxes going out of node bounds
 limiting = true
 

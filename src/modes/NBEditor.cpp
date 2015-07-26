@@ -393,11 +393,19 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 
 		// Call required function
 		editor->fillProperties();
+
+		int snap_res = node->snap_res;
+		if (snap_res == -1) {
+			static const int set_snap_res =
+				editor->state->settings->getInt("default_snap_res");
+			snap_res = set_snap_res;
+		}
+
 		if (actualType < CDR_XZ) {
 			if (editor->state->settings->getBool("snapping")) {
-				wpos.X = (f32)floor((wpos.X + 0.5) * 16 + 0.5) / 16 - 0.5;
-				wpos.Y = (f32)floor((wpos.Y + 0.5) * 16 + 0.5) / 16 - 0.5;
-				wpos.Z = (f32)floor((wpos.Z + 0.5) * 16 + 0.5) / 16 - 0.5;
+				wpos.X = (f32)floor((wpos.X + 0.5) * snap_res + 0.5) / snap_res - 0.5;
+				wpos.Y = (f32)floor((wpos.Y + 0.5) * snap_res + 0.5) / snap_res - 0.5;
+				wpos.Z = (f32)floor((wpos.Z + 0.5) * snap_res + 0.5) / snap_res - 0.5;
 
 				// (X + 0.5)   round relative to (-0.5, -0.5, -0.5)
 				//             ie: (-0.5, -0.5, -0.5) goes to (0, 0, 0)
@@ -410,7 +418,7 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 				editor->state->keys[KEY_LCONTROL] == EKS_DOWN);
 		} else {
 			box->move(editor->state, actualType, wpos,
-				editor->state->settings->getBool("snapping"));
+				(editor->state->settings->getBool("snapping")?snap_res:0));
 		}
 		node->remesh(box);
 

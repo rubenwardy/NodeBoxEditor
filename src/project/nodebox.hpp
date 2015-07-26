@@ -46,7 +46,7 @@ public:
 	void moveFace(EditorState* editor, ECDR_DIR type,
 			vector3df position, bool both);
 	void move(EditorState* editor, ECDR_DIR type, vector3df position,
-			bool do_snap=false);
+			const int snap_res=0);
 	void rotate(EAxis axis);
 	void flip(EAxis axis);
 
