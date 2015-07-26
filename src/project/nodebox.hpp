@@ -42,13 +42,18 @@ public:
 		);
 	}
 
-	void resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
+	// Transformations
+	void moveFace(EditorState* editor, ECDR_DIR type,
 			vector3df position, bool both);
-	void moveNodeBox(EditorState* editor, ECDR_DIR type, vector3df position);
-	void buildNode(EditorState* editor, vector3di nd_position,
-			IrrlichtDevice* device, Media::Image* images[6], bool force = false);
+	void move(EditorState* editor, ECDR_DIR type, vector3df position);
 	void rotate(EAxis axis);
 	void flip(EAxis axis);
+
+	// Create the mesh for the nodebox, store is in this->model.
+	//
+	// Only runs if rebuild_needed is true.
+	void buildMesh(EditorState* editor, vector3di nd_position,
+			IrrlichtDevice* device, Media::Image* images[6], bool force = false);
 };
 
 #endif

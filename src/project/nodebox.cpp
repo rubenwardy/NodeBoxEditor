@@ -1,6 +1,6 @@
 #include "nodebox.hpp"
 
-void NodeBox::resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
+void NodeBox::moveFace(EditorState* editor, ECDR_DIR type,
 		vector3df position, bool both)
 {
 	vector3df before_one = one;
@@ -90,7 +90,7 @@ void NodeBox::resizeNodeBoxFace(EditorState* editor, ECDR_DIR type,
 		rebuild_needed = true;
 }
 
-void NodeBox::moveNodeBox(EditorState* editor, ECDR_DIR type, vector3df position)
+void NodeBox::move(EditorState* editor, ECDR_DIR type, vector3df position)
 {
 	vector3df new_one = one;
 	vector3df new_two = two;
@@ -198,7 +198,7 @@ void NodeBox::removeMesh(IVideoDriver *driver)
 	}
 }
 
-void NodeBox::buildNode(EditorState* editor, vector3di nd_position,
+void NodeBox::buildMesh(EditorState* editor, vector3di nd_position,
 		IrrlichtDevice* device, Media::Image* images[6], bool force)
 {
 	if (!rebuild_needed && !force)

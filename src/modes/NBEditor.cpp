@@ -400,10 +400,10 @@ void CDR::update(NBEditor* editor, bool drag, rect<s32> offset)
 		// Call required function
 		editor->fillProperties();
 		if (actualType < CDR_XZ) {
-			box->resizeNodeBoxFace(editor->state, actualType, wpos,
+			box->moveFace(editor->state, actualType, wpos,
 				editor->state->keys[KEY_LCONTROL] == EKS_DOWN);
 		} else {
-			box->moveNodeBox(editor->state, actualType, wpos);
+			box->move(editor->state, actualType, wpos);
 		}
 		node->remesh(box);
 

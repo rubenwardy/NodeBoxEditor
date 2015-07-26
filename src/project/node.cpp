@@ -72,7 +72,7 @@ NodeBox* Node::addNodeBox()
 
 	boxes.push_back(tmp);
 	select(boxes.size() - 1);
-	tmp->buildNode(state, position, device, images);
+	tmp->buildMesh(state, position, device, images);
 
 	return tmp;
 }
@@ -99,7 +99,7 @@ void Node::cloneNodebox(int id)
 	NodeBox *new_nb = addNodeBox();
 	new_nb->one = nb->one;
 	new_nb->two = nb->two;
-	new_nb->buildNode(state, position, device, images);
+	new_nb->buildMesh(state, position, device, images);
 }
 
 void Node::setTexture(ECUBE_SIDE face, Media::Image *image)
@@ -118,13 +118,13 @@ void Node::remesh(bool force)
 	for (std::vector<NodeBox*>::iterator it = boxes.begin();
 			it != boxes.end();
 			++it) {
-		(*it)->buildNode(state, position, device, images, force);
+		(*it)->buildMesh(state, position, device, images, force);
 	}
 }
 
 void Node::remesh(NodeBox *box)
 {
-	box->buildNode(state, position, device, images);
+	box->buildMesh(state, position, device, images);
 }
 
 void Node::hide()
