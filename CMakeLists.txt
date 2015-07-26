@@ -8,7 +8,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 #
 # Configuration
 #
-
 set(NBE_MAJOR_VERSION 0)
 set(NBE_MINOR_VERSION 8)
 set(NBE_PATCH_VERSION 1)
@@ -67,7 +66,30 @@ add_executable(${PROJECT_NAME} ${NBE_SRC})
 # Dependencies
 #
 find_package(Irrlicht REQUIRED)
-find_package(ZLIB REQUIRED)
+
+if(WIN32)
+	# Windows
+	if(MSVC) # MSVC Specifics
+		set(PLATFORM_LIBS dbghelp.lib ${PLATFORM_LIBS})
+		# Surpress some useless warnings
+		add_definitions ( /D "_CRT_SECURE_NO_DEPRECATE" /W1 )
+	else() # Probably MinGW = GCC
+		set(PLATFORM_LIBS "")
+	endif()
+	set(PLATFORM_LIBS ws2_32.lib shlwapi.lib ${PLATFORM_LIBS})
+
+	# Zlib stuff
+	set(ZLIB_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/../../zlib/zlib-1.2.5"
+			CACHE PATH "Zlib include directory")
+	set(ZLIB_LIBRARIES "${PROJECT_SOURCE_DIR}/../../zlib125dll/dll32/zlibwapi.lib"
+			CACHE FILEPATH "Path to zlibwapi.lib")
+	set(ZLIB_DLL "${PROJECT_SOURCE_DIR}/../../zlib125dll/dll32/zlibwapi.dll"
+			CACHE FILEPATH "Path to zlibwapi.dll (for installation)")
+else(WIN32)
+	find_package(ZLIB REQUIRED)
+endif(WIN32)
+
+
 find_package(X11 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(JPEG REQUIRED)
