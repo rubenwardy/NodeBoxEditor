@@ -2,12 +2,13 @@
 # Set up project
 #
 cmake_minimum_required(VERSION 2.6)
-project(NodeBoxEditor)
+project(nodeboxeditor)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 #
 # Configuration
 #
+
 set(NBE_MAJOR_VERSION 0)
 set(NBE_MINOR_VERSION 8)
 set(NBE_PATCH_VERSION 1)
@@ -108,12 +109,9 @@ endif(UNIX)
 # Executable
 #
 file(MAKE_DIRECTORY "bin")
-SET(CMAKE_CXX_FLAGS
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
+set(CMAKE_CXX_FLAGS
 	"${CMAKE_CXX_FLAGS} -pthread")
-set_target_properties(${PROJECT_NAME}
-    PROPERTIES
-    OUTPUT_NAME bin/nodeboxeditor
-)
 
 #
 # Installation
