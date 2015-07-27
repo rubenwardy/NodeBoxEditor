@@ -160,8 +160,8 @@ bool Minetest::runMod(EditorState *state, const std::string &world)
 	save_file(writer, state, mod_to + "init.lua");
 
 	// Run minetest
-	std::string exec = minetest_exe;
-	exec += " --worldname " + world + " --name tester --go";
-	system(exec.c_str());
+	std::string args = "--worldname " + world + " --name tester --address '' --go";
+	std::cerr << "Starting Minetest with " << args.c_str() << std::endl;
+	system((minetest_exe + " " + args).c_str());
 	return true;
 }
