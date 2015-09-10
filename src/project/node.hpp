@@ -21,7 +21,8 @@ public:
 	unsigned int NodeId() const { return _nid; }
 	NodeBox* GetCurrentNodeBox();
 	NodeBox* GetNodeBox(int id);
-	NodeBox* addNodeBox();
+	NodeBox* addNodeBox(vector3df one = vector3df(-0.5, -0.5, -0.5),
+		vector3df two = vector3df(0.5, 0.5, 0.5));
 	void deleteNodebox(int id);
 	void cloneNodebox(int id);
 	void select(int id) { _selected = id; }

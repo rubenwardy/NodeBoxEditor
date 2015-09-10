@@ -60,19 +60,18 @@ NodeBox* Node::GetNodeBox(int id)
 }
 
 // Operation functions
-NodeBox* Node::addNodeBox()
+NodeBox* Node::addNodeBox(vector3df one, vector3df two)
 {
 	_box_count++;
-	// Name it
-	std::string name = "NodeBox" + num_to_str(_box_count);
 
 	// Set up structure
-	NodeBox* tmp = new NodeBox(name,
-		vector3df(-0.5, -0.5, -0.5),
-		vector3df(0.5, 0.5, 0.5));
-
+	std::string name = "NodeBox" + num_to_str(_box_count);
+	NodeBox *tmp = new NodeBox(name, one, two);
 	boxes.push_back(tmp);
+
+	// Select
 	select(boxes.size() - 1);
+
 	tmp->buildMesh(state, position, device, images);
 
 	return tmp;

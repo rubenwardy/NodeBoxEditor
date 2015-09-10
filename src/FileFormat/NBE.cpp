@@ -292,19 +292,20 @@ void NBEFileFormat::parseLine(Project * project, std::string & line)
 				s[i] = trim(n.substr(0, nid));
 				n = trim(n.substr(nid));
 			}
-			node->addNodeBox();
-			node->GetCurrentNodeBox()->name = s[0];
-			node->GetCurrentNodeBox()->one = vector3df(
-				(f32)atof(s[1].c_str()),
-				(f32)atof(s[2].c_str()),
-				(f32)atof(s[3].c_str())
-			);
-			node->GetCurrentNodeBox()->two = vector3df(
-				(f32)atof(s[4].c_str()),
-				(f32)atof(s[5].c_str()),
-				(f32)atof(s[6].c_str())
-			);
-			node->remesh();
+			NodeBox *box = node->addNodeBox(
+				vector3df(
+					(f32)atof(s[1].c_str()),
+					(f32)atof(s[2].c_str()),
+					(f32)atof(s[3].c_str())
+				),
+				vector3df(
+					(f32)atof(s[4].c_str()),
+					(f32)atof(s[5].c_str()),
+					(f32)atof(s[6].c_str())
+				));
+			box->name = s[0];
+			box->rebuild_needed = true;
+			node->remesh(box);
 		} else if (lower.find("end node") == 0){
 			project->AddNode(node);
 			node = NULL;
