@@ -7,6 +7,14 @@
 #include "dialogs/FileDialog.hpp"
 #include "dialogs/ImageDialog.hpp"
 #include "minetest.hpp"
+#include <stdlib.h>
+#include <string>
+
+#if _WIN32
+	#define OPEN_URL(url) system((std::string("open \"") + std::string(url) + "\"").c_str())
+#else
+	#define OPEN_URL(url) system((std::string("xdg-open \"") + std::string(url) + "\"").c_str())
+#endif
 
 MenuState::MenuState(EditorState* state) :
 	state(state),
@@ -82,7 +90,10 @@ void MenuState::init()
 
 	// Help
 	submenu = menubar->getSubMenu(4);
-	//submenu->addItem(L"Help",GUI_HELP_HELP,false);
+	submenu->addItem(L"Help...", GUI_HELP_HELP);
+	submenu->addItem(L"Forum Topic...", GUI_HELP_FORUM);
+	submenu->addItem(L"Report bugs...", GUI_HELP_REPORT);
+	submenu->addSeparator();
 	submenu->addItem(L"About", GUI_HELP_ABOUT);
 
 	// Sidebar root
@@ -220,6 +231,15 @@ bool MenuState::OnEvent(const SEvent& event)
 			case GUI_PROJ_IMAGE_IM:
 				ImageDialog::show(state, NULL, ECS_TOP);
 				return true;
+			case GUI_HELP_HELP:
+				OPEN_URL("http://rubenwardy.com/NodeBoxEditor/");
+				break;
+			case GUI_HELP_FORUM:
+				OPEN_URL("https://forum.minetest.net/viewtopic.php?f=14&t=2840");
+				break;
+			case GUI_HELP_REPORT:
+				OPEN_URL("https://github.com/rubenwardy/NodeBoxEditor/issues");
+				break;
 			case GUI_HELP_ABOUT: {
 				core::stringw msg = L"The Nodebox Editor\n"
 					L"Version: ";

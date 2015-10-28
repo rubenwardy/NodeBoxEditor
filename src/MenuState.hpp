@@ -43,6 +43,8 @@ enum GUI_ID
 
 	// Help
 	GUI_HELP_HELP,
+	GUI_HELP_FORUM,
+	GUI_HELP_REPORT,
 	GUI_HELP_ABOUT,
 
 	// Sidebar
