@@ -134,7 +134,7 @@ void NBEditor::load()
 		// Add show decimals checkbox
 		bool fp = state->settings->getBool("fractional_positions");
 		guienv->addCheckBox(fp, rect<s32>(30, 215, 200, 245), t,
-				ENB_GUI_PROP_DECIMALS, L"As fractions of 16")->setNotClipped(true);
+				ENB_GUI_PROP_DECIMALS, L"As multiples of 1/16")->setNotClipped(true);
 
 		// Add buttons
 		guienv->addButton(rect<s32>(30, 250, 100, 250+30), t, ENB_GUI_PROP_UPDATE,
