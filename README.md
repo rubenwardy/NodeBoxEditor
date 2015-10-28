@@ -5,7 +5,7 @@ Node Box Editor
 
 Use this editor to make nodeboxes for nodes in Minetest.
 
-Version: 0.8
+Version: 0.9.0
 
 To do list and bug tracker is here: https://github.com/rubenwardy/NodeBoxEditor/issues?state=open
 

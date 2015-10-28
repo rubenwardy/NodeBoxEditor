@@ -232,7 +232,7 @@ bool MenuState::OnEvent(const SEvent& event)
 				ImageDialog::show(state, NULL, ECS_TOP);
 				return true;
 			case GUI_HELP_HELP:
-				OPEN_URL("http://rubenwardy.com/NodeBoxEditor/");
+				OPEN_URL("http://rubenwardy.com/NodeBoxEditor/?v=");
 				break;
 			case GUI_HELP_FORUM:
 				OPEN_URL("https://forum.minetest.net/viewtopic.php?f=14&t=2840");
@@ -241,12 +241,13 @@ bool MenuState::OnEvent(const SEvent& event)
 				OPEN_URL("https://github.com/rubenwardy/NodeBoxEditor/issues");
 				break;
 			case GUI_HELP_ABOUT: {
-				core::stringw msg = L"The Nodebox Editor\n"
+				core::stringw msg = L"NodeBoxEditor (NBE)\n"
 					L"Version: ";
 
-				msg += EDITOR_TEXT_VERSION;
+				msg += EDITOR_TEXT_VERSION_LABEL;
 				msg += L"\n\n"
-					L"This free nodebox editor was made by rubenwardy in C++ and Irrlicht.\n"
+					L"A free and open source nodebox editor "
+					L"created by rubenwardy, using C++ and Irrlicht."
 					L"You can download newer versions from the Minetest forum.";
 
 				state->device->getGUIEnvironment()->addMessageBox(L"About", msg.c_str());

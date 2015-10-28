@@ -9,9 +9,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 # Configuration
 #
 set(NBE_MAJOR_VERSION 0)
-set(NBE_MINOR_VERSION 8)
-set(NBE_PATCH_VERSION 1)
-set(NBE_DESCR_VERSION "0.8.1 - Glass")
+set(NBE_MINOR_VERSION 9)
+set(NBE_PATCH_VERSION 0)
+set(NBE_LABEL_VERSION "Obsidian Glass")
 option(DEBUG "Debug mode" 0)
 if(DEBUG)
 	message("-- Is debug")
