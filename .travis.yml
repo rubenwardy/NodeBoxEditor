@@ -3,8 +3,8 @@ compiler:
   - gcc
   - clang
 env:
-  - PLATFORM=Win32
-  - PLATFORM=Win64
+#  - PLATFORM=Win32
+#  - PLATFORM=Win64
   - PLATFORM=Linux
 before_install: ./util/travis/before_install.sh
 script: ./util/travis/script.sh
