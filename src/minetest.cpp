@@ -6,6 +6,13 @@
 #include <stdlib.h>
 #include <fstream>
 
+#ifdef _WIN32
+    #include <direct.h>
+    #define getcwd _getcwd
+#else
+    #include <unistd.h>
+#endif
+
 Minetest::Minetest(Configuration *conf):
 	_conf(conf), minetest_dir(""), minetest_exe("")
 {}
@@ -159,9 +166,22 @@ bool Minetest::runMod(EditorState *state, const std::string &world)
 	FileFormat *writer = getFromType(FILE_FORMAT_LUA, state);
 	save_file(writer, state, mod_to + "init.lua");
 
+	// Change working directory
+	char buffer[300];
+	char *prev_cwd = getcwd(buffer, sizeof(buffer));
+	if (!prev_cwd) {
+		std::cerr << "Failed to get CWD" << std::endl;
+		return false;
+	}
+
 	// Run minetest
+	chdir(minetest_dir.c_str());
 	std::string args = "--worldname " + world + " --name tester --address '' --go";
 	std::cerr << "Starting Minetest with " << args.c_str() << std::endl;
 	system((minetest_exe + " " + args).c_str());
+
+	// Change directory back
+	chdir(prev_cwd);
+
 	return true;
 }
