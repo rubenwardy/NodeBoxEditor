@@ -11,7 +11,7 @@
 #include <string>
 
 #if _WIN32
-	#define OPEN_URL(url) system((std::string("open \"") + std::string(url) + "\"").c_str())
+	#define OPEN_URL(url) system((std::string("start \"\" \"") + std::string(url) + "\"").c_str())
 #else
 	#define OPEN_URL(url) system((std::string("xdg-open \"") + std::string(url) + "\"").c_str())
 #endif
