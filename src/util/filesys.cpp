@@ -43,7 +43,7 @@ std::string getTmpDirectory(bool editor_is_installed)
 // This code was nicked from Minetest, subject to LGPLv2
 // See http://minetest.net
 #ifdef _WIN32
-#include <linux.h>
+#include <windows.h>
 
 bool FileExists(const char* path)
 {
