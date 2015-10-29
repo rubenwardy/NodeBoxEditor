@@ -8,7 +8,6 @@
 #include "dialogs/ImageDialog.hpp"
 #include "minetest.hpp"
 #include <stdlib.h>
-#include <string>
 
 #if _WIN32
 	#define OPEN_URL(url) system((std::string("start \"\" \"") + std::string(url) + "\"").c_str())
