@@ -8,6 +8,9 @@ env:
   - PLATFORM=Linux
 before_install: ./util/travis/before_install.sh
 script: ./util/travis/script.sh
+sudo: required
+notifications:
+  email: false
 matrix:
   fast_finish: true
   exclude:
