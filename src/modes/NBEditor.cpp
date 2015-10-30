@@ -31,6 +31,7 @@ enum NODEBOX_EDITOR_GUI_IDS {
 };
 
 NBEditor::NBEditor(EditorState* st) :
+	wasmd(false),
 	EditorMode(st),
 	current(-1),
 	prop_needs_update(false)
@@ -43,7 +44,6 @@ NBEditor::NBEditor(EditorState* st) :
 		cdrs[i*5 + 4] = CDR((EViewport)i, CDR_M);
 	}
 }
-
 
 void NBEditor::load()
 {
