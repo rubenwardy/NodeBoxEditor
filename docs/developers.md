@@ -35,11 +35,6 @@ Linux
 
 **Install Dependencies**
 
-I recommend that you use the **misc/install_irrlicht.sh** script to install Irrlicht,
-as some features in NBE require Irrlicht 1.8 or later, which is not in apt-get
-
-Alternative method (Installs Irrlicht 1.7.2):
-
     # download source and go to the root folder
     $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
@@ -95,6 +90,8 @@ The project should now build correctly. You will need to copy the media folder a
 	
 Code
 ====
+
+This is outdated info, needs updating.
 
 * **common**.hpp - general compile settings, includes and defines. Used in every other file.
 * **conf_cmake**.hpp.in - defines from cmake.
