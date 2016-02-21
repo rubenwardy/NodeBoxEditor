@@ -7,10 +7,13 @@
 #include <fstream>
 
 #ifdef _WIN32
-    #include <direct.h>
-    #define getcwd _getcwd
+	#include <direct.h>
+	#include <process.h>
+	#define getcwd _getcwd
+	#define EXE_FILENAME "minetest.exe"
 #else
-    #include <unistd.h>
+	#include <unistd.h>
+	#define EXE_FILENAME "minetest"
 #endif
 
 Minetest::Minetest(Configuration *conf):
@@ -22,19 +25,12 @@ bool Minetest::findMinetestDir(std::string path)
 	if (DirExists(path.c_str())) {
 		std::cerr << "Minetest found at " << path.c_str() << std::endl;
 		minetest_dir = path;
-
-		if (FileExists((path + "bin" + DIR_DELIM + "minetest"
-#if _WIN32
-			".exe"
-#endif
-			).c_str())) {
-			minetest_exe = path + "bin" + DIR_DELIM + "minetest"
-#if _WIN32
-			".exe"
-#endif
-			;
-		} else
+		std::string testpath = path + "bin" + DIR_DELIM + EXE_FILENAME;
+		if (FileExists(testpath.c_str())) {
+			minetest_exe = testpath;
+		} else {
 			std::cerr << "...but no executable!" << std::endl;
+		}
 		return true;
 	}
 	return false;
@@ -166,6 +162,28 @@ bool Minetest::runMod(EditorState *state, const std::string &world)
 	FileFormat *writer = getFromType(FILE_FORMAT_LUA, state);
 	save_file(writer, state, mod_to + "init.lua");
 
+	// Build argument list
+	char *const argv[] = {
+	    (char*)minetest_exe.c_str(),
+	    "--worldname", (char*)world.c_str(),
+	    "--name", "tester",
+	    "--address", "",
+	    "--go",
+	    NULL
+	};
+
+#ifndef _WIN32
+	pid_t pid = fork();
+	if (pid == 0) {
+		chdir(minetest_dir.c_str());
+		std::cerr << "FORK: launching mt, exe = " << argv[0] << std::endl;
+		execvp(argv[0], argv);
+		std::cerr << "Couldn't run minetest!" << std::endl;
+		_exit(0);
+	} else if (pid < 0) {
+		std::cerr << "Error!" << std::endl;
+	}
+#else
 	// Change working directory
 	char buffer[300];
 	char *prev_cwd = getcwd(buffer, sizeof(buffer));
@@ -176,12 +194,11 @@ bool Minetest::runMod(EditorState *state, const std::string &world)
 
 	// Run minetest
 	chdir(minetest_dir.c_str());
-	std::string args = "--worldname " + world + " --name tester --address '' --go";
-	std::cerr << "Starting Minetest with " << args.c_str() << std::endl;
-	system((minetest_exe + " " + args).c_str());
-
-	// Change directory back
+	std::cerr << "SPAWNVP: launching mt, exe = " << argv[0] << std::endl;
+	_spawnvp(P_NOWAIT, argv[0], argv);
 	chdir(prev_cwd);
+#endif
+
 
 	return true;
 }
