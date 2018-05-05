@@ -34,6 +34,13 @@ void findWorkingDirectory(bool &editor_is_installed)
 		return;
 	}
 
+	chdir("/usr/share/nodeboxeditor");
+	if (FileExists("media/sky.jpg")) {
+		std::cerr << "Is installed!";
+		editor_is_installed = true;
+		return;
+	}
+
 	chdir("/usr/local/share/nodeboxeditor");
 	if (FileExists("media/sky.jpg")) {
 		std::cerr << "Is installed!";
