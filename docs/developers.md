@@ -36,7 +36,7 @@ Linux
 **Install Dependencies**
 
     # download source and go to the root folder
-    $ sudo apt-get install build-essential libirrlicht-dev cmake libpng12-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
+    $ sudo apt-get install build-essential libirrlicht-dev cmake libpng-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
 
 **Compiling**
 
@@ -54,7 +54,7 @@ Linux
     $ sudo make install
     $ nodeboxeditor
     # See make_install.md
-	
+
 Microsoft Visual Studio
 -----------------------
 
@@ -87,7 +87,7 @@ See [Irrlicht's tutorial](http://irrlicht.sourceforge.net/docu/example001.html) 
 The project should now build correctly. You will need to copy the media folder across to project/debug
 
 
-	
+
 Code
 ====
 

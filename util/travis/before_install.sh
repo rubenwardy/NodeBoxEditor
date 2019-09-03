@@ -11,7 +11,7 @@ if [[ $CC == "clang" ]]; then
 fi
 sudo apt-get install p7zip-full
 if [[ $PLATFORM == "Linux" ]]; then
-	sudo apt-get install libirrlicht-dev cmake libbz2-dev libpng12-dev \
+	sudo apt-get install libirrlicht-dev cmake libbz2-dev libpng-dev \
 		libjpeg-dev libxxf86vm-dev libgl1-mesa-dev
 elif [[ $PLATFORM == "Win32" ]]; then
 	wget http://sfan5.pf-control.de/mingw_w64_i686_ubuntu12.04_4.9.1.7z -O mingw.7z
