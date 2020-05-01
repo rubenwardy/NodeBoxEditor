@@ -36,7 +36,7 @@ Linux
 **Install Dependencies**
 
     # download source and go to the root folder
-    $ sudo apt-get install build-essential libirrlicht-dev cmake libpng-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev
+    $ sudo apt-get install build-essential libirrlicht-dev cmake libpng-dev libbz2-dev libjpeg8-dev libgl1-mesa-dev libxxf86vm-dev
 
 **Compiling**
 
